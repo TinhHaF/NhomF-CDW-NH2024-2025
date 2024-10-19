@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     //hiện thị trang đăng ký
@@ -12,7 +13,16 @@ class UserController extends Controller
     {
         return view('crud_user.register');
     }
-
+    //Hiện thị trang đăng nhập
+    public function login()
+    {
+        return view('crud_user.login');
+    }
+    public function home()
+    {
+        return view('home');
+    }
+    //Hàm đăng ký tài khoản
     public function addUser(Request $request)
     {
         // Xác thực dữ liệu đầu vào với các quy tắc đặc biệt
@@ -61,8 +71,35 @@ class UserController extends Controller
         ]);
     
         // Điều hướng về trang đăng nhập với thông báo thành công
-        return redirect('login')->with('success', 'Tạo người dùng thành công.');
+        return redirect('/login')->with('success', 'Tạo người dùng thành công.');
+    }
+    //Đăng Nhập
+    public function loginUser(Request $request)
+    {
+        // Xác thực dữ liệu đầu vào
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ], [
+            'username.required' => 'Tên người dùng là bắt buộc.',
+            'password.required' => 'Mật khẩu là bắt buộc.',
+        ]);
+    
+        $credentials = $request->only('username', 'password');
+    
+        // Kiểm tra thông tin đăng nhập
+        if (Auth::attempt($credentials)) {
+            // Nếu đăng nhập thành công
+            return redirect()->intended('/home')->withSuccess('Đăng nhập thành công.');
+        }
+    
+        // Nếu thông tin đăng nhập không chính xác
+        return redirect("login")
+            ->withErrors([
+                'credentials' => 'Thông tin tài khoản hoặc mật khẩu không chính xác.'
+            ])
+            ->withInput(); // Giữ lại dữ liệu đã nhập
     }
     
-    
+
 }
