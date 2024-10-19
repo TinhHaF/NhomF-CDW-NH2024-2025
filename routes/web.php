@@ -17,4 +17,6 @@ Route::get('admin/dashboard', function () {
 
 
 
-Route::get('homepage/', [PostController::class, 'index'])->name('post.show');
+Route::get('homepage/', [PostController::class, 'homepage'])->name('home');
+
+Route::get('homepage/posts/{id}', [PostController::class, 'show'])->name('posts.show');
