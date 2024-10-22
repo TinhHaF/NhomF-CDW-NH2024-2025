@@ -96,7 +96,7 @@ class UserController extends Controller
             // Kiểm tra role của người dùng
             if ($user->role == 1) {
                 // Đăng nhập thành công cho người dùng thường
-                return redirect()->intended('/home')->withSuccess('Đăng nhập thành công.');
+                return redirect()->intended('homepage/')->withSuccess('Đăng nhập thành công.');
             } elseif ($user->role == 2) {
                 // Đăng nhập thành công cho admin
                 return redirect()->intended('admin/dashboard')->withSuccess('Đăng nhập thành công.');
