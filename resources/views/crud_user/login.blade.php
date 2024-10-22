@@ -46,7 +46,7 @@
         <div class="w-1/2 flex flex-col items-center justify-center border-l border-gray-300">
             <div class="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center mb-4">
                 <img alt="Logo" height="128"
-                    src="https://storage.googleapis.com/a1aa/image/oiq2qWMrqCICGBQo03sM0HserlqtawPRRp8GcU37Ffsr9QoTA.jpg"
+                    src="https://storage.googleapis.com/a1aa/image/tkMOcGFkfmyvdq3JhGQHzAhhaTpAVYMnMUGYFRdsJEfj28nTA.jpg"
                     width="128" />
             </div>
             <p class="text-center italic">

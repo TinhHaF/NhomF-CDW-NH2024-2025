@@ -67,7 +67,8 @@ class UserController extends Controller
         User::create([
             'username' => $data['username'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']), // Mã hóa mật khẩu
+            'password' => Hash::make($data['password']),
+            'role' => 1,
         ]);
     
         // Điều hướng về trang đăng nhập với thông báo thành công
@@ -89,17 +90,32 @@ class UserController extends Controller
     
         // Kiểm tra thông tin đăng nhập
         if (Auth::attempt($credentials)) {
-            // Nếu đăng nhập thành công
-            return redirect()->intended('/home')->withSuccess('Đăng nhập thành công.');
-        }
+            // Lấy thông tin người dùng đã đăng nhập
+            $user = Auth::user();
     
+            // Kiểm tra role của người dùng
+            if ($user->role == 1) {
+                // Đăng nhập thành công cho người dùng thường
+                return redirect()->intended('/home')->withSuccess('Đăng nhập thành công.');
+            } elseif ($user->role == 2) {
+                // Đăng nhập thành công cho admin
+                return redirect()->intended('admin/dashboard')->withSuccess('Đăng nhập thành công.');
+            }
+    
+            // Nếu role không hợp lệ, đăng xuất người dùng
+            Auth::logout();
+            return redirect('login')->withErrors([
+                'role' => 'Vai trò của tài khoản không hợp lệ.',
+            ]);
+        }
         // Nếu thông tin đăng nhập không chính xác
-        return redirect("login")
+        return redirect('login')
             ->withErrors([
-                'credentials' => 'Thông tin tài khoản hoặc mật khẩu không chính xác.'
+                'credentials' => 'Thông tin tài khoản hoặc mật khẩu không chính xác.',
             ])
             ->withInput(); // Giữ lại dữ liệu đã nhập
     }
+    
     
 
 }
