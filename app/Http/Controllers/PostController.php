@@ -8,10 +8,31 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    // Phương thức tĩnh để mã hóa ID
+    public static function encodeId($id)
+    {
+        $key = 'your-secret-key'; // Thay thế bằng khóa bí mật của bạn
+        return base64_encode($id . '::' . $key);
+    }
+
     public function homepage()
     {
-         // Lấy các bài viết từ bảng posts, sắp xếp theo thời gian tạo, phân trang với 6 bài mỗi trang
-         $posts = Post::latest()->paginate(3); // Lấy 6 bài viết mới nhất
-         return view('home.home', compact('posts')); // Trả về view với danh sách bài viết
+        $posts = Post::latest()->paginate(3);
+        return view('home', compact('posts'));
+    }
+
+    public function show($encodedId)
+    {
+        // Giải mã ID
+        $decoded = base64_decode($encodedId);
+        list($id, $key) = explode('::', $decoded);
+
+        // Kiểm tra xem khóa có khớp để ngăn chặn việc giả mạo
+        if ($key !== 'your-secret-key') {
+            abort(403, 'Hành động không được phép.');
+        }
+
+        $post = Post::findOrFail($id);
+        return view('posts.show', compact('post'));
     }
 }
