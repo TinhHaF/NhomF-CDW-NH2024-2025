@@ -2,7 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
+
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PostController;
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -15,8 +19,15 @@ Route::get('admin/dashboard', function () {
 });
 
 
+
 Route::get('/register', [UserController::class, 'registerUser'])->name('user.registerUser');
 Route::post('register', [UserController::class, 'addUser'])->name('user.addUser');
 Route::get('/login', [UserController::class, 'login'])->name('user.login');
 Route::post('login', [UserController::class, 'loginUser'])->name('user.loginUser');
 Route::get('/home', [UserController::class, 'home'])->name('home');
+
+
+Route::get('homepage/', [PostController::class, 'homepage'])->name('home');
+
+Route::get('homepage/posts/{id}', [PostController::class, 'show'])->name('posts.show');
+

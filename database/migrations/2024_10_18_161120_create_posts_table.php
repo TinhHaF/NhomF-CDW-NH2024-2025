@@ -16,8 +16,10 @@ return new class extends Migration
             $table->foreignId('author_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('title');
             $table->text('content');
+            $table->string('image')->nullable(); // Thêm cột image
             $table->timestamps();
         });
+        
     }
 
     /**
