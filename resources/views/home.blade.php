@@ -10,14 +10,16 @@
 
 <body class="bg-gray-100 p-8">
     
-
 <div class="container mx-auto px-4">
     <h2 class="text-2xl font-bold mb-6">Tin Đề Xuất</h2> 
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         @foreach ($posts as $post)
             <div class="bg-white rounded-lg shadow-md">
-                <h5 class="text-lg font-semibold p-4">{{ $post->title }}</h5> <!-- Tiêu đề ở trên cùng -->
+                <h5 class="text-lg font-semibold p-4">
+                <a href="{{ route('posts.show', \App\Http\Controllers\PostController::encodeId($post->id)) }}" class="hover:underline">{{ $post->title }}</a>
+
+                </h5>
                 <div class="flex">
                     @if($post->image)
                     <img src="{{ asset('storage/' . $post->image) }}" class="w-1/2 h-48 object-cover rounded-l-lg ml-1 mb-1" alt="{{ $post->title }}">
@@ -35,8 +37,6 @@
         {{ $posts->links() }} <!-- Hiển thị các nút phân trang -->
     </div>
 </div>
-
-
 </body>
 
 </html>
