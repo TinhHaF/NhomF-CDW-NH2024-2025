@@ -19,7 +19,6 @@
                 <div class="bg-white rounded-lg shadow-md">
                     <h5 class="text-lg font-semibold p-4">
                         <a href="{{ route('posts.show', \App\Http\Controllers\PostController::encodeId($post->id)) }}" class="hover:underline">{{ $post->title }}</a>
-
                     </h5>
                     <div class="flex">
                         @if($post->image)

@@ -17,8 +17,8 @@ class PostController extends Controller
 
     public function homepage()
     {
-        $posts = Post::latest()->paginate(3);
-        return view('home', compact('posts'));
+        $posts = Post::latest()->paginate(6);
+        return view('home.home', compact('posts'));
     }
 
     public function show($encodedId)
@@ -29,7 +29,7 @@ class PostController extends Controller
 
         // Kiểm tra xem khóa có khớp để ngăn chặn việc giả mạo
         if ($key !== 'your-secret-key') {
-            abort(403, 'Hành động không được phép.');
+            abort(403, 'Lỏ');
         }
 
         $post = Post::findOrFail($id);

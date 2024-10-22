@@ -9,7 +9,9 @@
         </div>
     </div>
     <div class="login flex items-center font-bold text-black">
-        <i class="fas fa-user mr-2"></i>
-        <span>Đăng nhập</span>
+        <a href="#" class="flex items-center">
+            <i class="fas fa-user mr-2"></i>
+            <span>Đăng nhập</span>
+        </a>
     </div>
 </div>

@@ -13,7 +13,7 @@
             <div class="col-span-1 ">
                 <h5 class="font-bold text-center">Thông Tin Liên Hệ</h5>
                 <p>Công Ty Trách Nhiệm Hữu Hạn Tin Tức ForF</p>
-                <p>Địa Chỉ: Khu phố Đóm, Phường Thiên An, Huyện bé Sol, Tỉnh 5 Cù</p>
+                <p>Địa Chỉ: Khu phố Đóm, Phường Thiên An, Huyện bé Sol, Tỉnh 5 Củ</p>
                 <p><strong>Hotline: 0000000000</strong></p>
             </div>
             <div class="col-span-1 ">
