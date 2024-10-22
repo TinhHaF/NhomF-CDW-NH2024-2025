@@ -17,7 +17,7 @@
     </div>
     @else
     <div class="login flex items-center font-bold text-black">
-        <a href="{{ route('user.login') }}" class="flex items-center">
+        <a href="{{ route('user.logout') }}" class="flex items-center">
             <i class="fas fa-user mr-2"></i>
             <span>Đăng xuất</span>
         </a>
