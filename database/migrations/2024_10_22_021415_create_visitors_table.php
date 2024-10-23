@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('visitors', function (Blueprint $table) {
             $table->id();
-            $table->string('username', 50)->unique();
-            $table->string('email', 100)->unique();
-            $table->string('image')->unique(); // Thêm cột image
-            $table->string('password', 255);
+            $table->string('ip_address');
+            $table->text('user_agent')->nullable();
+            $table->timestamp('visited_at');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('visitors');
     }
 };

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->unique()->constrained('users')->onDelete('cascade');
             $table->string('pen_name', 100)->nullable();
             $table->text('biography')->nullable();
+            $table->string('image')->unique(); // Thêm cột image
             $table->date('published_date')->nullable();
             $table->timestamps();
         });
