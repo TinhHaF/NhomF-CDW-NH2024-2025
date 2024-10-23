@@ -12,14 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('author_id')->nullable()->constrained()->onDelete('cascade');
-            $table->string('title');
-            $table->text('content');
-            $table->string('image')->nullable(); // Thêm cột image
-            $table->timestamps();
+            $table->id(); // Cột id tự động tăng
+            $table->foreignId('author_id')->nullable(); // Khóa ngoại cho tác giả
+            $table->foreignId('category_id')->nullable();// Khóa ngoại cho danh mục
+            $table->string('title'); // Tiêu đề bài viết
+            $table->text('content'); // Nội dung bài viết
+            $table->string('image')->nullable(); // Hình ảnh
+            $table->integer('view')->default(0); // Số lượt xem
+            $table->timestamps(); // Các trường created_at và updated_at
         });
-        
     }
 
     /**

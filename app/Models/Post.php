@@ -3,14 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
 {
-    // Các cột có thể được lưu trữ hàng loạt
-    protected $fillable = [
+    use HasFactory;
+    protected $fillable =
+    [
         'title',
         'content',
-        'author_id',
         'image',
+        'is_featured',
+        'view',
+        'category_id',
+        'is_published',
+        'author_id'
     ];
 }
