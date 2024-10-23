@@ -9,7 +9,6 @@ use App\Http\Controllers\UserStatsController;
 // Route trang chủ
 Route::get('/', [PostController::class, 'homepage'])->name('home');
 Route::get('homepage/posts/{id}', [PostController::class, 'show'])->name('posts.show');
-
 // Chỉ giữ một route cho admin dashboard
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 

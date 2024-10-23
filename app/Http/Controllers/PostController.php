@@ -22,7 +22,8 @@ class PostController extends Controller
     public function homepage()
     {
         $posts = Post::latest()->paginate(6);
-        return view('home', compact('posts'));
+        $featuredPosts = Post::where('is_featured', 1)->latest()->paginate(6);
+        return view('home', compact('posts', 'featuredPosts')); 
     }
 
     //chi tiet blog
@@ -41,17 +42,26 @@ class PostController extends Controller
         return view('posts.show', compact('post'));
     }
 
+    // public function updateFeatured(Request $request, $id)
+    // {
+    //     $post = Post::findOrFail($id);
+
+    //     // Cập nhật trạng thái dựa trên dữ liệu gửi từ form
+    //     $post->is_featured = $request->has('is_featured') ? 1 : 0;
+    //     $post->is_published = $request->has('is_published') ? 1 : 0;
+
+    //     $post->save();
+
+    //     return redirect()->route('posts.index')->with('success', 'Trạng thái bài viết đã được cập nhật!');
+    // }
+
+
     public function showAdmin($id)
     {
         // Find the post by ID
         $post = Post::findOrFail($id);
-
-
         return view('admin.posts.show', compact('post'));
     }
-
-
-
 
     // Hiển thị danh sách tin tức
     public function index(Request $request)
@@ -159,7 +169,7 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::find($id);
-        
+
         // Delete the image from storage
         if ($post && $post->image) {
             Storage::disk('public')->delete($post->image);
@@ -211,6 +221,5 @@ class PostController extends Controller
         $newPost->save();
 
         return redirect()->route('posts.index')->with('success', 'Bài viết đã được sao chép thành công!');
-
     }
 }
