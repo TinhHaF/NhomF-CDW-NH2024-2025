@@ -25,50 +25,58 @@ class UserController extends Controller
     //Hàm đăng ký tài khoản
     public function addUser(Request $request)
     {
-        // Xác thực dữ liệu đầu vào với các quy tắc đặc biệt
+        // Xác thực dữ liệu đầu vào
         $request->validate([
             'username' => [
-                'required', 
-                'unique:users', 
+                'required',
+                'unique:users',
                 'regex:/^[a-zA-Z0-9]{6,20}$/'
             ],
             'email' => [
-                'required', 
-                'email', 
+                'required',
+                'email',
                 'unique:users',
                 'regex:/^[a-zA-Z0-9._%+-]{6,30}@gmail\.com$/'
             ],
             'password' => [
-                'required', 
-                'min:6', 
-                'max:20', 
+                'required',
+                'min:6',
+                'max:20',
                 'regex:/^\S{6,20}$/'
             ],
+            'image' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
         ], [
             'username.required' => 'Tên người dùng là bắt buộc.',
             'username.unique' => 'Tên tài khoản hoặc email đã được sử dụng, vui lòng nhập tên khác.',
-            'username.regex' => 'Tên đăng nhập lớn hơn 6 ký tự, không quá 20 ký tự (a-zA-Z0-9), không được chứa ký tự đặc biệt.',
-            
+            'username.regex' => 'Tên đăng nhập phải có 6-20 ký tự và không chứa ký tự đặc biệt.',
+    
             'email.required' => 'Email là bắt buộc.',
             'email.email' => 'Email không hợp lệ.',
             'email.unique' => 'Tên tài khoản hoặc email đã được sử dụng, vui lòng nhập email khác.',
-            'email.regex' => 'Email phải có đuôi là @gmail.com, có ít nhất 6 ký tự trước đuôi và tối đa 30 ký tự.',
-            
+            'email.regex' => 'Email phải có đuôi @gmail.com, với tối thiểu 6 ký tự và tối đa 30 ký tự trước đuôi.',
+    
             'password.required' => 'Mật khẩu là bắt buộc.',
             'password.min' => 'Mật khẩu phải lớn hơn 6 ký tự.',
             'password.max' => 'Mật khẩu không được vượt quá 20 ký tự.',
-            'password.regex' => 'Mật khẩu không được bao gồm khoảng trắng.',
+            'password.regex' => 'Mật khẩu không được chứa khoảng trắng.',
+            
+            'image.image' => 'Avatar phải là ảnh hợp lệ.',
+            'image.mimes' => 'Avatar phải có định dạng jpg, jpeg hoặc png.',
+            'image.max' => 'Avatar không được vượt quá 2MB.',
         ]);
     
-        // Lấy dữ liệu từ request
-        $data = $request->only(['username', 'email', 'password']);
+        // Lưu ảnh hoặc dùng ảnh mặc định
+        $imagePath = $request->file('image')
+            ? $request->file('image')->store('avatars', 'public')
+            : 'avatars/default.png'; // Ảnh mặc định
     
         // Tạo người dùng mới
         User::create([
-            'username' => $data['username'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
             'role' => 1,
+            'image' => $imagePath,
         ]);
     
         // Điều hướng về trang đăng nhập với thông báo thành công
@@ -101,7 +109,10 @@ class UserController extends Controller
                 // Đăng nhập thành công cho admin
                 return redirect()->intended('admin/dashboard')->withSuccess('Đăng nhập thành công.');
             }
-    
+            elseif ($user->role == 3) {
+                // Đăng nhập thành công cho admin
+                return redirect()->intended('admin/dashboard')->withSuccess('Đăng nhập thành công.');
+            }
             // Nếu role không hợp lệ, đăng xuất người dùng
             Auth::logout();
             return redirect('login')->withErrors([
