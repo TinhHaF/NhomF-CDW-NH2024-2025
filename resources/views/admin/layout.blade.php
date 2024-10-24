@@ -62,20 +62,21 @@
                 </a>
             </li>
             <li class="px-4 py-2 hover:bg-gray-200">
-                <a class="flex items-center hover:text-red-500" href="#">
-                    <i class="fas fa-box mr-2"></i> Quản lý Sản phẩm
-                </a>
-            </li>
-            <li class="px-4 py-2 bg-gray-200">
-                <a class="flex items-center hover:text-red-500" href="#">
-                    <i class="fas fa-newspaper mr-2"></i> Quản lý bài viết
-                </a>
-                <ul class="ml-6 mt-2">
-                    <li class="px-4 py-2 bg-blue-100">
-                        <a class="flex items-center hover:text-red-500" href="#">Tin tức</a>
+                        <!-- Thêm sự kiện onclick cho icon dropdown -->
+                        <a class="flex items-center hover:text-red-500 cursor-pointer" data-toggle="dropdown">
+                            <i class="fas fa-newspaper mr-2"></i>
+                            Quản lý bài viết
+                            <i class="fas fa-chevron-up ml-auto"></i> <!-- Thêm icon để chỉ ra dropdown -->
+                        </a>
+                        <ul class="ml-6 mt-2 hidden"> <!-- Ban đầu ẩn -->
+                            <li class="px-4 py-2 bg-blue-100">
+                                <!-- Điều hướng thông thường -->
+                                <a class="flex items-center hover:text-red-500" href="{{ route('posts.create') }}">
+                                    Tin tức
+                                </a>
+                            </li>
+                        </ul>
                     </li>
-                </ul>
-            </li>
             <li class="px-4 py-2 bg-gray-200">
                 <a class="flex items-center hover:text-red-500" href="#">
                     <i class="fas fa-newspaper mr-2"></i> Quản lý danh mục
