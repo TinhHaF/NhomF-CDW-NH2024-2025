@@ -110,7 +110,7 @@
                 <div class="flex items-center">
                     <i class="fas fa-cog mr-4"></i>
                     <i class="fas fa-bell mr-4"></i>
-                    <button class="font-semi">Đăng xuất</button>
+                    <button class="font-semi"  onclick="window.location.href='{{ route('user.logout') }}'">Đăng xuất</button>
                 </div>
             </div>
             @yield('content')
