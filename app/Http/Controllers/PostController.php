@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
-
 use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Models\Author;
@@ -41,20 +39,6 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
         return view('posts.show', compact('post'));
     }
-
-    // public function updateFeatured(Request $request, $id)
-    // {
-    //     $post = Post::findOrFail($id);
-
-    //     // Cập nhật trạng thái dựa trên dữ liệu gửi từ form
-    //     $post->is_featured = $request->has('is_featured') ? 1 : 0;
-    //     $post->is_published = $request->has('is_published') ? 1 : 0;
-
-    //     $post->save();
-
-    //     return redirect()->route('posts.index')->with('success', 'Trạng thái bài viết đã được cập nhật!');
-    // }
-
 
     public function showAdmin($id)
     {
