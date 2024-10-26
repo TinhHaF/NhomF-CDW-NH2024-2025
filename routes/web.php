@@ -24,7 +24,6 @@ Route::post('login', [UserController::class, 'loginUser'])->name('user.loginUser
 Route::get('logout', [UserController::class, 'logout'])->name('user.logout');
 
 Route::get('homepage/posts/{id}', [PostController::class, 'show'])->name('posts.show');
-
 // Chỉ giữ một route cho admin dashboard
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 

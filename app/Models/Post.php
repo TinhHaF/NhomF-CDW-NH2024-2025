@@ -19,4 +19,9 @@ class Post extends Model
         'is_published',
         'author_id'
     ];
+
+    public function getEncodedIdAttribute()
+    {
+        return \App\Http\Controllers\PostController::encodeId($this->id);
+    }
 }

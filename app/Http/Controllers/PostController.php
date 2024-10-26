@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
-
 use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Models\Author;
@@ -22,7 +20,8 @@ class PostController extends Controller
     public function homepage()
     {
         $posts = Post::latest()->paginate(6);
-        return view('home', compact('posts'));
+        $featuredPosts = Post::where('is_featured', 1)->latest()->paginate(6);
+        return view('home', compact('posts', 'featuredPosts')); 
     }
 
     //chi tiet blog
@@ -45,13 +44,8 @@ class PostController extends Controller
     {
         // Find the post by ID
         $post = Post::findOrFail($id);
-
-
         return view('admin.posts.show', compact('post'));
     }
-
-
-
 
     // Hiển thị danh sách tin tức
     public function index(Request $request)
@@ -159,7 +153,7 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::find($id);
-        
+
         // Delete the image from storage
         if ($post && $post->image) {
             Storage::disk('public')->delete($post->image);
@@ -211,6 +205,5 @@ class PostController extends Controller
         $newPost->save();
 
         return redirect()->route('posts.index')->with('success', 'Bài viết đã được sao chép thành công!');
-
     }
 }

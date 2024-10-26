@@ -27,7 +27,7 @@
                             </div>
                             <div class="mb-4">
                                 <label class="block font-semibold mb-2" for="content">Nội Dung</label>
-                                <textarea name="content" id="editor" required class="w-full border-2" rows="10">{{ $post->content }}</textarea> <!-- CKEditor -->
+                                <textarea name="content" id="editor" required class="w-full border-2" rows="10">{!! $post->content !!}</textarea>
                             </div>
                         </div>
                         <div class="w-full md:w-1/3 pl-0 md:pl-4 mt-4 md:mt-0">
