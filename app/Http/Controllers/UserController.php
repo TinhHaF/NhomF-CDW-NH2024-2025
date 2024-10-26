@@ -22,6 +22,10 @@ class UserController extends Controller
     {
         return view('home');
     }
+    public function detail_user()
+    {
+        return view('crud_user.read_user');
+    }
     //Hàm đăng ký tài khoản
     public function addUser(Request $request)
     {
@@ -126,7 +130,18 @@ class UserController extends Controller
             ])
             ->withInput(); // Giữ lại dữ liệu đã nhập
     }
+    public function getUserInfo()
+{
+    if (Auth::check()) {
+        $user = Auth::user(); // Lấy thông tin người dùng đã đăng nhập
+        return view('crud_user.read_user', compact('user')); // Truyền dữ liệu sang view
+    }
     
+    return redirect('login')->withErrors([
+        'auth' => 'Bạn cần đăng nhập để xem thông tin tài khoản.',
+    ]);
+}
+
     
 
 }
