@@ -43,22 +43,25 @@
 <body class="bg-gray-100">
     <div class="flex flex-col md:flex-row">
         <!-- Sidebar -->
-        <div class="w-64 bg-white shadow-md">
-            <div class="p-4">
-                <img alt="Lacoly Logo" class="mx-auto" height="50"
-                    src="https://storage.googleapis.com/a1aa/image/tkMOcGFkfmyvdq3JhGQHzAhhaTpAVYMnMUGYFRdsJEfj28nTA.jpg"
-                    width="150" />
-            </div>
-            <nav class="mt-6">
-                
-                <ul class="space-y-2">
-                    <li class="px-4 py-2 hover:bg-gray-200">
-                        <a class="flex items-center hover:text-red-500" href="{{ route('admin.dashboard') }}">
-                            <i class="fas fa-tachometer-alt mr-2"></i>
-                            Bảng điều khiển
-                        </a>
-                    </li>
-                    <li class="px-4 py-2 hover:bg-gray-200">
+        <div class="w-56 bg-white shadow-md">
+    <div class="p-4">
+        <img alt="Lacoly Logo" class="mx-auto" height="50" 
+             src="https://storage.googleapis.com/a1aa/image/tkMOcGFkfmyvdq3JhGQHzAhhaTpAVYMnMUGYFRdsJEfj28nTA.jpg" 
+             width="150" />
+    </div>
+    <nav class="mt-6">
+        <ul>
+            <li class="px-4 py-2 hover:bg-gray-200">
+                <a class="flex items-center hover:text-red-500" href="#">
+                    <i class="fas fa-tachometer-alt mr-2"></i> Bảng điều khiển
+                </a>
+            </li>
+            <li class="px-4 py-2 hover:bg-gray-200">
+                <a class="flex items-center hover:text-red-500" href="#">
+                    <i class="fas fa-home mr-2"></i> Nội dung trang chủ
+                </a>
+            </li>
+            <li class="px-4 py-2 hover:bg-gray-200">
                         <!-- Thêm sự kiện onclick cho icon dropdown -->
                         <a class="flex items-center hover:text-red-500 cursor-pointer" data-toggle="dropdown">
                             <i class="fas fa-newspaper mr-2"></i>
@@ -74,38 +77,29 @@
                             </li>
                         </ul>
                     </li>
-
-
-                    <li class="px-4 py-2 hover:bg-gray-200">
-                        <a class="flex items-center hover:text-red-500" href="#">
-                            <i class="fas fa-newspaper mr-2"></i>
-                            Quản lý danh mục
-                        </a>
-                        <ul class="ml-6 mt-2">
-                            <li class="px-4 py-2 bg-blue-100">
-                                {{-- <a class="flex items-center hover:text-red-500" href="{{ route('categories.index') }}"> --}}
-                                Danh mục
-                                </a>
-                            </li>
-                        </ul>
+            <li class="px-4 py-2 bg-gray-200">
+                <a class="flex items-center hover:text-red-500" href="#">
+                    <i class="fas fa-newspaper mr-2"></i> Quản lý danh mục
+                </a>
+                <ul class="ml-6 mt-2">
+                    <li class="px-4 py-2 bg-blue-100">
+                        <a class="flex items-center hover:text-red-500" href="#">Danh mục</a>
                     </li>
-                    <li class="px-4 py-2 hover:bg-gray-200">
-                        <a class="flex items-center hover:text-red-500" href="#">
-                            <i class="fas fa-users mr-2"></i>
-                            Quản lý người dùng
-                        </a>
-                        <ul class="ml-6 mt-2">
-                            <li class="px-4 py-2 bg-blue-100">
-                                {{-- <a class="flex items-center hover:text-red-500" href="{{ route('users.index') }}"> --}}
-                                Người dùng
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
                 </ul>
-            </nav>
-        </div>
+            </li>
+            
+            {{-- Kiểm tra nếu role của người dùng là 2, hiển thị "Quản lý người dùng" --}}
+            @if (Auth::user()->role == 2)
+                <li class="px-4 py-2 hover:bg-gray-200">
+                    <a class="flex items-center hover:text-red-500" href="#">
+                        <i class="fas fa-users mr-2"></i> Quản lý người dùng
+                    </a>
+                </li>
+            @endif
+        </ul>
+    </nav>
+</div>
+
         <!-- Main Content -->
         <div class="flex-grow">
             <div class="flex justify-between items-center mb-4 border-b p-4 bg-white text-[#adacad]">
@@ -116,7 +110,7 @@
                 <div class="flex items-center">
                     <i class="fas fa-cog mr-4"></i>
                     <i class="fas fa-bell mr-4"></i>
-                    <button class="font-semi">Đăng xuất</button>
+                    <button class="font-semi"  onclick="window.location.href='{{ route('user.logout') }}'">Đăng xuất</button>
                 </div>
             </div>
             @yield('content')
