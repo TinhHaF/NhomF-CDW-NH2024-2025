@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 class UserController extends Controller
 {
     //hiện thị trang đăng ký
@@ -141,7 +142,12 @@ class UserController extends Controller
         'auth' => 'Bạn cần đăng nhập để xem thông tin tài khoản.',
     ]);
 }
+    public function logout()
+    {
+        Session::flush();
+        Auth::logout();
+        return Redirect('/login');
+    }
 
-    
 
 }
