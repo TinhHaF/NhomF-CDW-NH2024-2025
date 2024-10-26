@@ -148,6 +148,27 @@ class UserController extends Controller
         Auth::logout();
         return Redirect('/login');
     }
-
+    public function changePassword(Request $request)
+    {
+        // 1. Xác thực dữ liệu từ form
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed',
+        ]);
+    
+        $user = Auth::user(); // Lấy thông tin người dùng đã đăng nhập
+    
+        // 2. Kiểm tra mật khẩu hiện tại có đúng không
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng']);
+        }
+    
+        // 3. Cập nhật mật khẩu mới
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+    
+        // 4. Trả về thông báo thành công
+        return back()->with('success', 'Đổi mật khẩu thành công!');
+    }
 
 }
