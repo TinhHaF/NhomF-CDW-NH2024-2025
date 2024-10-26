@@ -27,6 +27,10 @@ class UserController extends Controller
     {
         return view('crud_user.read_user');
     }
+    public function change_user_password()
+    {
+        return view('crud_user.change_password');
+    }
     //Hàm đăng ký tài khoản
     public function addUser(Request $request)
     {
