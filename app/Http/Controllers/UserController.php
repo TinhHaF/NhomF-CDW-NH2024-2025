@@ -157,7 +157,7 @@ class UserController extends Controller
         // 1. Xác thực dữ liệu từ form
         $request->validate([
             'current_password' => 'required',
-            'new_password' => 'required|min:8|confirmed',
+            'new_password' => 'required|min:6|max:20|confirmed',
         ]);
     
         $user = Auth::user(); // Lấy thông tin người dùng đã đăng nhập

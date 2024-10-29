@@ -42,7 +42,7 @@
             <div class="w-1/2 pl-4">
                 <h2 class="text-lg font-bold mb-4">Tiện ích</h2>
                 <div class="mb-4">
-                    <form action="{{ route('user.change_pw') }}">
+                    <form action="{{ route('user.change_show') }}">
                         @csrf
                         <button type="submit"
                             class="bg-gray-300 w-full py-2 rounded-lg hover:bg-gray-400 transition duration-300 text-center block">

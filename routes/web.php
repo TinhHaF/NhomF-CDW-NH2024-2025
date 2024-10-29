@@ -22,5 +22,5 @@ Route::get('logout', [UserController::class, 'logout'])->name('user.logout');
 Route::get('homepage/', [PostController::class, 'homepage'])->name('home');
 Route::get('homepage/posts/{id}', [PostController::class, 'show'])->name('posts.show');
 Route::post('/change-password', [UserController::class, 'changePassword'])->name('user.change_pw');
-
+Route::get('/change_pw', [UserController::class, 'change_user_password'])->name('user.change_show');
 
