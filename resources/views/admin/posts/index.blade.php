@@ -4,39 +4,24 @@
 
     <body>
         <div class="m-4">
-            <!-- Success Notification -->
-            @if (session('success'))
-                <div id="toast"
-                    class="fixed top-4 right-4 bg-green-600 text-white mt-4 p-4 rounded-lg shadow-lg transform transition-transform duration-500 border-l-4 border-green-800"
-                    style="transform: translateX(100%); z-index: 1000;">
-                    <div class="flex items-center">
-                        <i class="fas fa-check-circle mr-2"></i>
-                        <div>
-                            {{ session('success') }}
-                        </div>
-                    </div>
-                </div>
-
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const toast = document.getElementById('toast');
-                        toast.style.transform = 'translateX(0)';
-                        setTimeout(() => {
-                            toast.style.transform = 'translateX(100%)';
-                            setTimeout(() => {
-                                toast.style.display = 'none';
-                            }, 500);
-                        }, 3000);
-                    });
-                </script>
-            @endif
-
             <!-- Dashboard Navigation -->
-            <div class="flex items-center mb-4">
-                <span class="text-sm font-bold text-blue-600">Bảng điều khiển</span>
-                <span class="mx-2">/</span>
-                <span class="text-sm font-bold">Quản lý tin tức</span>
-            </div>
+            <nav class="flex mb-4" aria-label="Breadcrumb">
+                <ol class="flex items-center space-x-2">
+                    <li>
+                        <div class="flex items-center">
+                            <a href="#" class="ml-2 text-sm font-medium text-blue-600 hover:text-blue-700">Bảng điều
+                                khiển</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium">/</span>
+
+                            <span class="ml-2 text-sm font-medium text-gray-700">Quản lý tin tức</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
 
             <!-- Action Buttons -->
             <div class="flex items-center mb-4">
@@ -46,11 +31,12 @@
                 <!-- Thêm nút 'Xóa tất cả' -->
                 <form action="{{ route('posts.bulk-delete') }}" method="POST" id="bulkDeleteForm">
                     @csrf
-                    @method('DELETE')
-                    <button type="button" class="bg-red-500 text-white px-4 py-2 rounded" onclick="confirmBulkDelete()">
-                        <i class="fas fa-trash"></i> Xóa tất cả
+                    <button type="button" class="bg-red-500 text-white px-4 py-2 rounded"
+                        onclick="bulkDeleteSystem.confirmDelete()">
+                        <i class="fas fa-trash"></i> Xóa tất cả (<span id="selectedCount">0</span>)
                     </button>
                 </form>
+
 
                 <div class="flex items-center border rounded overflow-hidden ml-2">
                     <form action="{{ route('posts.index') }}" method="GET" class="flex items-center">
@@ -63,22 +49,27 @@
                 </div>
             </div>
 
-
-
             <!-- Posts Table -->
             <div class="overflow-x-auto border">
                 <table class="min-w-full bg-white">
-                    <thead>
+                    <thead class="bg-gray-50">
                         <tr class="w-full p-4 text-sm border-b">
-                            <th class="py-2 px-4">
-                                <input type="checkbox" />
+                            <th class="px-6 py-4 text-center">
+                                <input type="checkbox" id="selectAll"
+                                    class="rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 cursor-pointer">
                             </th>
-                            <th class="py-2 px-4">STT</th>
-                            <th class="py-2 px-4">Hình</th>
-                            <th class="float-start py-2 px-4">Tiêu đề</th>
-                            <th class="py-2 px-4">Nổi bật</th>
-                            <th class="py-2 px-4">Hiển thị</th>
-                            <th class="float-start py-2 px-4">Thao tác</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-600">STT
+                            </th>
+                            <th class="py-4 px-10 text-left text-xs font-bold uppercase tracking-wider text-gray-600">Hình
+                            </th>
+                            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-600">Tiêu đề
+                            </th>
+                            <th class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-600">Nổi
+                                bật</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-600">Hiển
+                                thị</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-600">Thao
+                                tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -86,14 +77,18 @@
                             <tr class="text-center">
                                 <td class="py-2 px-4 border-b">
                                     <input type="checkbox" name="post_ids[]" value="{{ $post->id }}"
-                                        form="bulkDeleteForm" />
+                                        form="bulkDeleteForm" class="selectItem" />
                                 </td>
                                 <td class="py-2 px-4 border-b">{{ $loop->iteration }}</td>
                                 <td class="py-2 px-4 border-b">
-                                    <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}"
-                                        width="100" height="100">
+                                    {{-- <img src="{{ $post->image ? asset('storage/' . $post->image) : asset('images/no-image-available.jpg') }}"
+                                        alt="{{ $post->title }}" width="100" height="100"> --}}
+
+                                    <img alt="Preview image" height="100" width="100"
+                                        src="{{ $post->image && file_exists(storage_path('app/public/' . $post->image)) ? asset('storage/' . $post->image) : asset('images/no-image-available.jpg') }}">
 
                                 </td>
+
                                 <td class="py-2 px-4 border-b text-left">
                                     <div>{{ $post->title }}</div>
                                     <div class="text-sm text-gray-500 mb-2">Ngày tạo:
@@ -117,24 +112,22 @@
                                         </form>
                                     </div>
                                 </td>
-                                <td class="py-2 px-4 border-b">
-                                    <form action="{{ route('posts.updateStatus', $post->id) }}" method="POST">
-                                        @csrf
-                                        @method('PATCH')
+                                <form action="{{ route('posts.updateStatus', $post->id) }}" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <td class="py-2 px-4 border-b">
                                         <input type="checkbox" name="is_featured" value="1"
                                             {{ $post->is_featured ? 'checked' : '' }} onchange="this.form.submit()"
                                             title="Nổi bật bài viết" />
-                                    </form>
-                                </td>
-                                <td class="py-2 px-4 border-b">
-                                    <form action="{{ route('posts.updateStatus', $post->id) }}" method="POST">
-                                        @csrf
-                                        @method('PATCH')
+
+                                    </td>
+                                    <td class="py-2 px-4 border-b">
+
                                         <input type="checkbox" name="is_published" value="1"
                                             {{ $post->is_published ? 'checked' : '' }} onchange="this.form.submit()"
                                             title="Hiển thị bài viết" />
-                                    </form>
-                                </td>
+                                    </td>
+                                </form>
 
                                 <td class="py-2 px-4 border-b">
                                     <div class="flex items-center space-x-2">

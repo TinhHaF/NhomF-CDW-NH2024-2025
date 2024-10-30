@@ -31,7 +31,7 @@ class Kernel extends HttpKernel
     protected $middlewareGroups = [
         'web' => [
             //...
-            \App\Http\Middleware\LogUserAccess::class,
+            \App\Http\Middleware\LogVisit::class,
         ],
     ];
     
@@ -53,5 +53,11 @@ class Kernel extends HttpKernel
     //     'signed' => \App\Http\Middleware\ValidateSignature::class,
     //     'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     //     'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+    // ];
+
+
+    // protected $routeMiddleware = [
+    //     // ...
+    //     'admin' => \App\Http\Middleware\AdminMiddleware::class,
     // ];
 }

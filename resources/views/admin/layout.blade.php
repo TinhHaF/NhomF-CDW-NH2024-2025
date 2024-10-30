@@ -4,17 +4,23 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="title" content="{{ $post->seo_title ?? '' }}">
+    <meta name="description" content="{{ $post->seo_description ?? '' }}">
+    <meta name="keywords" content="{{ $post->seo_keywords ?? '' }}">
     <title>
         Admin Dashboard
     </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
-    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script> <!-- Thêm CKEditor 4 từ CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
 
     <!-- Đặt jQuery ở đây, trong thẻ <head> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
+
 
     <style>
         /* Custom styles for the responsive menu */
@@ -39,6 +45,19 @@
     </style>
 </head>
 
+@if (session('success'))
+    <meta name="flash-success" content="{{ session('success') }}">
+@endif
+@if (session('error'))
+    <meta name="flash-error" content="{{ session('error') }}">
+@endif
+@if (session('warning'))
+    <meta name="flash-warning" content="{{ session('warning') }}">
+@endif
+@if (session('info'))
+    <meta name="flash-info" content="{{ session('info') }}">
+@endif
+
 <body class="bg-gray-100">
     <div class="flex flex-col md:flex-row">
         <!-- Sidebar -->
@@ -49,7 +68,7 @@
                     width="150" />
             </div>
             <nav class="mt-6">
-                
+
                 <ul class="space-y-2">
                     <li class="px-4 py-2 hover:bg-gray-200">
                         <a class="flex items-center hover:text-red-500" href="{{ route('admin.dashboard') }}">
@@ -119,17 +138,18 @@
                 </div>
             </div>
             @yield('content')
+
         </div>
     </div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <script>
         // Khởi tạo CKEditor 4 cho phần tử textarea với id "editor"
         CKEDITOR.replace('editor');
-
-        toastr.options.positionClass = 'toast-top-right'; // Vị trí bên phải
-        toastr.options.timeOut = 3000; // Thời gian hiển thị (3 giây)
+        // toastr.options.positionClass = 'toast-top-right'; // Vị trí bên phải
+        // toastr.options.timeOut = 3000; // Thời gian hiển thị (3 giây)
     </script>
     <script src="{{ asset('js/custom.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>

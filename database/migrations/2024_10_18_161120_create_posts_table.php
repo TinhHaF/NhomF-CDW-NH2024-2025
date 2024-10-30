@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('title');
             $table->text('content');
             $table->timestamps();
+
+            // $table->string('slug')->nullable()->after('title'); // Đảm bảo cột này là duy nhất
+            // $table->unique('slug');
         });
     }
 

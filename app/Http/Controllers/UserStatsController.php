@@ -2,35 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-
+use App\Services\UserStatsService;
+use Illuminate\Http\JsonResponse;
 
 class UserStatsController extends Controller
 {
-    public function getOnlineUsers()
+    protected $userStatsService;
+
+    public function __construct(UserStatsService $userStatsService)
     {
-        $onlineUsers = Cache::get('online_users_count', 0);
+        $this->userStatsService = $userStatsService;
+    }
+
+    public function getOnlineUsers(): JsonResponse
+    {
+        $onlineUsers = $this->userStatsService->getOnlineUsers();
         return response()->json(['count' => $onlineUsers]);
     }
 
-    public function getWeeklyVisits()
+    public function getWeeklyVisits(): JsonResponse
     {
-        $week = date('W');
-        $weeklyVisits = Cache::get("weekly_visits_{$week}", 0);
+        $weeklyVisits = $this->userStatsService->getWeeklyVisits();
         return response()->json(['count' => $weeklyVisits]);
     }
 
-    public function getMonthlyVisits()
+    public function getMonthlyVisits(): JsonResponse
     {
-        $month = date('m-Y');
-        $monthlyVisits = Cache::get("monthly_visits_{$month}", 0);
+        $monthlyVisits = $this->userStatsService->getMonthlyVisits();
         return response()->json(['count' => $monthlyVisits]);
     }
 
-    public function getTotalVisits()
+    public function getTotalVisits(): JsonResponse
     {
-        $totalVisits = Cache::get('total_visits', 0);
+        $totalVisits = $this->userStatsService->getTotalVisits();
         return response()->json(['count' => $totalVisits]);
     }
 }

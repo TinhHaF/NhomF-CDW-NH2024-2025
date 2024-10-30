@@ -7,180 +7,148 @@ use App\Models\Post;
 use App\Models\Author;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
-    // Hiển thị danh sách tin tức
     public function index(Request $request)
     {
         $query = $request->input('search');
-
-        // Tìm nạp các bài đăng có chức năng tìm kiếm và sắp xếp theo ngày tạo (mới nhất trước)
-        $posts = Post::when($query, function ($queryBuilder) use ($query) {
-            $queryBuilder->where('title', 'like', "%{$query}%")
-                ->orWhere('content', 'like', "%{$query}%"); // Bao gồm các trường khác nếu cần thiết
-        })->orderBy('created_at', 'desc')->paginate(10);
-
+        $posts = Post::search($query);
         return view('admin.posts.index', compact('posts'));
     }
 
-
-    // Hiển thị form thêm mới tin tức
     public function create()
     {
-        $categories = Category::all(); // Lấy danh sách danh mục
-        $authors = Author::all(); // Lấy danh sách tác giả
-
+        $categories = Category::all();
+        $authors = Author::all();
         return view('admin.posts.create', compact('categories', 'authors'));
     }
 
-    // Lưu tin tức mới
     public function store(Request $request)
     {
-        // Xác thực dữ liệu đầu vào
+        // Kiểm tra dữ liệu đầu vào
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
+            'seo_title' => 'required|string|max:255',
+            'seo_description' => 'required|string',
+            'seo_keywords' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $post = new Post();
-        $post->title = $request->input('title');
-        $post->content = $request->input('content');
-        $post->is_featured = $request->has('is_featured') ? 1 : 0; // Kiểm tra trạng thái của checkbox
-        $post->is_published = $request->has('is_published') ? 1 : 0; // Tương tự cho is_published
+        // Tạo slug từ tiêu đề
+        $slug = Str::slug($request->title);
+        $originalSlug = $slug; // Lưu slug gốc để kiểm tra trùng lặp
+        $count = 1; // Biến đếm để thêm vào slug nếu cần
 
-        // Lưu ảnh nếu có, vào thư mục public
-        if ($request->hasFile('image')) {
-            // Lưu ảnh vào thư mục public/posts
-            $imagePath = $request->file('image')->store('posts', 'public');
-            $post->image = $imagePath;
+        // Kiểm tra xem slug có bị trùng lặp trong cơ sở dữ liệu không
+        while (Post::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count; // Thêm số vào slug
+            $count++; // Tăng biến đếm
         }
 
-        // Lưu thông tin tác giả từ form
-        $post->author_id = $request->input('author_id');
+        // Tạo bài viết với slug duy nhất
+        $post = Post::create($request->only('title', 'content', 'author_id', 'seo_title', 'seo_description', 'seo_keywords') + [
+            'slug' => $slug, // Thêm slug duy nhất vào bài viết
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
+            'is_published' => $request->has('is_published') ? 1 : 0,
+        ]);
 
-        $post->save();
+        // Lưu hình ảnh nếu có
+        $post->storeImage($request->file('image'));
 
+        // Hiển thị thông báo nếu có slug mới được tạo
+        if ($count > 1) {
+            return redirect()->route('posts.create')
+                ->with('warning', 'Tiêu đề đã tồn tại, một slug mới đã được tạo: ' . $slug);
+        }
+
+        // Chuyển hướng về trang danh sách bài viết và hiển thị thông báo thành công
         return redirect()->route('posts.index')->with('success', 'Bài viết đã được thêm thành công!');
     }
 
 
-
     public function show($id)
     {
-        // Find the post by ID
         $post = Post::findOrFail($id);
-
-
         return view('admin.posts.show', compact('post'));
     }
-    // Hiển thị form chỉnh sửa tin tức
+
     public function edit($id)
     {
         $post = Post::findOrFail($id);
-
         $categories = Category::all();
         $authors = Author::all();
-
-        // Return the edit view with the post, categories, and authors
         return view('admin.posts.edit', compact('post', 'categories', 'authors'));
     }
 
-
-    // Cập nhật tin tức
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
-        // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-        $validatedData = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'category_id' => 'required|exists:categories,id',
-            'author_id' => 'required|exists:authors,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Nếu có hình ảnh, kiểm tra định dạng và kích thước
-        ]);
+        // Xác thực dữ liệu đầu vào với các quy tắc và thông báo lỗi tùy chỉnh
 
-        $post = Post::findOrFail($id);
-        $post->title = $validatedData['title'];
-        $post->content = $validatedData['content'];
-        $post->category_id = $validatedData['category_id'];
-        $post->author_id = $validatedData['author_id'];
+        // Cập nhật các trường của bài viết
+        $post->title = $request->input('title');
+        $post->slug = $request->input('slug');
+        $post->content = $request->input('content');
+        $post->category_id = $request->input('category_id');
+        $post->author_id = $request->input('author_id');
+        $post->seo_title = $request->input('seo_title');
+        $post->seo_description = $request->input('seo_description');
+        $post->seo_keywords = $request->input('seo_keywords');
 
-        // Xử lý hình ảnh nếu có
+        // Kiểm tra và xử lý hình ảnh
         if ($request->hasFile('image')) {
-            // Xóa hình ảnh cũ nếu cần thiết
+            // Xóa ảnh cũ nếu có
             if ($post->image) {
-                Storage::delete($post->image);
+                Storage::delete('public/' . $post->image);
             }
 
-            $path = $request->file('image')->store('images/posts');
+            // Lưu ảnh mới
+            $path = $request->file('image')->store('images', 'public');
             $post->image = $path;
         }
 
+        // Lưu thay đổi vào cơ sở dữ liệu
         $post->save();
 
-        return redirect()->route('posts.index')->with('success', 'Cập nhật bài viết thành công.');
+        // Chuyển hướng sau khi cập nhật thành công
+        return redirect()->route('posts.index')->with('success', 'Cập nhật bài viết thành công!');
     }
 
 
 
-
-    // Xóa tin tức
     public function destroy($id)
     {
-        $post = Post::find($id);
-        
-        // Delete the image from storage
-        if ($post && $post->image) {
-            Storage::disk('public')->delete($post->image);
-        }
-
-        // Delete the post
+        $post = Post::findOrFail($id);
+        $post->deleteImage();
         $post->delete();
         return redirect()->route('posts.index')->with('success', 'Bài viết đã được xóa thành công!');
     }
+
     public function updateStatus(Request $request, $id)
     {
         $post = Post::findOrFail($id);
-
-        // Cập nhật trạng thái dựa trên dữ liệu gửi từ form
-        if ($request->has('is_featured')) {
-            $post->is_featured = 1; // Nếu checkbox được check
-        } else {
-            $post->is_featured = 0; // Nếu không check
-        }
-
-        if ($request->has('is_published')) {
-            $post->is_published = 1; // Nếu checkbox được check
-        } else {
-            $post->is_published = 0; // Nếu không check
-        }
-
-        $post->save();
-
-        return redirect()->route('posts.index')->with('success', 'Trạng thái bài viết đã được cập nhật!');
+        $post->updateStatus($request->has('is_featured'), $request->has('is_published'));
+        return redirect()->route('posts.index')->with('success', 'Trạng thái bài viết đã cập nhật!');
     }
 
     public function bulkDelete(Request $request)
     {
         $postIds = $request->input('post_ids');
-        if ($postIds) {
-            Post::whereIn('id', $postIds)->delete();
-            return redirect()->route('posts.index')->with('success', 'Các bài viết đã được xóa thành công.');
-        } else {
+
+        if (empty($postIds)) {
             return redirect()->route('posts.index')->with('error', 'Không có bài viết nào được chọn.');
         }
+
+        Post::bulkDelete($postIds);
+        return redirect()->route('posts.index')->with('success', 'Các bài viết đã được xóa thành công.');
     }
 
     public function copy($id)
     {
-        $originalPost = Post::findOrFail($id);
-
-        $newPost = $originalPost->replicate();
-        $newPost->title = $originalPost->title . ' (Sao chép)';
-        $newPost->save();
-
-        return redirect()->route('posts.index')->with('success', 'Bài viết đã được sao chép thành công!');
+        $post = Post::findOrFail($id)->copy();
+        return redirect()->route('posts.index')->with('success', 'Bài viết đã được sao chép thành công.');
     }
 }

@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('visitors', function (Blueprint $table) {
-            $table->id();
-            $table->string('ip_address');
-            $table->text('user_agent')->nullable();
-            $table->timestamp('visited_at');
-            $table->timestamps();
+            $table->id(); // Primary key
+            $table->string('ip_address'); // IP của người truy cập
+            $table->string('user_agent'); // Thông tin về trình duyệt của người dùng
+            $table->timestamp('visited_at'); // Thời điểm truy cập
+            $table->timestamps(); // created_at và updated_at
         });
     }
 
