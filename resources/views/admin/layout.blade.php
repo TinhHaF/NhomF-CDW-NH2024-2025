@@ -101,25 +101,29 @@
                         </a>
                         <ul class="ml-6 mt-2">
                             <li class="px-4 py-2 bg-blue-100">
-                                {{-- <a class="flex items-center hover:text-red-500" href="{{ route('categories.index') }}"> --}}
-                                Danh mục
+                                {{-- <a class="flex items-center hover:text-red-500"
+                                    href="{{ route('categories.index') }}"> --}}
+                                    Danh mục
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    <li class="px-4 py-2 hover:bg-gray-200">
-                        <a class="flex items-center hover:text-red-500" href="#">
-                            <i class="fas fa-users mr-2"></i>
-                            Quản lý người dùng
-                        </a>
-                        <ul class="ml-6 mt-2">
-                            <li class="px-4 py-2 bg-blue-100">
-                                {{-- <a class="flex items-center hover:text-red-500" href="{{ route('users.index') }}"> --}}
-                                Người dùng
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                    @if (Auth::user()->role == 2) {{--role 2 la queyen admin--}}
+                        <li class="px-4 py-2 hover:bg-gray-200">
+                            <a class="flex items-center hover:text-red-500" href="#">
+                                <i class="fas fa-users mr-2"></i>
+                                Quản lý người dùng
+                            </a>
+                            <ul class="ml-6 mt-2">
+                                <li class="px-4 py-2 bg-blue-100">
+                                    {{-- <a class="flex items-center hover:text-red-500" href="{{ route('users.index') }}">
+                                        --}}
+                                        Người dùng
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
 
                 </ul>
             </nav>
@@ -134,7 +138,9 @@
                 <div class="flex items-center">
                     <i class="fas fa-cog mr-4"></i>
                     <i class="fas fa-bell mr-4"></i>
-                    <button class="font-semi">Đăng xuất</button>
+                    <button class="font-semi" onclick="window.location.href='{{ route('user.logout') }}'">Đăng
+                        xuất</button>
+
                 </div>
             </div>
             @yield('content')
