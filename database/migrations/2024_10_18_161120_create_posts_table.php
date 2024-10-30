@@ -18,6 +18,9 @@ return new class extends Migration
             $table->text('content');
             $table->string('image')->nullable(); // Thêm cột image
             $table->timestamps();
+
+            // $table->string('slug')->nullable()->after('title'); // Đảm bảo cột này là duy nhất
+            // $table->unique('slug');
         });
         
     }
