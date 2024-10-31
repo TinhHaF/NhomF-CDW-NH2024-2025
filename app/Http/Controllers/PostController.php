@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Models\Author;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -21,10 +23,26 @@ class PostController extends Controller
     {
         $posts = Post::latest()->paginate(6);
         $featuredPosts = Post::where('is_featured', 1)->latest()->paginate(6);
-        return view('home', compact('posts', 'featuredPosts')); 
+        return view('home', compact('posts', 'featuredPosts'));
     }
 
     //chi tiet blog
+
+    // public function show($encodedId)
+    // {
+    //     // Giải mã ID
+    //     $decoded = base64_decode($encodedId);
+    //     list($id, $key) = explode('::', $decoded);
+
+    //     // Kiểm tra xem khóa có khớp để ngăn chặn việc giả mạo
+    //     if ($key !== 'your-secret-key') {
+    //         abort(403, 'Lỏ');
+    //     }
+
+    //     // Lấy bài viết cùng với các bình luận và thông tin người dùng
+    //     $post = Post::with('comments.user')->findOrFail($id);
+    //     return view('posts.show', compact('post'));
+    // }
     public function show($encodedId)
     {
         // Giải mã ID
@@ -33,12 +51,19 @@ class PostController extends Controller
 
         // Kiểm tra xem khóa có khớp để ngăn chặn việc giả mạo
         if ($key !== 'your-secret-key') {
-            abort(403, 'Lỏ');
+            abort(403, 'Không có quyền truy cập.');
         }
 
-        $post = Post::findOrFail($id);
-        return view('posts.show', compact('post'));
+        // Lấy bài viết cùng với các bình luận và thông tin người dùng
+        $post = Post::with('comments.user')->findOrFail($id);
+
+        // Kiểm tra trạng thái đăng nhập
+        $isLoggedIn = Auth::check();
+
+        return view('posts.show', compact('post', 'isLoggedIn'));
     }
+
+
 
     public function showAdmin($id)
     {

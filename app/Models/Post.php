@@ -24,4 +24,13 @@ class Post extends Model
     {
         return \App\Http\Controllers\PostController::encodeId($this->id);
     }
+
+     /**
+     * Thiết lập quan hệ với model Comment.
+     * Một bài viết có thể có nhiều bình luận.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

@@ -47,4 +47,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Thiết lập quan hệ với model Comment.
+     * Một người dùng có thể có nhiều bình luận.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

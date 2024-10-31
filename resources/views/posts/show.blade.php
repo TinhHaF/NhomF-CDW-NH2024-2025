@@ -19,15 +19,48 @@
 
         <p class="text-gray-500 mb-4">Ngày đăng: {{ $post->created_at->format('d/m/Y H:i') }}</p> <!-- Hiển thị ngày đăng -->
 
-        <div class="text-gray-700">
+        <div class="text-gray-700 mb-6">
             <p>{{ $post->content }}</p>
         </div>
-    </div>
+        <!-- Form bình luận -->
+        <div class="mt-6">
+            <h2 class="text-xl font-semibold mb-4">Bình luận</h2>
+            <!-- Hiển thị form bình luận -->
+            <form action="{{ route('comments.store', $post->id) }}" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <textarea name="content" class="w-full h-24 p-2 border rounded" placeholder="Nhập bình luận của bạn..."></textarea>
+                </div>
+                <!-- Hiển thị thông báo nếu có -->
+                @if (session('success'))
+                <p class="text-green-500">
+                    {{ session('success') }}
+                </p>
+                @elseif (session('error'))
+                <p class="text-red-500">
+                    {{ session('error') }}
+                </p>
+                @endif
 
-    <div class="mt-4 flex justify-center">
-        <a href="{{ route('home') }}" class="text-blue-600 hover:underline">Trở về danh sách bài viết</a>
-    </div>
+                <button type="submit" class="bg-blue-600 mt-2 text-white px-4 py-2 rounded">
+                    Gửi bình luận
+                </button>
+            </form>
 
+            <!-- Hiển thị danh sách bình luận -->
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold">Danh sách bình luận:</h3>
+                @foreach ($post->comments as $comment)
+                <div class="bg-gray-100 p-2 rounded mt-2">
+                    <p><strong>{{ $comment->user->username }}</strong>: {{ $comment->content }}</p>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        <div class="mt-4 flex justify-center">
+            <a href="{{ route('home') }}" class="text-blue-600 hover:underline">Trở về danh sách bài viết</a>
+        </div>
+    </div>
 </body>
 
 </html>

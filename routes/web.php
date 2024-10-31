@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
-
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthorController;
@@ -44,3 +44,7 @@ Route::get('/online-users', [UserStatsController::class, 'getOnlineUsers']);
 Route::get('/weekly-visits', [UserStatsController::class, 'getWeeklyVisits']);
 Route::get('/monthly-visits', [UserStatsController::class, 'getMonthlyVisits']);
 Route::get('/total-visits', [UserStatsController::class, 'getTotalVisits']);
+//comments
+
+// Route cho việc lưu bình luận
+Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
