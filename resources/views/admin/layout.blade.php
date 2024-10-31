@@ -47,16 +47,16 @@
 </head>
 
 @if (session('success'))
-    <meta name="flash-success" content="{{ session('success') }}">
+<meta name="flash-success" content="{{ session('success') }}">
 @endif
 @if (session('error'))
-    <meta name="flash-error" content="{{ session('error') }}">
+<meta name="flash-error" content="{{ session('error') }}">
 @endif
 @if (session('warning'))
-    <meta name="flash-warning" content="{{ session('warning') }}">
+<meta name="flash-warning" content="{{ session('warning') }}">
 @endif
 @if (session('info'))
-    <meta name="flash-info" content="{{ session('info') }}">
+<meta name="flash-info" content="{{ session('info') }}">
 @endif
 
 <body class="bg-gray-100">
@@ -69,7 +69,6 @@
                     width="150" />
             </div>
             <nav class="mt-6">
-
                 <ul class="space-y-2">
                     <li class="px-4 py-2 hover:bg-gray-200">
                         <a class="flex items-center hover:text-red-500" href="{{ route('admin.dashboard') }}">
@@ -102,41 +101,42 @@
                             <li class="px-4 py-2 bg-blue-100">
                                 {{-- <a class="flex items-center hover:text-red-500"
                                     href="{{ route('categories.index') }}"> --}}
-                                    Danh mục
+                                Danh mục
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    @if (Auth::user()->role == 2) {{--role 2 la queyen admin--}}
-                        <li class="px-4 py-2 hover:bg-gray-200">
-                            <a class="flex items-center hover:text-red-500" href="#">
-                                <i class="fas fa-users mr-2"></i>
-                                Quản lý người dùng
-                            </a>
-                            <ul class="ml-6 mt-2">
-                                <li class="px-4 py-2 bg-blue-100">
-                                    {{-- <a class="flex items-center hover:text-red-500" href="{{ route('users.index') }}">
-                                        --}}
-                                        Người dùng
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                    @if (Auth::user()->role == 2) {{--role 2 là quyền admin--}}
+                    <li class="px-4 py-2 hover:bg-gray-200">
+                        <a class="flex items-center hover:text-red-500" href="#">
+                            <i class="fas fa-users mr-2"></i>
+                            Quản lý người dùng
+                        </a>
+                        <ul class="ml-6 mt-2">
+                            <li class="px-4 py-2 bg-blue-100">
+                                {{-- <a class="flex items-center hover:text-red-500" href="{{ route('users.index') }}"> --}}
+                                Người dùng
+                                {{-- </a> --}}
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="px-4 py-2 hover:bg-gray-200">
+                        <a class="flex items-center hover:text-red-500" href="#">
+                            <i class="fas fa-comments mr-2"></i> {{-- Thay đổi icon nếu cần --}}
+                            Quản lý Bình Luận
+                        </a>
+                        <ul class="ml-6 mt-2">
+                            <li class="px-4 py-2 bg-blue-100">
+                                {{-- <a class="flex items-center hover:text-red-500" href="{{ route('comments.index') }}"> --}}
+                                Bình Luận
+                                {{-- </a> --}}
+                            </li>
+                        </ul>
+                    </li>
                     @endif
                 </ul>
-            </li>
-            
-            {{-- Kiểm tra nếu role của người dùng là 2, hiển thị "Quản lý người dùng" --}}
-            @if (Auth::user()->role == 2)
-                <li class="px-4 py-2 hover:bg-gray-200">
-                    <a class="flex items-center hover:text-red-500" href="#">
-                        <i class="fas fa-users mr-2"></i> Quản lý người dùng
-                    </a>
-                </li>
-            @endif
-        </ul>
-    </nav>
-</div>
+            </nav>
+        </div>
 
         <!-- Main Content -->
         <div class="flex-grow">
