@@ -1,10 +1,7 @@
 @extends('admin.layout')
-
 @section('content')
-
     <body class="bg-gray-100">
         <div class="flex flex-col md:flex-row">
-
             <!-- Main Content -->
             <div class="w-full md:w-5/5">
                 <!-- Content -->

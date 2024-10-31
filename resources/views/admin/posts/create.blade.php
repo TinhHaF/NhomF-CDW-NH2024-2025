@@ -1,5 +1,4 @@
 @extends('admin.layout')
-
 @section('content')
 
     <body class="bg-gray-100">

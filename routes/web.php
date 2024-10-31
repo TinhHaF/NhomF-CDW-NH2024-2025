@@ -28,8 +28,6 @@ Route::get('logout', [UserController::class, 'logout'])->name('user.logout');
 Route::get('homepage/posts/{id}', [PostController::class, 'show'])->name('posts.show');
 // Chỉ giữ một route cho admin dashboard
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-Route::get('homepage/', [PostController::class, 'homepage'])->name('home');
-Route::get('homepage/posts/{id}', [PostController::class, 'show'])->name('posts.show');
 Route::post('/change-password', [UserController::class, 'changePassword'])->name('user.change_pw');
 Route::get('/change_pw', [UserController::class, 'change_user_password'])->name('user.change_show');
 // Route::middleware('admin')->group(function () {
