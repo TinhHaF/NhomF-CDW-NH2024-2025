@@ -4,18 +4,24 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="title" content="{{ $post->seo_title ?? '' }}">
+    <meta name="description" content="{{ $post->seo_description ?? '' }}">
+    <meta name="keywords" content="{{ $post->seo_keywords ?? '' }}">
     <title>
         Admin Dashboard
     </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
-    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script> <!-- Thêm CKEditor 4 từ CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
 
     <!-- Đặt jQuery ở đây, trong thẻ <head> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
+
 
     <style>
         /* Custom styles for the responsive menu */
@@ -40,28 +46,38 @@
     </style>
 </head>
 
+@if (session('success'))
+    <meta name="flash-success" content="{{ session('success') }}">
+@endif
+@if (session('error'))
+    <meta name="flash-error" content="{{ session('error') }}">
+@endif
+@if (session('warning'))
+    <meta name="flash-warning" content="{{ session('warning') }}">
+@endif
+@if (session('info'))
+    <meta name="flash-info" content="{{ session('info') }}">
+@endif
+
 <body class="bg-gray-100">
     <div class="flex flex-col md:flex-row">
         <!-- Sidebar -->
-        <div class="w-56 bg-white shadow-md">
-    <div class="p-4">
-        <img alt="Lacoly Logo" class="mx-auto" height="50" 
-             src="https://storage.googleapis.com/a1aa/image/tkMOcGFkfmyvdq3JhGQHzAhhaTpAVYMnMUGYFRdsJEfj28nTA.jpg" 
-             width="150" />
-    </div>
-    <nav class="mt-6">
-        <ul>
-            <li class="px-4 py-2 hover:bg-gray-200">
-                <a class="flex items-center hover:text-red-500" href="#">
-                    <i class="fas fa-tachometer-alt mr-2"></i> Bảng điều khiển
-                </a>
-            </li>
-            <li class="px-4 py-2 hover:bg-gray-200">
-                <a class="flex items-center hover:text-red-500" href="#">
-                    <i class="fas fa-home mr-2"></i> Nội dung trang chủ
-                </a>
-            </li>
-            <li class="px-4 py-2 hover:bg-gray-200">
+        <div class="w-64 bg-white shadow-md">
+            <div class="p-4">
+                <img alt="Lacoly Logo" class="mx-auto" height="50"
+                    src="https://storage.googleapis.com/a1aa/image/tkMOcGFkfmyvdq3JhGQHzAhhaTpAVYMnMUGYFRdsJEfj28nTA.jpg"
+                    width="150" />
+            </div>
+            <nav class="mt-6">
+
+                <ul class="space-y-2">
+                    <li class="px-4 py-2 hover:bg-gray-200">
+                        <a class="flex items-center hover:text-red-500" href="{{ route('admin.dashboard') }}">
+                            <i class="fas fa-tachometer-alt mr-2"></i>
+                            Bảng điều khiển
+                        </a>
+                    </li>
+                    <li class="px-4 py-2 hover:bg-gray-200">
                         <!-- Thêm sự kiện onclick cho icon dropdown -->
                         <a class="flex items-center hover:text-red-500 cursor-pointer" data-toggle="dropdown">
                             <i class="fas fa-newspaper mr-2"></i>
@@ -77,14 +93,36 @@
                             </li>
                         </ul>
                     </li>
-            <li class="px-4 py-2 bg-gray-200">
-                <a class="flex items-center hover:text-red-500" href="#">
-                    <i class="fas fa-newspaper mr-2"></i> Quản lý danh mục
-                </a>
-                <ul class="ml-6 mt-2">
-                    <li class="px-4 py-2 bg-blue-100">
-                        <a class="flex items-center hover:text-red-500" href="#">Danh mục</a>
+                    <li class="px-4 py-2 hover:bg-gray-200">
+                        <a class="flex items-center hover:text-red-500" href="#">
+                            <i class="fas fa-newspaper mr-2"></i>
+                            Quản lý danh mục
+                        </a>
+                        <ul class="ml-6 mt-2">
+                            <li class="px-4 py-2 bg-blue-100">
+                                {{-- <a class="flex items-center hover:text-red-500"
+                                    href="{{ route('categories.index') }}"> --}}
+                                    Danh mục
+                                </a>
+                            </li>
+                        </ul>
                     </li>
+                    @if (Auth::user()->role == 2) {{--role 2 la queyen admin--}}
+                        <li class="px-4 py-2 hover:bg-gray-200">
+                            <a class="flex items-center hover:text-red-500" href="#">
+                                <i class="fas fa-users mr-2"></i>
+                                Quản lý người dùng
+                            </a>
+                            <ul class="ml-6 mt-2">
+                                <li class="px-4 py-2 bg-blue-100">
+                                    {{-- <a class="flex items-center hover:text-red-500" href="{{ route('users.index') }}">
+                                        --}}
+                                        Người dùng
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
                 </ul>
             </li>
             
@@ -110,21 +148,23 @@
                 <div class="flex items-center">
                     <i class="fas fa-cog mr-4"></i>
                     <i class="fas fa-bell mr-4"></i>
-                    <button class="font-semi"  onclick="window.location.href='{{ route('user.logout') }}'">Đăng xuất</button>
+                    <button class="font-semi" onclick="window.location.href='{{ route('user.logout') }}'">Đăng
+                        xuất</button>
                 </div>
             </div>
             @yield('content')
+
         </div>
     </div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <script>
         // Khởi tạo CKEditor 4 cho phần tử textarea với id "editor"
         CKEDITOR.replace('editor');
-
-        toastr.options.positionClass = 'toast-top-right'; // Vị trí bên phải
-        toastr.options.timeOut = 3000; // Thời gian hiển thị (3 giây)
+        // toastr.options.positionClass = 'toast-top-right'; // Vị trí bên phải
+        // toastr.options.timeOut = 3000; // Thời gian hiển thị (3 giây)
     </script>
     <script src="{{ asset('js/custom.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>

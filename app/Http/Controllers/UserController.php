@@ -23,6 +23,14 @@ class UserController extends Controller
     {
         return view('home');
     }
+    public function detail_user()
+    {
+        return view('crud_user.read_user');
+    }
+    public function change_user_password()
+    {
+        return view('crud_user.change_password');
+    }
     //Hàm đăng ký tài khoản
     public function addUser(Request $request)
     {
@@ -127,12 +135,44 @@ class UserController extends Controller
             ])
             ->withInput(); // Giữ lại dữ liệu đã nhập
     }
-
+    public function getUserInfo()
+{
+    if (Auth::check()) {
+        $user = Auth::user(); // Lấy thông tin người dùng đã đăng nhập
+        return view('crud_user.read_user', compact('user')); // Truyền dữ liệu sang view
+    }
+    
+    return redirect('login')->withErrors([
+        'auth' => 'Bạn cần đăng nhập để xem thông tin tài khoản.',
+    ]);
+}
     public function logout()
     {
         Session::flush();
         Auth::logout();
         return Redirect('/login');
+    }
+    public function changePassword(Request $request)
+    {
+        // 1. Xác thực dữ liệu từ form
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:6|max:20|confirmed',
+        ]);
+    
+        $user = Auth::user(); // Lấy thông tin người dùng đã đăng nhập
+    
+        // 2. Kiểm tra mật khẩu hiện tại có đúng không
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng']);
+        }
+    
+        // 3. Cập nhật mật khẩu mới
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+    
+        // 4. Trả về thông báo thành công
+        return back()->with('success', 'Đổi mật khẩu thành công!');
     }
 
 }

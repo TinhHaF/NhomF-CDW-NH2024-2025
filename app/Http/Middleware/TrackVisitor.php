@@ -2,11 +2,12 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Visit;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-
-use App\Models\Visitor;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class TrackVisitor
 {
@@ -17,14 +18,11 @@ class TrackVisitor
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->is('admin/*')) { // Không track admin
-            Visitor::create([
-                'ip_address' => $request->ip(),
-                'user_agent' => $request->userAgent(),
-                'visited_at' => now()
-            ]);
-        }
-
-        return $next($request);
+        Visit::create([
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->header('User-Agent'),
+            'visited_date' => Carbon::now(),
+            
+        ]);
     }
 }

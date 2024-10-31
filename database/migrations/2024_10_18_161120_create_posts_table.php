@@ -12,14 +12,26 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->id(); // Cột id tự động tăng
-            $table->foreignId('author_id')->nullable(); // Khóa ngoại cho tác giả
-            $table->foreignId('category_id')->nullable();// Khóa ngoại cho danh mục
-            $table->string('title'); // Tiêu đề bài viết
-            $table->text('content'); // Nội dung bài viết
-            $table->string('image')->nullable(); // Hình ảnh
+
+            $table->bigIncrements('id');               // Primary key
+            $table->unsignedBigInteger('author_id')->nullable();
+            $table->string('title', 255);
+            $table->string('slug', 255)->nullable();   // Không cần dùng 'AFTER'
+            $table->text('content');
             $table->integer('view')->default(0); // Số lượt xem
-            $table->timestamps(); // Các trường created_at và updated_at
+            $table->string('image', 255)->nullable();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
+            $table->tinyInteger('is_featured')->default(0);
+            $table->tinyInteger('is_published')->default(0);
+            $table->string('seo_title', 255)->nullable();
+            $table->text('seo_description')->nullable();
+            $table->string('seo_keywords', 255)->nullable();
+            $table->unsignedBigInteger('category_id')->nullable();
+
+            // $table->string('slug')->nullable()->after('title'); // Đảm bảo cột này là duy nhất
+            // $table->unique('slug');
+
         });
     }
 
