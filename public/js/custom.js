@@ -390,23 +390,13 @@ selectAllCheckbox.addEventListener("click", function () {
 function generateSlug() {
     const title = document.getElementById("title").value;
     const slug = title
-        .toLowerCase()
-        .replace(/á|à|ả|ã|ạ/g, "a")
-        .replace(/ấ|ầ|ẩ|ẫ|ậ/g, "a")
-        .replace(/ắ|ằ|ẳ|ẵ|ặ/g, "a")
-        .replace(/é|è|ẻ|ẽ|ẹ/g, "e")
-        .replace(/ế|ề|ể|ễ|ệ/g, "e")
-        .replace(/í|ì|ỉ|ĩ|ị/g, "i")
-        .replace(/ó|ò|ỏ|õ|ọ/g, "o")
-        .replace(/ố|ồ|ổ|ỗ|ộ/g, "o")
-        .replace(/ớ|ờ|ở|ỡ|ợ/g, "o")
-        .replace(/ú|ù|ủ|ũ|ụ/g, "u")
-        .replace(/ứ|ừ|ử|ữ|ự/g, "u")
-        .replace(/ý|ỳ|ỷ|ỹ|ỵ/g, "y")
-        .replace(/\s+/g, "-") // Thay thế khoảng trắng bằng dấu '-'
-        .replace(/[^\w\-]+/g, "") // Xóa ký tự đặc biệt
-        .replace(/\-\-+/g, "-") // Xóa dấu '-' trùng lặp
-        .replace(/^-+|-+$/g, ""); // Xóa dấu '-' ở đầu và cuối
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[đĐ]/g, "d") //Xóa dấu
+        .trim()
+        .toLowerCase() //Cắt khoảng trắng đầu, cuối và chuyển chữ thường
+        .replace(/[^a-z0-9\s-]/g, "") //Xóa ký tự đặc biệt
+        .replace(/[\s-]+/g, "-"); //Thay khoảng trắng bằng dấu -, ko cho 2 -- liên tục
     document.getElementById("slug").value = slug;
 }
 
@@ -436,8 +426,12 @@ autoUpdateSlug.addEventListener("change", function () {
 function updateSlug() {
     const slug = titleInput.value
         .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-");
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[đĐ]/g, "d") //Xóa dấu
+        .toLowerCase() //Cắt khoảng trắng đầu, cuối và chuyển chữ thường
+        .replace(/[^a-z0-9\s-]/g, "") //Xóa ký tự đặc biệt
+        .replace(/[\s-]+/g, "-"); //Thay khoảng trắng bằng dấu -, ko cho 2 -- liên tục
     slugInput.value = slug;
     checkSlugDuplicate(slug);
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Author;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -50,9 +51,23 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $query = $request->input('search');
-        $posts = Post::search($query);
+        $posts = Post::query();
+
+        if ($query) {
+            if (Schema::hasColumn('posts', 'title') && Schema::hasColumn('posts', 'content')) {
+                $posts->whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$query])
+                    ->orWhere('title', 'LIKE', "%{$query}%")
+                    ->orWhere('content', 'LIKE', "%{$query}%");
+            } else {
+                $posts->where('title', 'LIKE', "%{$query}%")
+                    ->orWhere('content', 'LIKE', "%{$query}%");
+            }
+        }
+
+        $posts = $posts->latest()->paginate(10);    
         return view('admin.posts.index', compact('posts'));
     }
+
 
     public function create()
     {
@@ -60,6 +75,7 @@ class PostController extends Controller
         $authors = Author::all();
         return view('admin.posts.create', compact('categories', 'authors'));
     }
+
 
     public function store(Request $request)
     {
@@ -73,36 +89,33 @@ class PostController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        // Kiểm tra xem tiêu đề đã tồn tại trong cơ sở dữ liệu chưa
+        if (Post::where('title', $request->title)->exists()) {
+            return redirect()->route('posts.create')->with(['warning' => 'Tiêu đề đã tồn tại. Vui lòng sửa tiêu đề khác.'])->withInput();
+        }
+
         // Tạo slug từ tiêu đề
         $slug = Str::slug($request->title);
-        $originalSlug = $slug; // Lưu slug gốc để kiểm tra trùng lặp
-        $count = 1; // Biến đếm để thêm vào slug nếu cần
-
-        // Kiểm tra xem slug có bị trùng lặp trong cơ sở dữ liệu không
-        while (Post::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $count; // Thêm số vào slug
-            $count++; // Tăng biến đếm
-        }
 
         // Tạo bài viết với slug duy nhất
         $post = Post::create($request->only('title', 'content', 'author_id', 'seo_title', 'seo_description', 'seo_keywords') + [
-            'slug' => $slug, // Thêm slug duy nhất vào bài viết
+            'slug' => $slug,
             'is_featured' => $request->has('is_featured') ? 1 : 0,
             'is_published' => $request->has('is_published') ? 1 : 0,
         ]);
 
         // Lưu hình ảnh nếu có
-        $post->storeImage($request->file('image'));
-
-        // Hiển thị thông báo nếu có slug mới được tạo
-        if ($count > 1) {
-            return redirect()->route('posts.create')
-                ->with('warning', 'Tiêu đề đã tồn tại, một slug mới đã được tạo: ' . $slug);
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('images', 'public'); // Lưu ảnh trong thư mục 'public/images'
+            $post->image = $path; // Cập nhật đường dẫn ảnh cho bài viết
+            $post->save(); // Lưu bài viết
         }
 
         // Chuyển hướng về trang danh sách bài viết và hiển thị thông báo thành công
         return redirect()->route('posts.index')->with('success', 'Bài viết đã được thêm thành công!');
     }
+
+
 
 
     // public function show($id)
@@ -121,11 +134,26 @@ class PostController extends Controller
 
     public function update(Request $request, Post $post)
     {
-        // Xác thực dữ liệu đầu vào với các quy tắc và thông báo lỗi tùy chỉnh
+        // Xác thực dữ liệu đầu vào
+        // $request->validate([
+        //     'title' => 'required|string|max:255',
+        //     'content' => 'required|string',
+        //     'seo_title' => 'required|string|max:255',
+        //     'seo_description' => 'required|string',
+        //     'seo_keywords' => 'required|string|max:255',
+        //     'category_id' => 'required|integer',
+        //     'author_id' => 'required|integer',
+        //     'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        // ]);
+
+        // Kiểm tra xem tiêu đề mới đã tồn tại trong cơ sở dữ liệu chưa
+        if (Post::where('title', $request->input('title'))->where('id', '!=', $post->id)->exists()) {
+            return redirect()->back()->with(['warning' => 'Tiêu đề đã tồn tại. Vui lòng sửa tiêu đề khác.'])->withInput();
+        }
 
         // Cập nhật các trường của bài viết
         $post->title = $request->input('title');
-        $post->slug = $request->input('slug');
+        $post->slug = Str::slug($request->input('title')); // Cập nhật slug mới từ tiêu đề
         $post->content = $request->input('content');
         $post->category_id = $request->input('category_id');
         $post->author_id = $request->input('author_id');
@@ -151,6 +179,7 @@ class PostController extends Controller
         // Chuyển hướng sau khi cập nhật thành công
         return redirect()->route('posts.index')->with('success', 'Cập nhật bài viết thành công!');
     }
+
 
 
 
@@ -186,4 +215,5 @@ class PostController extends Controller
         $post = Post::findOrFail($id)->copy();
         return redirect()->route('posts.index')->with('success', 'Bài viết đã được sao chép thành công.');
     }
+    
 }

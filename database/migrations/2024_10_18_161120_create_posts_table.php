@@ -12,12 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {
-
             $table->bigIncrements('id');               // Primary key
             $table->unsignedBigInteger('author_id')->nullable();
-            $table->string('title', 255);
+            $table->fullText('title', 255);
             $table->string('slug', 255)->nullable();   // Không cần dùng 'AFTER'
-            $table->text('content');
+            $table->fullText('content');
             $table->integer('view')->default(0); // Số lượt xem
             $table->string('image', 255)->nullable();
             $table->timestamp('created_at')->nullable();
@@ -28,10 +27,6 @@ return new class extends Migration
             $table->text('seo_description')->nullable();
             $table->string('seo_keywords', 255)->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
-
-            // $table->string('slug')->nullable()->after('title'); // Đảm bảo cột này là duy nhất
-            // $table->unique('slug');
-
         });
     }
 

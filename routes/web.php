@@ -7,6 +7,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileUploadController;
+use App\Http\Controllers\SlugController;
 use App\Http\Controllers\UserStatsController;
 
 
@@ -47,6 +48,7 @@ Route::patch('/posts/{id}/updateStatus', [PostController::class, 'updateStatus']
 Route::post('posts/bulk-delete', [PostController::class, 'bulkDelete'])->name('posts.bulk-delete');
 
 Route::post('/posts/{post}/copy', [PostController::class, 'copy'])->name('posts.copy');
+Route::get('/check-slug', [SlugController::class, 'checkSlug'])->name('check.slug'); // kiểm tra slug
 
 
 // Routes thống kê người dùng

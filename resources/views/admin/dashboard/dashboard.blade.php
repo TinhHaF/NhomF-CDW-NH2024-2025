@@ -1,5 +1,6 @@
 @extends('admin.layout')
 @section('content')
+
     <body class="bg-gray-100">
         <div class="flex flex-col md:flex-row">
             <!-- Main Content -->
@@ -11,7 +12,7 @@
                     </div>
 
                     <div class="grid grid-cols-4 gap-4 mb-6 text-center">
-                        <div class="bg-orange-400 text-white p-4 rounded shadow ">
+                        <div class="bg-orange-400 text-white p-4 rounded shadow">
                             <div class="flex items-center">
                                 <i class="fas fa-user mr-2"></i>
                                 <span>Đang online</span>
@@ -40,42 +41,40 @@
                             <div class="text-2xl font-bold">{{ $totalVisits }}</div>
                         </div>
                     </div>
-
-
                 </div>
                 <div class="bg-white p-6 rounded shadow">
                     <h2 class="text-xl font-bold mb-4">Thống kê truy cập tháng 10/2024</h2>
                     <div id="chart-container">
-                        <canvas id="accessChart"></canvas>
+                        <div id="accessChart" style="height: 400px;"></div>
                     </div>
                 </div>
             </div>
         </div>
-        </div>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <!-- Load Highcharts from local file -->
+        <script src="{{ asset('js/highcharts.js') }}"></script>
         <script>
-            var ctx = document.getElementById('accessChart').getContext('2d');
-            var accessChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: {!! json_encode($dates) !!},
-                    datasets: [{
-                        label: 'Lượt truy cập',
-                        data: {!! json_encode($visitCounts) !!},
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
+            Highcharts.chart('accessChart', {
+                chart: {
+                    type: 'line'
                 },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
+                title: {
+                    text: 'Lượt truy cập'
+                },
+                xAxis: {
+                    categories: {!! json_encode($dates) !!}
+                },
+                yAxis: {
+                    title: {
+                        text: 'Số lượt truy cập'
+                    },
+                    min: 0
+                },
+                series: [{
+                    name: 'Lượt truy cập',
+                    data: {!! json_encode($visitCounts) !!}
+                }]
             });
         </script>
-
     </body>
 @endsection
