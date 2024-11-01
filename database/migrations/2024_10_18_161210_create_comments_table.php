@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->text('content');
             $table->timestamps();
+         
         });
     }
 
@@ -26,7 +27,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('comments');
-        Schema::dropIfExists('visits');
-
     }
 };
