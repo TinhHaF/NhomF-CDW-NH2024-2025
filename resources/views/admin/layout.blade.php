@@ -42,21 +42,11 @@
             transform: rotate(180deg);
         }
     </style>
-    @if (session('success'))
-        <meta name="flash-success" content="{{ session('success') }}">
-    @endif
-    @if (session('error'))
-        <meta name="flash-error" content="{{ session('error') }}">
-    @endif
-    @if (session('warning'))
-        <meta name="flash-warning" content="{{ session('warning') }}">
-    @endif
-    @if (session('info'))
-        <meta name="flash-info" content="{{ session('info') }}">
-    @endif
 </head>
 
 <body class="bg-gray-100">
+@include('components.notifications')
+
     <div class="flex flex-col md:flex-row">
         <!-- Sidebar -->
         <div class="w-64 bg-white shadow-md">
@@ -74,14 +64,14 @@
                         </a>
                     </li>
                     <li class="px-4 py-2 hover:bg-gray-200">
-                        <a class="flex items-center hover:text-red-500 cursor-pointer" data-toggle="dropdown">
+                        <a class="flex items-center hover:text-red-500 cursor-pointer" data-toggle="dropdown" href="{{ route('posts.index') }}">
                             <i class="fa-solid fa-newspaper mr-2"></i>
                             Quản lý bài viết
                             <i class="fa-solid fa-chevron-up ml-auto"></i>
                         </a>
                         <ul class="ml-6 mt-2 hidden">
                             <li class="px-4 py-2 bg-blue-100">
-                                <a class="flex items-center hover:text-red-500" href="{{ route('posts.create') }}">
+                                <a class="flex items-center hover:text-red-500" href="{{ route('posts.index') }}">
                                     Tin tức
                                 </a>
                             </li>
@@ -100,7 +90,7 @@
                     </li>
                     @if (Auth::user()->role == 2)
                         <li class="px-4 py-2 hover:bg-gray-200">
-                            <a class="flex items-center hover:text-red-500" href="#">
+                            <a class="flex items-center hover:text-red-500" href="">
                                 <i class="fa-solid fa-users mr-2"></i>
                                 Quản lý người dùng
                             </a>
