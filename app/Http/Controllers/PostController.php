@@ -215,5 +215,9 @@ class PostController extends Controller
         $post = Post::findOrFail($id)->copy();
         return redirect()->route('posts.index')->with('success', 'Bài viết đã được sao chép thành công.');
     }
-    
+    public function checkSlugExistence($slug)
+    {
+        $exists = Post::where('slug', $slug)->exists();
+        return response()->json(['exists' => $exists]);
+    }
 }

@@ -19,7 +19,8 @@ return new class extends Migration
             $table->text('content');                    // Cột content
             $table->integer('view')->default(0);       // Số lượt xem
             $table->string('image', 255)->nullable();
-            $table->timestamps();                       // Tạo cột created_at và updated_at
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
             $table->tinyInteger('is_featured')->default(0);
             $table->tinyInteger('is_published')->default(0);
             $table->string('seo_title', 255)->nullable();
