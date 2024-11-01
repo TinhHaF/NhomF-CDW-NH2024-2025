@@ -21,6 +21,8 @@ class UsersSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'image' => 'user1.jpg',
                 'role' => 1, // 1 là user
+                'created_at'=>'2024-11-01 13:10:57',
+                'updated_at'=>'2024-11-01 13:10:57',
             ],
             [
                 'username' => 'admin1',
@@ -28,6 +30,8 @@ class UsersSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'image' => 'admin1.jpg',
                 'role' => 2, // 2 là admin
+                'created_at'=>'2024-11-01 13:10:57',
+                'updated_at'=>'2024-11-01 13:10:57',
             ],
             [
                 'username' => 'author1',
@@ -35,6 +39,8 @@ class UsersSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'image' => 'author1.jpg',
                 'role' => 3, // 3 là author
+                'created_at'=>'2024-11-01 13:10:57',
+                'updated_at'=>'2024-11-01 13:10:57',
             ],
         ]);
     }
