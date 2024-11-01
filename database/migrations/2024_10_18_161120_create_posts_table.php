@@ -12,15 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->bigIncrements('id');               // Primary key
+            $table->bigIncrements('id');               // Khóa chính
             $table->unsignedBigInteger('author_id')->nullable();
-            $table->fullText('title', 255);
-            $table->string('slug', 255)->nullable();   // Không cần dùng 'AFTER'
-            $table->fullText('content');
-            $table->integer('view')->default(0); // Số lượt xem
+            $table->string('title');                    // Cột title
+            $table->string('slug', 255)->nullable();   // Cột slug
+            $table->text('content');                    // Cột content
+            $table->integer('view')->default(0);       // Số lượt xem
             $table->string('image', 255)->nullable();
-            $table->timestamp('created_at')->nullable();
-            $table->timestamp('updated_at')->nullable();
+            $table->timestamps();                       // Tạo cột created_at và updated_at
             $table->tinyInteger('is_featured')->default(0);
             $table->tinyInteger('is_published')->default(0);
             $table->string('seo_title', 255)->nullable();
