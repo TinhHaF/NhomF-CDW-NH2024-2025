@@ -41,6 +41,12 @@ Route::prefix('admin')->group(function () {
     Route::resource('posts', PostController::class);
 });
 
+//comments
+Route::prefix('admin')->group(function () {
+    Route::resource('comments', CommentController::class);
+});
+
+
 // Các routes khác
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/authors', [AuthorController::class, 'index']);

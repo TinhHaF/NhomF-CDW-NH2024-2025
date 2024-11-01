@@ -7,7 +7,7 @@
     <title>{{ $post->title }}</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-
+@include('components.notifications')
 <body class="bg-gray-100 p-8">
 
     <div class="container mx-auto px-4 bg-white rounded-lg shadow-md">
@@ -31,16 +31,7 @@
                 <div class="mb-4">
                     <textarea name="content" class="w-full h-24 p-2 border rounded" placeholder="Nhập bình luận của bạn..."></textarea>
                 </div>
-                <!-- Hiển thị thông báo nếu có -->
-                @if (session('success'))
-                <p class="text-green-500">
-                    {{ session('success') }}
-                </p>
-                @elseif (session('error'))
-                <p class="text-red-500">
-                    {{ session('error') }}
-                </p>
-                @endif
+        
 
                 <button type="submit" class="bg-blue-600 mt-2 text-white px-4 py-2 rounded">
                     Gửi bình luận

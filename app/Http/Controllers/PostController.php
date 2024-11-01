@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Helpers\IdEncoder;
+
 use Illuminate\Validation\Rule;
 
 
@@ -18,9 +20,9 @@ class PostController extends Controller
 {
     public static function encodeId($id)
     {
-        $key = 'your-secret-key'; // Thay thế bằng khóa bí mật của bạn
-        return base64_encode($id . '::' . $key);
+        return IdEncoder::encode($id);
     }
+
 
     public function homepage()
     {
@@ -33,13 +35,8 @@ class PostController extends Controller
     public function show($encodedId)
     {
         // Giải mã ID
-        $decoded = base64_decode($encodedId);
-        list($id, $key) = explode('::', $decoded);
+        $id = IdEncoder::decode($encodedId);
 
-        // Kiểm tra xem khóa có khớp để ngăn chặn việc giả mạo
-        if ($key !== 'your-secret-key') {
-            abort(403, 'Không có quyền truy cập.');
-        }
         // Lấy bài viết cùng với các bình luận và thông tin người dùng
         $post = Post::with('comments.user')->findOrFail($id);
 
@@ -48,26 +45,13 @@ class PostController extends Controller
 
         return view('posts.show', compact('post', 'isLoggedIn'));
     }
+
     public function index(Request $request)
     {
         $query = $request->input('search');
-        $posts = Post::query();
-
-        if ($query) {
-            if (Schema::hasColumn('posts', 'title') && Schema::hasColumn('posts', 'content')) {
-                $posts->whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$query])
-                    ->orWhere('title', 'LIKE', "%{$query}%")
-                    ->orWhere('content', 'LIKE', "%{$query}%");
-            } else {
-                $posts->where('title', 'LIKE', "%{$query}%")
-                    ->orWhere('content', 'LIKE', "%{$query}%");
-            }
-        }
-
-        $posts = $posts->latest()->paginate(10);    
+        $posts = Post::search($query);
         return view('admin.posts.index', compact('posts'));
     }
-
 
     public function create()
     {
@@ -215,9 +199,5 @@ class PostController extends Controller
         $post = Post::findOrFail($id)->copy();
         return redirect()->route('posts.index')->with('success', 'Bài viết đã được sao chép thành công.');
     }
-    public function checkSlugExistence($slug)
-    {
-        $exists = Post::where('slug', $slug)->exists();
-        return response()->json(['exists' => $exists]);
-    }
+    
 }
