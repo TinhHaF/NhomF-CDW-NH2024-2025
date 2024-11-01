@@ -46,7 +46,6 @@
 
 <body class="bg-gray-100">
 @include('components.notifications')
-
     <div class="flex flex-col md:flex-row">
         <!-- Sidebar -->
         <div class="w-64 bg-white shadow-md">

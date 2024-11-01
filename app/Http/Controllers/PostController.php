@@ -43,16 +43,29 @@ class PostController extends Controller
         // Kiểm tra trạng thái đăng nhập
         $isLoggedIn = Auth::check();
 
-        return view('posts.show', compact('post', 'isLoggedIn'));
+        return view('posts.post_detail', compact('post', 'isLoggedIn'));
     }
 
+  
+
+    // public function index(Request $request)
+    // {
+    //     $query = $request->input('search');
+    //     $posts = Post::search($query);
+    //     return view('admin.posts.index', compact('posts'));
+    // }
     public function index(Request $request)
     {
         $query = $request->input('search');
         $posts = Post::search($query);
-        return view('admin.posts.index', compact('posts'));
+    
+        $encodeId = function($id) {
+            return IdEncoder::encode($id);
+        };
+    
+        return view('admin.posts.index', compact('posts', 'encodeId'));
     }
-
+    
     public function create()
     {
         $categories = Category::all();
@@ -102,11 +115,7 @@ class PostController extends Controller
 
 
 
-    // public function show($id)
-    // {
-    //     $post = Post::findOrFail($id);
-    //     return view('admin.posts.show', compact('post'));
-    // }
+   
 
     public function edit($id)
     {
