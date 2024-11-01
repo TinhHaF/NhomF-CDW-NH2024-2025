@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -94,6 +94,19 @@ class UserController extends Controller
     //Đăng Nhập
     public function loginUser(Request $request)
     {
+        // Tạo khóa duy nhất cho người dùng dựa trên IP và username
+        $throttleKey = 'login:' . $request->ip() . '|' . $request->input('username');
+
+        // Kiểm tra nếu người dùng đã vượt quá số lần thử đăng nhập
+        if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+
+            // Trả về thông báo tùy chỉnh nếu vượt quá giới hạn
+            return redirect('login')->withErrors([
+                'throttle' => "Tài khoản của bạn đã bị khóa do thử đăng nhập không thành công quá nhiều lần. Vui lòng thử lại sau $seconds giây.",
+            ]);
+        }
+
         // Xác thực dữ liệu đầu vào
         $request->validate([
             'username' => 'required',
@@ -102,36 +115,42 @@ class UserController extends Controller
             'username.required' => 'Tên người dùng là bắt buộc.',
             'password.required' => 'Mật khẩu là bắt buộc.',
         ]);
-    
+
         $credentials = $request->only('username', 'password');
-    
+
         // Kiểm tra thông tin đăng nhập
         if (Auth::attempt($credentials)) {
-            // Lấy thông tin người dùng đã đăng nhập
+            // Xóa số lần thử đăng nhập khi đăng nhập thành công
+            RateLimiter::clear($throttleKey);
+
             $user = Auth::user();
-    
+
             // Kiểm tra role của người dùng
             if ($user->role == 1) {
-                // Đăng nhập thành công cho người dùng thường
                 return redirect()->intended('/')->withSuccess('Đăng nhập thành công.');
-            } elseif ($user->role == 2) {
-                // Đăng nhập thành công cho admin
+            } elseif ($user->role == 2 || $user->role == 3) {
                 return redirect()->intended('admin/dashboard')->withSuccess('Đăng nhập thành công.');
             }
-            elseif ($user->role == 3) {
-                // Đăng nhập thành công cho admin
-                return redirect()->intended('admin/dashboard')->withSuccess('Đăng nhập thành công.');
-            }
+
             // Nếu role không hợp lệ, đăng xuất người dùng
             Auth::logout();
             return redirect('login')->withErrors([
                 'role' => 'Vai trò của tài khoản không hợp lệ.',
             ]);
         }
-        // Nếu thông tin đăng nhập không chính xác
+
+        // Tăng số lần thử đăng nhập khi đăng nhập không thành công
+        RateLimiter::hit($throttleKey, 60); // Thời gian khóa là 60 giây
+
+        // Tính số lần đăng nhập còn lại
+        $attempts = RateLimiter::attempts($throttleKey);
+        $maxAttempts = 3; // Giới hạn số lần thử đăng nhập
+        $remainingAttempts = $maxAttempts - $attempts;
+
+        // Trả về thông báo với số lần thử còn lại
         return redirect('login')
             ->withErrors([
-                'credentials' => 'Thông tin tài khoản hoặc mật khẩu không chính xác.',
+                'credentials' => 'Thông tin tài khoản hoặc mật khẩu không chính xác. Số lần thử còn lại: ' . max(0, $remainingAttempts),
             ])
             ->withInput(); // Giữ lại dữ liệu đã nhập
     }

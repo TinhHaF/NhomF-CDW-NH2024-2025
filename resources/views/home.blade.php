@@ -23,7 +23,7 @@
                     @foreach ($posts as $post)
                     <div class="bg-white rounded-lg shadow-md">
                         <h5 class="text-lg font-semibold p-4">
-                            <a href="{{ route('posts.show', $post->encoded_id) }}" class="hover:underline">{{ $post->title }}</a>
+                            <a href="{{ route('posts.post_detail', $post->encoded_id) }}" class="hover:underline">{{ $post->title }}</a>
                         </h5>
                         <div class="flex">
                             @if($post->image)
@@ -55,7 +55,7 @@
                     @foreach ($featuredPosts as $postf)
                     <div class="bg-white rounded-lg shadow-md">
                         <h5 class="text-lg font-semibold p-4">
-                            <a href="{{ route('posts.show', $post->encoded_id) }}" class="hover:underline">{{ $post->title }}</a>
+                            <a href="{{ route('posts.post_detail', $post->encoded_id) }}" class="hover:underline">{{ $post->title }}</a>
                         </h5>
                         <div class="flex">
                             @if($postf->image)
