@@ -13,9 +13,7 @@ use App\Http\Controllers\UserStatsController;
 
 // Route trang chủ
 Route::get('/', [PostController::class, 'homepage'])->name('home');
-Route::get('/admin/new/{type}', function ($type) {
-    return view('admin.new.' . $type);
-});
+
 Route::get('admin/dashboard', function () {
     return view('admin.dashboard.dashboard');
 });
