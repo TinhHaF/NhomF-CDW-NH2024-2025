@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
@@ -10,50 +11,46 @@ use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\SlugController;
 use App\Http\Controllers\UserStatsController;
 
-
 // Route trang chủ
 Route::get('/', [PostController::class, 'homepage'])->name('home');
 
-Route::get('admin/dashboard', function () {
-    return view('admin.dashboard.dashboard');
-});
+// Route cho trang dashboard admin
+
+// Route cho đăng ký và đăng nhập
 Route::get('/register', [UserController::class, 'registerUser'])->name('user.registerUser');
-Route::get('/profile', [UserController::class, 'getUserInfo'])->name('user.profile');
-Route::post('register', [UserController::class, 'addUser'])->name('user.addUser');
+Route::post('/register', [UserController::class, 'addUser'])->name('user.addUser');
 Route::get('/login', [UserController::class, 'login'])->name('user.login');
-Route::post('login', [UserController::class, 'loginUser'])->name('user.loginUser');
+Route::post('/login', [UserController::class, 'loginUser'])->name('user.loginUser');
 Route::get('logout', [UserController::class, 'logout'])->name('user.logout');
 
-Route::get('homepage/posts/{id}', [PostController::class, 'show'])->name('posts.post_detail');
-// Chỉ giữ một route cho admin dashboard
-Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+// Route cho thông tin người dùng
+Route::get('/profile', [UserController::class, 'getUserInfo'])->name('user.profile');
 Route::post('/change-password', [UserController::class, 'changePassword'])->name('user.change_pw');
 Route::get('/change_pw', [UserController::class, 'change_user_password'])->name('user.change_show');
-// Route::middleware('admin')->group(function () {
-//     Route::resource('posts', PostController::class);
-// });
+
+// Route cho bài viết
+Route::get('/homepage/posts/{encodedId}', [PostController::class, 'show'])->name('posts.post_detail');
 
 
-// Routes cho admin (group theo prefix)
-Route::prefix('admin')->group(function () {
-    Route::resource('posts', PostController::class);
+// Group routes cho admin, chỉ cho phép admin đã xác thực truy cập
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+    Route::prefix('admin')->middleware(['admin'])->group(function () {
+        Route::resource('posts', PostController::class);
+    });
 });
 
-//comments
-Route::prefix('admin')->group(function () {
-    Route::resource('comments', CommentController::class);
-});
 
-
-// Các routes khác
+// Routes cho các category và author
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/authors', [AuthorController::class, 'index']);
+
+// Routes cho các hành động khác liên quan đến bài viết
 Route::patch('/posts/{id}/updateStatus', [PostController::class, 'updateStatus'])->name('posts.updateStatus');
 Route::post('posts/bulk-delete', [PostController::class, 'bulkDelete'])->name('posts.bulk-delete');
-
 Route::post('/posts/{post}/copy', [PostController::class, 'copy'])->name('posts.copy');
-Route::get('/check-slug', [SlugController::class, 'checkSlug'])->name('check.slug'); // kiểm tra slug
-
+Route::get('/check-slug', [SlugController::class, 'checkSlug'])->name('check.slug');
 
 // Routes thống kê người dùng
 Route::get('/online-users', [UserStatsController::class, 'getOnlineUsers']);
@@ -61,8 +58,6 @@ Route::get('/weekly-visits', [UserStatsController::class, 'getWeeklyVisits']);
 Route::get('/monthly-visits', [UserStatsController::class, 'getMonthlyVisits']);
 Route::get('/total-visits', [UserStatsController::class, 'getTotalVisits']);
 
-//comments
-
 // Route cho việc lưu bình luận
-Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
-
+// Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
+Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('post.comments.store');

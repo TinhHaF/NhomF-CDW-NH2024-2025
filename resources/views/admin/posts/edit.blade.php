@@ -135,7 +135,7 @@
                                 <label class="block font-semibold mb-2">Hình ảnh Tin tức</label>
                                 <div class="border border-gray-300 rounded p-4 text-center">
                                     <img alt="Preview image" class="mx-auto mb-4" height="205" width="250"
-                                        id="previewImage" src="{{ asset('storage/' . $post->image) }}"
+                                        {{-- id="previewImage" --}} src="{{ asset('storage/' . $post->image) }}"
                                         style="display: block;" />
 
                                     <div class="bg-[#F5F5F5] border-dashed border-2 border-gray-400 p-4">
@@ -200,23 +200,24 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Buttons moved outside of the form -->
+                    <div class="flex flex-col md:flex-row mt-4">
+                        <button
+                            class="flex items-center bg-blue-500 text-white px-4 py-2 rounded mr-2 mb-2 md:mb-0 hover:bg-blue-600"
+                            type="submit" form="postForm">
+                            <i class="fas fa-save mr-2"></i>Cập Nhật
+                        </button>
+                        <button type="reset" onclick="history.back()"
+                            class="flex items-center bg-gray-300 text-gray-800 px-4 py-2 rounded mr-2 mb-2 md:mb-0 hover:bg-gray-400">
+                            <i class="fas fa-redo mr-2"></i>Làm Lại
+                        </button>
+                        <a href="{{ route('posts.index') }}"
+                            class="flex items-center bg-red-500 text-white px-4 py-2 rounded mr-2 mb-2 md:mb-0 hover:bg-red-600">
+                            <i class="fas fa-times mr-2"></i>Thoát
+                        </a>
+                    </div>
                 </form>
-                <!-- Buttons moved outside of the form -->
-                <div class="flex flex-col md:flex-row mt-4">
-                    <button
-                        class="flex items-center bg-blue-500 text-white px-4 py-2 rounded mr-2 mb-2 md:mb-0 hover:bg-blue-600"
-                        type="submit" form="postForm">
-                        <i class="fas fa-save mr-2"></i>Cập Nhật
-                    </button>
-                    <button type="reset" onclick="history.back()"
-                        class="flex items-center bg-gray-300 text-gray-800 px-4 py-2 rounded mr-2 mb-2 md:mb-0 hover:bg-gray-400">
-                        <i class="fas fa-redo mr-2"></i>Làm Lại
-                    </button>
-                    <a href="{{ route('posts.index') }}"
-                        class="flex items-center bg-red-500 text-white px-4 py-2 rounded mr-2 mb-2 md:mb-0 hover:bg-red-600">
-                        <i class="fas fa-times mr-2"></i>Thoát
-                    </a>
-                </div>
+
             </div>
         </div>
     </body>

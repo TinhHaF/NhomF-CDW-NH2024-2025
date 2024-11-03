@@ -56,4 +56,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+    /**
+     * Kiểm tra nếu người dùng là admin.
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === '2';
+    }
 }

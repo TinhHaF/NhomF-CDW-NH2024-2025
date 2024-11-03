@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\IdEncoder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Storage;
@@ -28,12 +29,12 @@ class Post extends Model
         'seo_description',
         'seo_keywords'
     ];
-    public function getEncodedIdAttribute()
-    {
-        return \App\Http\Controllers\PostController::encodeId($this->id);
-    }
+    // public function getEncodedIdAttribute()
+    // {
+    //     return \App\Http\Controllers\PostController::encodeId($this->id);
+    // }
 
-     /**
+    /**
      * Thiết lập quan hệ với model Comment.
      * Một bài viết có thể có nhiều bình luận.
      */
@@ -119,6 +120,28 @@ class Post extends Model
         $newPost->save();
 
         return $newPost;
-
     }
+
+    // Other model properties and methods
+
+    /**
+     * Get the encoded ID of the post.
+     *
+     * @return string
+     */
+    public function getEncodedId()
+    {
+        return IdEncoder::encode($this->id);
+    }
+
+    /**
+     * Decode an encoded ID to get the original ID.
+     *
+     * @param string $encodedId
+     * @return int
+     */
+    // public static function decodeId($encodedId)
+    // {
+    //     return IdEncoder::decode($encodedId);
+    // }
 }

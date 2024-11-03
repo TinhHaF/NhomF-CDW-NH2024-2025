@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password', 255);
             $table->string('image')->nullable();
             $table->string('role',length:1);
+            $table->boolean('is_admin')->default(false);
             $table->timestamps();
         });
     }

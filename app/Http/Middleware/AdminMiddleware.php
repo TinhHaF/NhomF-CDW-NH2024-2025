@@ -8,21 +8,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        // Kiểm tra xem người dùng có phải là quản trị viên không
-        if (auth()->user()->is_admin) {
-            return $next($request);
+        // Kiểm tra nếu người dùng không phải là admin, chuyển hướng
+        if (!$request->user() || !$request->user()->isAdmin()) {
+            return redirect('/'); // Hoặc trang khác tùy vào yêu cầu của bạn
         }
 
-        // Nếu không phải quản trị viên, chuyển hướng về trang không có quyền
-        return redirect()->route('unauthorized');
+        return $next($request);
     }
 }
