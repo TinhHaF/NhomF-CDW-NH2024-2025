@@ -105,7 +105,7 @@
 <body>
 
     <div class="comments-section">
-        <h2>Bình Luận ({{ $post->comments->count() }})</h2>
+        <h2>Bình Luận ({{ $comments->total() }})</h2>
 
         <!-- Form bình luận -->
         <form action="{{ route('comments_store', ['post' => $post->id]) }}" method="POST">
@@ -121,7 +121,7 @@
             <div class="tab">#</div>
         </div>
 
-        @foreach ($post->comments->reverse() as $comment)
+        @foreach ($comments as $comment)
         <div class="comment">
             <div class="avatar" style="background-image: url('https://placehold.co/40x40');"></div>
             <div class="content">
@@ -141,8 +141,12 @@
             </div>
         </div>
         @endforeach
-        
 
+
+        <!-- Phân trang cho bình luận -->
+        <div>
+            {{ $comments->links() }}
+        </div>
     </div>
 </body>
 

@@ -61,18 +61,21 @@ class PostController extends Controller
     {
         try {
             $post = Post::find($id);
-            // Kiểm tra xem bài viết có tồn tại hay không và slug có khớp không
             if (!$post || $post->slug !== $slug) {
                 return abort(404, 'Bài viết không tồn tại.');
             }
 
-            return view('posts.post_detail', compact('post'));
+            // Lấy bình luận và phân trang
+            $comments = $post->comments()->orderBy('created_at', 'desc')->paginate(5);
+
+            return view('posts.post_detail', compact('post', 'comments'));
         } catch (ModelNotFoundException $e) {
             return abort(404, 'Bài viết không tồn tại.');
         } catch (\Exception $e) {
-            return back()->with('error', 'bớt thay URL đi MÁ');
+            return back()->with('error', 'Có lỗi xảy ra. Vui lòng thử lại sau.');
         }
     }
+
 
 
 

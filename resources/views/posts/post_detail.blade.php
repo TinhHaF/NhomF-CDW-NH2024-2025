@@ -78,6 +78,7 @@
             color: #666666;
             margin-top: 5px;
         }
+        
     </style>
 </head>
 
@@ -97,7 +98,7 @@
         </div>
         <div class="content">
             <div class="image">
-                <img alt="{{ $post->title }}"  src="{{ asset('storage/' . $post->image) }}"  />
+                <img alt="{{ $post->title }}" src="{{ asset('storage/' . $post->image) }}" />
             </div>
             <p>
                 {!! $post->content !!}
@@ -106,5 +107,6 @@
     </div>
     @include('posts.post_commemts')
 </body>
+
 
 </html>
