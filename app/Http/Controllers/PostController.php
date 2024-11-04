@@ -60,7 +60,7 @@ class PostController extends Controller
         }
     }
 
-    public function show($encodedId)
+    public function detail($id, $slug)
     {
         try {
             $post = Post::find($id);
@@ -73,7 +73,7 @@ class PostController extends Controller
 
             return view('posts.post_detail', compact('post', 'comments'));
         } catch (ModelNotFoundException $e) {
-            Log::info('Post not found', ['encoded_id' => $encodedId]);
+            Log::info('Post not found', ['id' => $id]);
             return request()->expectsJson()
                 ? response()->json(['error' => 'Bài viết không tồn tại.'], 404)
                 : abort(404, 'Bài viết không tồn tại.');
