@@ -28,7 +28,7 @@
         <div class="mt-6">
             <h2 class="text-xl font-semibold mb-4">Bình luận</h2>
 
-            <form action="{{ route('comments.store', $post->id) }}" method="POST">
+            <form action="{{ route('post.comments.store', $post->id) }}" method="POST">
                 @csrf
                 <div class="mb-4">
                     <textarea name="content" class="w-full h-24 p-2 border rounded" placeholder="Nhập bình luận của bạn..." required></textarea>
@@ -39,10 +39,9 @@
             </form>
 
             <!-- Hiển thị danh sách bình luận -->
-            <!-- Hiển thị danh sách bình luận -->
             <div class="mt-6">
                 <h3 class="text-lg font-semibold">Ý Kiến:</h3>
-                @foreach ($post->comments->reverse() as $comment) <!-- Thay đổi ở đây -->
+                @foreach ($post->comments->reverse() as $comment)
                 <div class="comment mb-4 p-4 border rounded">
                     <p><strong>{{ $comment->user->username }}</strong></p>
                     <p class="text-gray-500">{{ $comment->created_at->format('H:i:s') }}</p>

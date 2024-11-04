@@ -25,10 +25,17 @@ class PostPolicy
      * @param  \App\Models\Post  $post
      * @return mixed
      */
+    // public function view(User $user, Post $post)
+    // {
+    //     return $user->role === '2' || $user->id === $post->user_id || $user->role === '1'; // Admin hoặc chủ sở hữu bài viết có thể xem
+    // }
+
+
     public function view(User $user, Post $post)
     {
-        return $user->role === '2' || $user->id === $post->user_id; // Admin hoặc chủ sở hữu bài viết có thể xem
+        return true; // Chấp nhận mọi người đều có quyền xem bài viết
     }
+
 
     /**
      * Determine whether the user can create posts.

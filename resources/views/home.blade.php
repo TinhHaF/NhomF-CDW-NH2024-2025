@@ -17,33 +17,29 @@
         <div class="flex-grow">
             <div class="container mx-auto px-4">
                 <h2 class="text-2xl font-bold mb-6">Tin Đề Xuất</h2>
-                <!-- Kiểm tra biến $posts tồn tại hay không -->
                 @if (isset($posts) && $posts->count())
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        @foreach ($posts as $post)
-                            <div class="bg-white rounded-lg shadow-md">
-                                <h5 class="text-lg font-semibold p-4">
-                                    <a href="{{ route('posts.show', $encodeId($post->id)) }}"
-                                        class="hover:underline">{{ $post->title }}</a>
-                                </h5>
-                                <div class="flex">
-                                    @if ($post->image)
-                                        <img src="{{ asset('storage/' . $post->image) }}"
-                                            class="w-1/2 h-48 object-cover rounded-l-lg ml-1 mb-1"
-                                            alt="{{ $post->title }}">
-                                    @endif
-                                    <div class="p-4 w-1/2">
-                                        <p class="text-gray-600">{!! Str::limit($post->content, 100) !!}</p>
-                                    </div>
-                                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    @foreach ($posts as $post)
+                    <div class="bg-white rounded-lg shadow-md">
+                        <h5 class="text-lg font-semibold p-4">
+                            <!-- Sử dụng slug trong URL -->
+                            <a href="{{ route('posts.post_detail', ['slug' => $post->slug]) }}" class="hover:underline">{{ $post->title }}</a>
+                        </h5>
+                        <div class="flex">
+                            @if ($post->image)
+                            <img src="{{ asset('storage/' . $post->image) }}"
+                                class="w-1/2 h-48 object-cover rounded-l-lg ml-1 mb-1"
+                                alt="{{ $post->title }}">
+                            @endif
+                            <div class="p-4 w-1/2">
+                                <p class="text-gray-600">{!! Str::limit($post->content, 100) !!}</p>
                             </div>
-                        @endforeach
+                        </div>
                     </div>
-                    <div class="mt-4">
-                        {{ $posts->links() }}
-                    </div>
+                    @endforeach
+                </div>
                 @else
-                    <p class="text-gray-500">Không có tin đề xuất nào để hiển thị.</p>
+                <p class="text-gray-500">Không có tin đề xuất nào để hiển thị.</p>
                 @endif
             </div>
         </div>
@@ -52,33 +48,32 @@
         <div class="flex-grow">
             <div class="container mx-auto px-4">
                 <h2 class="text-2xl font-bold mb-6">Tin Nổi Bật</h2>
-                <!-- Kiểm tra biến $featuredPosts tồn tại hay không -->
                 @if (isset($featuredPosts) && $featuredPosts->count())
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        @foreach ($featuredPosts as $postf)
-                            <div class="bg-white rounded-lg shadow-md">
-                                <h5 class="text-lg font-semibold p-4">
-                                    <a href="{{ route('posts.post_detail', $post->encoded_id) }}"
-                                        class="hover:underline">{{ $post->title }}</a>
-                                </h5>
-                                <div class="flex">
-                                    @if ($postf->image)
-                                        <img src="{{ asset('storage/' . $postf->image) }}"
-                                            class="w-1/2 h-48 object-cover rounded-l-lg ml-1 mb-1"
-                                            alt="{{ $postf->title }}">
-                                    @endif
-                                    <div class="p-4 w-1/2">
-                                        <p class="text-gray-600">{!! Str::limit($postf->content, 100) !!}</p>
-                                    </div>
-                                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    @foreach ($featuredPosts as $postf)
+                    <div class="bg-white rounded-lg shadow-md">
+                        <h5 class="text-lg font-semibold p-4">
+                            <!-- Sử dụng slug trong URL -->
+                            <a href="{{ route('posts.post_detail', ['slug' => $postf->slug]) }}" class="hover:underline">{{ $postf->title }}</a>
+                        </h5>
+                        <div class="flex">
+                            @if ($postf->image)
+                            <img src="{{ asset('storage/' . $postf->image) }}"
+                                class="w-1/2 h-48 object-cover rounded-l-lg ml-1 mb-1"
+                                alt="{{ $postf->title }}">
+                            @endif
+                            <div class="p-4 w-1/2">
+                                <p class="text-gray-600">{!! Str::limit($postf->content, 100) !!}</p>
                             </div>
-                        @endforeach
+                        </div>
                     </div>
-                    <div class="mt-4">
-                        {{ $featuredPosts->links() }}
-                    </div>
+                    @endforeach
+                </div>
+                <div class="mt-4">
+                    {{ $featuredPosts->links() }}
+                </div>
                 @else
-                    <p class="text-gray-500">Không có tin nổi bật nào để hiển thị.</p>
+                <p class="text-gray-500">Không có tin nổi bật nào để hiển thị.</p>
                 @endif
             </div>
         </div>

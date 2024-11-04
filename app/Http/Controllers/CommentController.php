@@ -10,15 +10,11 @@ use App\Helpers\IdEncoder;
 
 class CommentController extends Controller
 {
-    public function show($encodedId)
+    public function show($slug)
     {
-        // Giải mã ID
-        $id = IdEncoder::decode($encodedId);
-
-        // Lấy bài viết cùng với các bình luận và sắp xếp bình luận theo ID mới nhất lên trên
         $post = Post::with(['comments' => function ($query) {
             $query->orderBy('comment_id', 'desc'); // Sắp xếp bình luận theo ID
-        }])->findOrFail($id);
+        }])->findOrFail($slug);
 
         // Kiểm tra trạng thái đăng nhập
         $isLoggedIn = Auth::check();
@@ -27,7 +23,7 @@ class CommentController extends Controller
     }
 
 
-    public function store(Request $request, $postId)
+    public function store(Request $request, Post $post)
     {
         // Kiểm tra đăng nhập
         if (!Auth::check()) {
@@ -42,14 +38,11 @@ class CommentController extends Controller
         // Tạo bình luận mới
         Comment::create([
             'content' => $request->input('content'),
-            'post_id' => $postId,
+            'post_id' => $post->id, // Sử dụng ID từ đối tượng Post
             'user_id' => Auth::id(),
         ]);
 
-        // Mã hóa ID của bài viết
-        $encodedPostId = IdEncoder::encode($postId); // Sử dụng hàm encode từ IdEncoder
-
         // Chuyển hướng về trang bài viết với thông báo thành công
-        return redirect()->route('posts.show', $encodedPostId)->with('success', 'Bình luận đã được thêm thành công!');
+        return redirect()->route('posts.post_detail', $post->slug)->with('success', 'Bình luận đã được thêm thành công!');
     }
 }
