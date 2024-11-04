@@ -21,7 +21,8 @@
     @else
         <div class="login relative flex items-center font-bold text-black">
             <a href="#" id="userMenuToggle" class="flex items-center">
-                <img src="{{ asset($user->image) }}" alt="Avatar" class="w-8 h-8 rounded-full mr-2" />
+            <img src="{{ asset('storage/' . $user->image) }}" alt="Avatar"
+            class="w-10 h-10 rounded-full border">
                 <span>{{ $user->username }}</span>
             </a>
             <div id="userMenu" class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg hidden z-10">
