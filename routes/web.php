@@ -32,12 +32,10 @@ Route::post('/change-password', [UserController::class, 'changePassword'])->name
 Route::get('/change_pw', [UserController::class, 'change_user_password'])->name('user.change_show');
 
 // Route cho bài viết
-// Route::get('/homepage/posts/{id}', [PostController::class, 'show'])->name('posts.post_detail');
 Route::get('/homepage/posts/{id}-{slug}', [PostController::class, 'show'])->name('posts.post_detail');
-
-// Route cho việc lưu bình luận
-// Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
+//bình luận
 Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('post.comments.store');
+
 
 
 
@@ -79,6 +77,7 @@ Route::get('/weekly-visits', [UserStatsController::class, 'getWeeklyVisits']);
 Route::get('/monthly-visits', [UserStatsController::class, 'getMonthlyVisits']);
 Route::get('/total-visits', [UserStatsController::class, 'getTotalVisits']);
 
+// Route cho việc lưu bình luận
 
 // Group routes cho admin, chỉ cho phép admin đã xác thực truy cập
 Route::middleware(['auth'])->group(function () {

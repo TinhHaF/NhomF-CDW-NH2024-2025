@@ -6,23 +6,10 @@ use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Helpers\IdEncoder;
+
 
 class CommentController extends Controller
 {
-    public function show($slug)
-    {
-        $post = Post::with(['comments' => function ($query) {
-            $query->orderBy('comment_id', 'desc'); // Sắp xếp bình luận theo ID
-        }])->findOrFail($slug);
-
-        // Kiểm tra trạng thái đăng nhập
-        $isLoggedIn = Auth::check();
-
-        return view('posts.show', compact('post', 'isLoggedIn'));
-    }
-
-
     public function store(Request $request, Post $post)
     {
         // Kiểm tra đăng nhập
