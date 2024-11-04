@@ -12,8 +12,8 @@ const CONFIG = {
         "GIF",
     ],
     MAX_FILE_SIZE: 5 * 1024 * 1024, // 5MB
-    IMAGE_WIDTH: 360,
-    IMAGE_HEIGHT: 205,
+    IMAGE_WIDTH: 1200,
+    IMAGE_HEIGHT: 900,
     DEFAULT_IMAGE: "/images/no-image-available.jpg",
     TOAST_DURATION: 5000,
 };

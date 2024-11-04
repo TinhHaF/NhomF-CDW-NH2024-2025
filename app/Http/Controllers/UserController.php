@@ -99,16 +99,6 @@ class UserController extends Controller
         // Tạo khóa duy nhất cho người dùng dựa trên IP và username
         $throttleKey = 'login:' . $request->ip() . '|' . $request->input('username');
 
-        // Kiểm tra nếu người dùng đã vượt quá số lần thử đăng nhập
-        if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
-            $seconds = RateLimiter::availableIn($throttleKey);
-
-            // Trả về thông báo tùy chỉnh nếu vượt quá giới hạn
-            return redirect('login')->withErrors([
-                'throttle' => "Tài khoản của bạn đã bị khóa do thử đăng nhập không thành công quá nhiều lần. Vui lòng thử lại sau $seconds giây.",
-            ]);
-        }
-
         // Xác thực dữ liệu đầu vào
         $request->validate([
             'username' => 'required',
@@ -119,6 +109,24 @@ class UserController extends Controller
         ]);
 
         $credentials = $request->only('username', 'password');
+
+        // Kiểm tra xem tài khoản có tồn tại hay không
+        $userExists = \App\Models\User::where('username', $request->input('username'))->exists();
+        if (!$userExists) {
+            return redirect('login')->withErrors([
+                'username' => 'Tên người dùng không tồn tại.',
+            ])->withInput();
+        }
+
+        // Kiểm tra nếu người dùng đã vượt quá số lần thử đăng nhập
+        if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+
+            // Trả về thông báo tùy chỉnh nếu vượt quá giới hạn
+            return redirect('login')->withErrors([
+                'throttle' => "Tài khoản của bạn đã bị khóa do thử đăng nhập không thành công quá nhiều lần. Vui lòng thử lại sau $seconds giây.",
+            ]);
+        }
 
         // Kiểm tra thông tin đăng nhập
         if (Auth::attempt($credentials)) {
