@@ -217,6 +217,7 @@ class PostController extends Controller
                 'post_id' => $post->id,
                 'user_id' => Auth::id()
             ]);
+            
 
             // Cache::tags(['posts', 'homepage'])->flush();
 

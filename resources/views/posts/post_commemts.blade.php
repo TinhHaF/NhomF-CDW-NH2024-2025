@@ -1,148 +1,63 @@
-<html>
+<html lang="en">
 
 <head>
-    <title>Comments Section</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #fff;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        .comments-section {
-            width: 800px;
-            margin: 20px auto;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-
-        .comments-section h2 {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        .comment-input {
-            width: 100%;
-            height: 100px;
-            /* Đặt chiều cao lớn hơn cho ô nhập liệu */
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        .comments-section .tabs {
-            display: flex;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 20px;
-        }
-
-        .comments-section .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            color: #333;
-        }
-
-        .comments-section .tab.active {
-            color: #e74c3c;
-            border-bottom: 2px solid #e74c3c;
-        }
-
-        .comments-section .comment {
-            display: flex;
-            margin-bottom: 20px;
-        }
-
-        .comments-section .comment .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #ddd;
-            margin-right: 10px;
-            margin-top: 5px;
-        }
-
-        .comments-section .comment .content {
-            flex: 1;
-        }
-
-        .comments-section .comment .content .name {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .comments-section .comment .content .text {
-            margin-bottom: 5px;
-        }
-
-        .comments-section .comment .content .actions {
-            display: flex;
-            align-items: center;
-            color: #999;
-        }
-
-        .comments-section .comment .content .actions .action {
-            margin-right: 10px;
-            display: flex;
-            align-items: center;
-        }
-
-        .comments-section .comment .content .actions .action i {
-            margin-right: 5px;
-        }
-
-        .comments-section .comment .content .actions .action .count {
-            margin-left: 5px;
-        }
-    </style>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>
+        Comment Section
+    </title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
 </head>
 
-<body>
-
-    <div class="comments-section">
-        <h2>Bình Luận ({{ $comments->total() }})</h2>
-
-        <!-- Form bình luận -->
+<body class="bg-gray-100">
+    <div class="max-w-[800px] mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-semibold mb-4">
+            Bình Luận ({{ $comments->total() }})
+        </h2>
         <form action="{{ route('comments_store', ['post' => $post->id]) }}" method="POST">
             @csrf
-            <textarea class="comment-input" name="content" placeholder="Chia sẻ ý kiến của bạn" required></textarea>
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded mt-2">
+            <textarea class="w-full p-3 border rounded-lg mb-4" name="content" placeholder="Chia sẻ ý kiến của bạn" rows="4" required></textarea>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg mb-6">
                 Gửi bình luận
             </button>
         </form>
-
-        <div class="tabs">
-            <div class="tab active">Mới nhất</div>
-            <div class="tab">#</div>
+        <div class="border-b mb-4">
+            <ul class="flex space-x-4 text-red-600">
+                <li class="border-b-2 border-red-600 pb-2">
+                    Mới nhất
+                </li>
+            </ul>
         </div>
-
         @foreach ($comments as $comment)
-        <div class="comment">
-            <div class="avatar" style="background-image: url('https://placehold.co/40x40');"></div>
-            <div class="content">
-                <div class="name">{{ $comment->user->username }}</div>
-                <div class="text">{{ $comment->content }}</div>
-                <div class="actions">
-                    <div class="action">
-                        <i class="fas fa-thumbs-up"></i> Thích <span class="count">14</span>
+        <div class="flex items-start space-x-4">
+            <img alt="User avatar" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/WpUYotWj5d53GBMddf9StdrqQCZdqqxAMphBxXqv4RZsr12JA.jpg" width="40" />
+            <div>
+                <div class="font-semibold">
+                    {{ $comment->user->username }}
+                </div>
+                <div class="text-gray-700">
+                    {{ $comment->content }}
+                </div>
+                <div class="flex items-center text-gray-500 text-sm mt-2 space-x-4">
+                    <div class="flex items-center space-x-1">
+                        <i class="fas fa-thumbs-up">
+                        </i>
+                        <span>
+                            Thích 14
+                        </span>
                     </div>
-                    <div class="action">
-                        <i class="fas fa-reply"></i> Trả lời
+                    <div>
+                        Trả lời
                     </div>
-                    <div class="action">
-                        <span>{{ $comment->created_at->format('H:i:s') }}</span>
+                    <div>
+                        {{ $comment->created_at->format('H:i:s') }}
                     </div>
                 </div>
             </div>
         </div>
         @endforeach
-
-
         <!-- Phân trang cho bình luận -->
         <div>
             {{ $comments->links() }}
