@@ -26,26 +26,29 @@ class PostController extends Controller
 
     protected $postService;
 
-    // public function __construct(PostService $postService)
-    // {
-    //     $this->postService = $postService;
-    //     $this->middleware('auth')->except(['homepage', 'show']);
-    //     $this->authorizeResource(Post::class, 'post'); // Điều này sẽ không ảnh hưởng đến show
-    // }
-
-
+    public function __construct(PostService $postService)
+    {
+        $this->postService = $postService;
+        $this->middleware('auth')->except(['homepage', 'show']);
+        $this->middleware('auth')->except(['homepage', 'show']);
+        $this->authorizeResource(Post::class, 'post'); // Phương thức này sẽ hoạt động nếu trait được sử dụng
+    }
 
     public function homepage()
     {
         try {
-            $posts = Post::where('is_published', true)
-                ->latest()
-                ->take(6) // Lấy đúng 6 bài
-                ->get(); // Lấy tất cả mà không phân trang
+            $posts = Cache::remember('home_posts', 3600, function () {
+                return Post::where('is_published', true)
+                    ->latest()
+                    ->paginate(6);
+            });
 
-            $featuredPosts = Post::where('is_featured', true)
-                ->latest()
-                ->paginate(6); // Chuyển sang sử dụng phân trang thay vì get()
+            $featuredPosts = Cache::remember('featured_posts', 3600, function () {
+                return Post::where('is_published', true)
+                    ->where('is_featured', true)
+                    ->latest()
+                    ->paginate(6);
+            });
 
             return view('home', compact('posts', 'featuredPosts'));
         } catch (\Exception $e) {
@@ -57,25 +60,37 @@ class PostController extends Controller
         }
     }
 
-    public function detail($id, $slug)
+    public function show($encodedId)
     {
         try {
-            $post = Post::find($id);
-            // Kiểm tra xem bài viết có tồn tại hay không và slug có khớp không
-            if (!$post || $post->slug !== $slug) {
-                return abort(404, 'Bài viết không tồn tại.');
+            $id = IdEncoder::decode($encodedId);
+            $post = Cache::remember("post.{$id}", 3600, function () use ($id) {
+                return Post::with(['comments.user', 'author', 'category'])
+                    ->findOrFail($id);
+            });
+
+            $isLoggedIn = Auth::check();
+
+            if (request()->expectsJson()) {
+                return new PostResource($post);
             }
 
-            return view('posts.post_detail', compact('post'));
+            return view('posts.post_detail', compact('post', 'isLoggedIn'));
         } catch (ModelNotFoundException $e) {
-            return abort(404, 'Bài viết không tồn tại.');
+            Log::info('Post not found', ['encoded_id' => $encodedId]);
+            return request()->expectsJson()
+                ? response()->json(['error' => 'Bài viết không tồn tại.'], 404)
+                : abort(404, 'Bài viết không tồn tại.');
         } catch (\Exception $e) {
-            return back()->with('error', 'bớt thay URL đi MÁ');
+            Log::error('Error showing post', [
+                'encoded_id' => $encodedId,
+                'error' => $e->getMessage()
+            ]);
+            return request()->expectsJson()
+                ? response()->json(['error' => 'Có lỗi xảy ra.'], 500)
+                : back()->with('error', 'Có lỗi xảy ra. Vui lòng thử lại sau.');
         }
     }
-
-
-
 
     public function index(Request $request)
     {
