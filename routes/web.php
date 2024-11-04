@@ -33,7 +33,9 @@ Route::get('/change_pw', [UserController::class, 'change_user_password'])->name(
 
 // Route cho bài viết
 // Route::get('/homepage/posts/{id}', [PostController::class, 'show'])->name('posts.post_detail');
-Route::get('/homepage/posts/{slug}', [PostController::class, 'show'])->name('posts.post_detail');
+Route::get('/homepage/posts/{id}-{slug}', [PostController::class, 'show'])->name('posts.post_detail');
+
+
 
 
 

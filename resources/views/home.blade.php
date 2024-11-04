@@ -22,8 +22,10 @@
                     @foreach ($posts as $post)
                     <div class="bg-white rounded-lg shadow-md">
                         <h5 class="text-lg font-semibold p-4">
-                            <!-- Sử dụng slug trong URL -->
-                            <a href="{{ route('posts.post_detail', ['slug' => $post->slug]) }}" class="hover:underline">{{ $post->title }}</a>
+
+                            <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}" class="hover:underline">{{ $post->title }}</a>
+
+
                         </h5>
                         <div class="flex">
                             @if ($post->image)
@@ -53,9 +55,9 @@
                     @foreach ($featuredPosts as $postf)
                     <div class="bg-white rounded-lg shadow-md">
                         <h5 class="text-lg font-semibold p-4">
-                            <!-- Sử dụng slug trong URL -->
-                            <a href="{{ route('posts.post_detail', ['slug' => $postf->slug]) }}" class="hover:underline">{{ $postf->title }}</a>
+                            <a href="{{ route('posts.post_detail', [ 'id' => $postf->id, 'slug' => $postf->slug]) }}" class="hover:underline">{{ $postf->title }}</a>
                         </h5>
+
                         <div class="flex">
                             @if ($postf->image)
                             <img src="{{ asset('storage/' . $postf->image) }}"

@@ -38,11 +38,12 @@ class CommentController extends Controller
         // Tạo bình luận mới
         Comment::create([
             'content' => $request->input('content'),
-            'post_id' => $post->id, // Sử dụng ID từ đối tượng Post
+            'post_id' => $post->id,
             'user_id' => Auth::id(),
         ]);
 
         // Chuyển hướng về trang bài viết với thông báo thành công
-        return redirect()->route('posts.post_detail', $post->slug)->with('success', 'Bình luận đã được thêm thành công!');
+        return redirect()->route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug])
+            ->with('success', 'Bình luận đã được thêm thành công!');
     }
 }

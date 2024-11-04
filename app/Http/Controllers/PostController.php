@@ -57,18 +57,25 @@ class PostController extends Controller
         }
     }
 
-    public function show($slug)
+    public function show($id, $slug)
     {
         try {
-            // Lấy bài viết dựa trên slug thay vì ID
-            $post = Post::where('slug', $slug)->firstOrFail();
+            $post = Post::find($id);
+            // Kiểm tra xem bài viết có tồn tại hay không và slug có khớp không
+            if (!$post || $post->slug !== $slug) {
+                return abort(404, 'Bài viết không tồn tại.');
+            }
+
             return view('posts.post_detail', compact('post'));
         } catch (ModelNotFoundException $e) {
             return abort(404, 'Bài viết không tồn tại.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Có lỗi xảy ra. Vui lòng thử lại sau.');
+            return back()->with('error', 'bớt thay URL đi MÁ');
         }
     }
+
+
+
 
     public function index(Request $request)
     {
