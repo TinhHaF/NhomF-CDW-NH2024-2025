@@ -63,32 +63,22 @@ class PostController extends Controller
     public function show($encodedId)
     {
         try {
-            $id = IdEncoder::decode($encodedId);
-            $post = Cache::remember("post.{$id}", 3600, function () use ($id) {
-                return Post::with(['comments.user', 'author', 'category'])
-                    ->findOrFail($id);
-            });
-
-            $isLoggedIn = Auth::check();
-
-            if (request()->expectsJson()) {
-                return new PostResource($post);
+            $post = Post::find($id);
+            if (!$post || $post->slug !== $slug) {
+                return abort(404, 'Bài viết không tồn tại.');
             }
 
-            return view('posts.post_detail', compact('post', 'isLoggedIn'));
+            // Lấy bình luận và phân trang
+            $comments = $post->comments()->orderBy('created_at', 'desc')->paginate(5);
+
+            return view('posts.post_detail', compact('post', 'comments'));
         } catch (ModelNotFoundException $e) {
             Log::info('Post not found', ['encoded_id' => $encodedId]);
             return request()->expectsJson()
                 ? response()->json(['error' => 'Bài viết không tồn tại.'], 404)
                 : abort(404, 'Bài viết không tồn tại.');
         } catch (\Exception $e) {
-            Log::error('Error showing post', [
-                'encoded_id' => $encodedId,
-                'error' => $e->getMessage()
-            ]);
-            return request()->expectsJson()
-                ? response()->json(['error' => 'Có lỗi xảy ra.'], 500)
-                : back()->with('error', 'Có lỗi xảy ra. Vui lòng thử lại sau.');
+            return back()->with('error', 'Có lỗi xảy ra. Vui lòng thử lại sau.');
         }
     }
 

@@ -97,7 +97,7 @@
         </div>
         <div class="content">
             <div class="image">
-                <img alt="{{ $post->title }}"  src="{{ asset('storage/' . $post->image) }}"  />
+                <img alt="{{ $post->title }}" src="{{ asset('storage/' . $post->image) }}" />
             </div>
             <p>
                 {!! $post->content !!}
