@@ -80,9 +80,8 @@ Route::get('/total-visits', [UserStatsController::class, 'getTotalVisits']);
 Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('post.comments.store');
 // Group routes cho admin, chỉ cho phép admin đã xác thực truy cập
 Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-
     Route::prefix('admin')->middleware(['admin'])->group(function () {
+        Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         Route::resource('posts', PostController::class);
     });
 });
