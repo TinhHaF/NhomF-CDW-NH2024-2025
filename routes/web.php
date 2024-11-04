@@ -22,7 +22,7 @@ Route::get('/', [PostController::class, 'homepage'])->name('home');
 // Route cho đăng ký và đăng nhập
 Route::get('/register', [UserController::class, 'registerUser'])->name('user.registerUser');
 Route::post('/register', [UserController::class, 'addUser'])->name('user.addUser');
-Route::get('/login', [UserController::class, 'login'])->name('user.login');
+Route::get('/login', [UserController::class, 'login'])->name('login');
 Route::post('/login', [UserController::class, 'loginUser'])->name('user.loginUser');
 Route::get('logout', [UserController::class, 'logout'])->name('user.logout');
 
