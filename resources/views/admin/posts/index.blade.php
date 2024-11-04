@@ -115,19 +115,20 @@
                                 <form action="{{ route('posts.updateStatus', $post->id) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
+                                    <input type="hidden" name="title" value="{{ $post->title }}" />
+                                    <!-- Thêm trường này -->
                                     <td class="py-2 px-4 border-b">
                                         <input type="checkbox" name="is_featured" value="1"
                                             {{ $post->is_featured ? 'checked' : '' }} onchange="this.form.submit()"
                                             title="Nổi bật bài viết" />
-
                                     </td>
                                     <td class="py-2 px-4 border-b">
-
                                         <input type="checkbox" name="is_published" value="1"
                                             {{ $post->is_published ? 'checked' : '' }} onchange="this.form.submit()"
                                             title="Hiển thị bài viết" />
                                     </td>
                                 </form>
+
 
                                 <td class="py-2 px-4 border-b">
                                     <div class="flex items-center space-x-2">

@@ -29,6 +29,10 @@ class Post extends Model
         'seo_description',
         'seo_keywords'
     ];
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
     // public function getEncodedIdAttribute()
     // {
     //     return \App\Http\Controllers\PostController::encodeId($this->id);
@@ -63,6 +67,14 @@ class Post extends Model
                 ->orWhere('title', 'LIKE', "%{$query}%");
         })->orderBy('created_at', 'desc')->paginate(10);
     }
+    // Method for bulk deletion
+    public static function bulkDelete($postIds)
+    {
+        self::whereIn('id', $postIds)->each(function ($post) {
+            $post->deleteImage();
+            $post->delete();
+        });
+    }
 
     // Method to handle image storage
     public function storeImage($image)
@@ -90,14 +102,6 @@ class Post extends Model
         $this->save();
     }
 
-    // Method for bulk deletion
-    public static function bulkDelete($postIds)
-    {
-        self::whereIn('id', $postIds)->each(function ($post) {
-            $post->deleteImage();
-            $post->delete();
-        });
-    }
 
     // Method for copying a post
     public function copy()
@@ -140,8 +144,8 @@ class Post extends Model
      * @param string $encodedId
      * @return int
      */
-    // public static function decodeId($encodedId)
-    // {
-    //     return IdEncoder::decode($encodedId);
-    // }
+    public static function decodeId($encodedId)
+    {
+        return IdEncoder::decode($encodedId);
+    }
 }

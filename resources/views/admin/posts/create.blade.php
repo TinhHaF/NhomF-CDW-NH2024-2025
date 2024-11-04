@@ -2,6 +2,13 @@
 @section('content')
 
     <body class="bg-gray-100">
+        {{-- @if ($errors->any())
+            <div class="alert alert-danger">
+                @foreach ($errors->all() as $error)
+                    <p>{{ $error }}</p>
+                @endforeach
+            </div>
+        @endif --}}
         <div class="flex flex-col md:flex-row m-4">
             <div class="w-full md:w-5/5">
 
@@ -75,7 +82,7 @@
                                                         <label class="block">Đường dẫn mẫu (vi):
                                                             <span class="pl-2 font-normal text-gray-700"
                                                                 id="slugurlpreviewvi">http://127.0.0.1:8000/
-                                                                <strong class="text-blue-600">$value</strong>
+                                                                <strong class="text-blue-600"></strong>
                                                             </span>
                                                         </label>
                                                         <input type="text" name="slug" id="slug" required
@@ -152,12 +159,12 @@
                             </div>
                             <div class="mb-4 bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
                                 <label class="block font-semibold mb-2">Danh Mục</label>
-                                <select name="category_id"
-                                    class="bg-white border border-gray-300 rounded px-3 h-10 w-full" required>
+                                <select name="category_id" id="category_id" required
+                                    class="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="">Chọn danh mục</option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}"
-                                            {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                        <option value="{{ $category->category_id }}"
+                                            {{ old('category_id') == $category->category_id ? 'selected' : '' }}>
                                             {{ $category->name }}
                                         </option>
                                     @endforeach
@@ -214,15 +221,29 @@
             </div>
         </div>
 
-        <script>
-            function confirmReset() {
-                if (confirm("Bạn có chắc chắn muốn làm lại không?")) {
-                    document.getElementById('newsForm').reset(); // Reset the form
-                    // Optional: Reset any preview images or other specific fields if needed
-                    document.getElementById('previewImage').src =
-                        '{{ asset('images/no-image-available.jpg') }}'; // Reset image preview
-                }
-            }
-        </script>
+
     </body>
 @endsection
+
+@push('scripts')
+    <script>
+        function confirmReset() {
+            if (confirm("Bạn có chắc chắn muốn làm lại không?")) {
+                document.getElementById("postForm").reset();
+                document.getElementById("previewImage").src = '{{ asset('images/no-image-available.jpg') }}';
+            }
+        }
+
+        function previewFile() {
+            const file = document.getElementById('image').files[0];
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('previewImage').src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+@endpush
+{{-- @php
+    \Log::info('Categories in view:', ['categories' => $categories->toArray()]);
+@endphp --}}

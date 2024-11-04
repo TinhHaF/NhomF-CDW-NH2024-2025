@@ -224,7 +224,9 @@ class ImageHandler {
 
             // Check file size
             if (file.size > CONFIG.MAX_FILE_SIZE) {
-                this.modalSystem.show("Kích thước file quá lớn");
+                this.modalSystem.show(
+                    "Dung lượng hình ảnh lớn. Dung lượng cho phép <= 5MB ~ 5096KB"
+                );
                 return false;
             }
 
@@ -237,7 +239,7 @@ class ImageHandler {
                     URL.revokeObjectURL(img.src);
                     if (
                         img.width !== CONFIG.IMAGE_WIDTH ||
-                        img.height !== CONFIG.IMAGE_HEIGHT
+                        img.height < CONFIG.IMAGE_HEIGHT
                     ) {
                         this.modalSystem.show(
                             `Kích thước hình ảnh phải là ${CONFIG.IMAGE_WIDTH}x${CONFIG.IMAGE_HEIGHT} pixels`
@@ -360,32 +362,6 @@ document.getElementById("selectAll").addEventListener("click", function () {
     });
 });
 
-// tính số lượng bài viết được chọn để xóa
-const selectAllCheckbox = document.getElementById("selectAll"); // Lấy checkbox "Chọn tất cả"
-const itemCheckboxes = document.querySelectorAll(".selectItem"); // Lấy tất cả checkbox trong bảng
-const selectedCountSpan = document.getElementById("selectedCount"); // Lấy phần tử hiển thị số lượng đã chọn
-
-// Hàm cập nhật số lượng bài viết được chọn
-function updateSelectedCount() {
-    const selectedCount = document.querySelectorAll(
-        ".selectItem:checked"
-    ).length; // Đếm số checkbox được chọn
-    selectedCountSpan.textContent = selectedCount; // Cập nhật số lượng vào phần tử hiển thị
-}
-
-// Lắng nghe sự kiện thay đổi cho từng checkbox
-itemCheckboxes.forEach((checkbox) => {
-    checkbox.addEventListener("change", updateSelectedCount); // Gọi hàm cập nhật khi checkbox thay đổi
-});
-
-// Lắng nghe sự kiện cho checkbox "Chọn tất cả" để cập nhật tất cả checkbox và số lượng
-selectAllCheckbox.addEventListener("click", function () {
-    itemCheckboxes.forEach((checkbox) => {
-        checkbox.checked = selectAllCheckbox.checked; // Đặt trạng thái checkbox theo trạng thái của "Chọn tất cả"
-    });
-    updateSelectedCount(); // Cập nhật số lượng đã chọn
-});
-
 // hàm slug thanh địa chỉ
 function generateSlug() {
     const title = document.getElementById("title").value;
@@ -398,53 +374,199 @@ function generateSlug() {
         .replace(/[^a-z0-9\s-]/g, "") //Xóa ký tự đặc biệt
         .replace(/[\s-]+/g, "-"); //Thay khoảng trắng bằng dấu -, ko cho 2 -- liên tục
     document.getElementById("slug").value = slug;
+    document.getElementById('slugurlpreviewvi').querySelector('strong').textContent = slug;
 }
 
-const titleInput = document.getElementById("title");
-const slugInput = document.getElementById("slug");
-const autoUpdateSlug = document.getElementById("autoUpdateSlug");
-const slugDuplicateError = document.getElementById("slugDuplicateError");
+// function slugConvert(slug, focus = false) {
+//     slug = slug.toLowerCase();
+//     slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, "a");
+//     slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, "e");
+//     slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, "i");
+//     slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, "o");
+//     slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, "u");
+//     slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, "y");
+//     slug = slug.replace(/đ/gi, "d");
+//     slug = slug.replace(
+//         /\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi,
+//         ""
+//     );
+//     slug = slug.replace(/ /gi, "-");
+//     slug = slug.replace(/\-\-\-\-\-/gi, "-");
+//     slug = slug.replace(/\-\-\-\-/gi, "-");
+//     slug = slug.replace(/\-\-\-/gi, "-");
+//     slug = slug.replace(/\-\-/gi, "-");
 
-let isSlugUpdated = false;
+//     if (!focus) {
+//         slug = "@" + slug + "@";
+//         slug = slug.replace(/\@\-|\-\@|\@/gi, "");
+//     }
 
-titleInput.addEventListener("input", function () {
-    if (autoUpdateSlug.checked && !isSlugUpdated) {
-        updateSlug();
-        isSlugUpdated = true; // Chỉ cho phép cập nhật slug một lần khi checkbox được chọn
+//     return slug;
+// }
+// function slugPreview(title, lang, focus = false) {
+//     var slug = slugConvert(title, focus);
+
+//     $("#slug" + lang).val(slug);
+//     $("#slugurlpreview" + lang + " strong").html(slug);
+//     $("#seourlpreview" + lang + " strong").html(slug);
+// }
+// function slugPreviewTitleSeo(title, lang) {
+//     if ($("#title" + lang).length) {
+//         var titleSeo = $("#title" + lang).val();
+//         if (!titleSeo) {
+//             if (title) $("#title-seo-preview" + lang).html(title);
+//             else $("#title-seo-preview" + lang).html("Title");
+//         }
+//     }
+// }
+// function slugPress() {
+//     var sluglang = "vi,en";
+//     var inputArticle = $(".card-article input.for-seo");
+//     var id = $(".slug-id").val();
+//     var seourlstatic = true;
+//     //var seourlstatic = $(".slug-seo-preview").data("seourlstatic");
+
+//     inputArticle.each(function (index) {
+//         var ten = $(this).attr("id");
+//         var lang = ten.substr(ten.length - 2);
+//         if (sluglang.indexOf(lang) >= 0) {
+//             if ($("#" + ten).length) {
+//                 $("body").on("keyup", "#" + ten, function () {
+//                     var title = $("#" + ten).val();
+
+//                     if (
+//                         (!id || $("#slugchange").prop("checked")) &&
+//                         seourlstatic
+//                     ) {
+//                         /* Slug preivew */
+//                         slugPreview(title, lang);
+//                     }
+
+//                     /* Slug preivew title seo */
+//                     slugPreviewTitleSeo(title, lang);
+
+//                     /* slug Alert */
+//                     slugAlert(2, lang);
+//                 });
+//             }
+
+//             if ($("#slug" + lang).length) {
+//                 $("body").on("keyup", "#slug" + lang, function () {
+//                     var title = $("#slug" + lang).val();
+
+//                     /* Slug preivew */
+//                     slugPreview(title, lang, true);
+
+//                     /* slug Alert */
+//                     slugAlert(2, lang);
+//                 });
+//             }
+//         }
+//     });
+// }
+// function slugChange(obj) {
+//     if (obj.is(":checked")) {
+//         /* Load slug theo tiêu đề mới */
+//         slugStatus(1);
+//         $(".slug-input").attr("readonly", true);
+//     } else {
+//         /* Load slug theo tiêu đề cũ */
+//         slugStatus(0);
+//         $(".slug-input").attr("readonly", false);
+//     }
+// }
+// function slugStatus(status) {
+//     var sluglang = "vi,en";
+//     var inputArticle = $(".card-article input.for-seo");
+
+//     inputArticle.each(function (index) {
+//         var ten = $(this).attr("id");
+//         var lang = ten.substr(ten.length - 2);
+//         if (sluglang.indexOf(lang) >= 0) {
+//             var title = "";
+//             if (status == 1) {
+//                 if ($("#" + ten).length) {
+//                     title = $("#" + ten).val();
+
+//                     /* Slug preivew */
+//                     slugPreview(title, lang);
+
+//                     /* Slug preivew title seo */
+//                     slugPreviewTitleSeo(title, lang);
+//                 }
+//             } else if (status == 0) {
+//                 if ($("#slug-default" + lang).length) {
+//                     title = $("#slug-default" + lang).val();
+
+//                     /* Slug preivew */
+//                     slugPreview(title, lang);
+
+//                     /* Slug preivew title seo */
+//                     slugPreviewTitleSeo(title, lang);
+//                 }
+//             }
+//         }
+//     });
+// }
+// function slugAlert(result, lang) {
+//     if (result == 1) {
+//         $("#alert-slug-danger" + lang).addClass("d-none");
+//         $("#alert-slug-success" + lang).removeClass("d-none");
+//     } else if (result == 0) {
+//         $("#alert-slug-danger" + lang).removeClass("d-none");
+//         $("#alert-slug-success" + lang).addClass("d-none");
+//     } else if (result == 2) {
+//         $("#alert-slug-danger" + lang).addClass("d-none");
+//         $("#alert-slug-success" + lang).addClass("d-none");
+//     }
+// }
+// function slugCheck() {
+//     var sluglang = "vi,en";
+//     var slugInput = $(".slug-input");
+//     var id = $(".slug-id").val(); // Giả sử đây là post_id
+//     var copy = $(".slug-copy").val();
+
+//     slugInput.each(function (index) {
+//         var slugId = $(this).attr("id");
+//         var slug = $(this).val();
+//         var lang = slugId.substr(slugId.length - 2);
+//         if (sluglang.indexOf(lang) >= 0) {
+//             if (slug) {
+//                 $.ajax({
+//                     url: "/slug/check", // Đường dẫn đến phương thức checkSlug trong SlugController
+//                     type: "POST",
+//                     dataType: "json", // Thay đổi thành json để xử lý dữ liệu trả về
+//                     async: false,
+//                     data: {
+//                         slug: slug,
+//                         post_id: id, // Gửi post_id (hoặc id của đối tượng mà bạn muốn kiểm tra)
+//                         _token: $('meta[name="csrf-token"]').attr("content"), // Nếu bạn có sử dụng CSRF
+//                     },
+//                     success: function (result) {
+//                         slugAlert(result.message, lang);
+//                     },
+//                     error: function (xhr) {
+//                         console.error(xhr.responseText); // Log lỗi nếu có
+//                     },
+//                 });
+//             }
+//         }
+//     });
+// }
+
+// Track form changes
+let formChanged = false;
+const form = document.getElementById("postForm");
+const originalFormData = new FormData(form);
+
+// Function to check if form has changed
+function hasFormChanged() {
+    const currentFormData = new FormData(form);
+    for (const [key, value] of currentFormData.entries()) {
+        if (originalFormData.get(key) !== value) {
+            return true;
+        }
     }
-});
-
-autoUpdateSlug.addEventListener("change", function () {
-    if (this.checked) {
-        updateSlug(); // Cập nhật slug ngay khi checkbox được chọn
-        isSlugUpdated = true; // Đánh dấu đã cập nhật slug
-    } else {
-        isSlugUpdated = false; // Cho phép cập nhật lại nếu checkbox được chọn lại
-    }
-});
-
-function updateSlug() {
-    const slug = titleInput.value
-        .trim()
-        .normalize("NFKD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[đĐ]/g, "d") //Xóa dấu
-        .toLowerCase() //Cắt khoảng trắng đầu, cuối và chuyển chữ thường
-        .replace(/[^a-z0-9\s-]/g, "") //Xóa ký tự đặc biệt
-        .replace(/[\s-]+/g, "-"); //Thay khoảng trắng bằng dấu -, ko cho 2 -- liên tục
-    slugInput.value = slug;
-    checkSlugDuplicate(slug);
+    return false;
 }
 
-function checkSlugDuplicate(slug) {
-    fetch(`/check-slug?slug=${slug}`)
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.exists) {
-                slugDuplicateError.classList.remove("hidden");
-            } else {
-                slugDuplicateError.classList.add("hidden");
-            }
-        })
-        .catch((error) => console.error("Error:", error));
-}

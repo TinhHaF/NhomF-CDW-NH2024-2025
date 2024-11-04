@@ -10,6 +10,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\SlugController;
 use App\Http\Controllers\UserStatsController;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 // Route trang chủ
 Route::get('/', [PostController::class, 'homepage'])->name('home');
@@ -33,13 +36,9 @@ Route::get('/homepage/posts/{encodedId}', [PostController::class, 'show'])->name
 
 
 // Group routes cho admin, chỉ cho phép admin đã xác thực truy cập
-Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-
-    Route::prefix('admin')->middleware(['admin'])->group(function () {
-        Route::resource('posts', PostController::class);
-    });
-});
+Route::post('/check-slug', [SlugController::class, 'checkSlug'])
+    ->name('check.slug')
+    ->middleware(['auth']);
 
 
 // Routes cho các category và author
@@ -47,10 +46,25 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/authors', [AuthorController::class, 'index']);
 
 // Routes cho các hành động khác liên quan đến bài viết
-Route::patch('/posts/{id}/updateStatus', [PostController::class, 'updateStatus'])->name('posts.updateStatus');
+Route::patch('posts/{post}/update-status', [PostController::class, 'updateStatus'])->name('posts.updateStatus');
+
+
 Route::post('posts/bulk-delete', [PostController::class, 'bulkDelete'])->name('posts.bulk-delete');
 Route::post('/posts/{post}/copy', [PostController::class, 'copy'])->name('posts.copy');
-Route::get('/check-slug', [SlugController::class, 'checkSlug'])->name('check.slug');
+
+
+Route::post('/check-slug', function (Request $request) {
+    $validator = Validator::make($request->all(), [
+        'slug' => [
+            'required',
+            Rule::unique('posts', 'slug')->ignore($request->post_id),
+        ]
+    ]);
+
+    return response()->json([
+        'duplicate' => $validator->fails()
+    ]);
+});
 
 // Routes thống kê người dùng
 Route::get('/online-users', [UserStatsController::class, 'getOnlineUsers']);

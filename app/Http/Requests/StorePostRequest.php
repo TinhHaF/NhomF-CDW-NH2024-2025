@@ -15,8 +15,9 @@ class StorePostRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255|unique:posts,title',
+            'slug' => 'required|string|max:255|unique:posts,slug',
             'content' => 'required|string',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'required|exists:categories,category_id',
             'author_id' => 'required|exists:authors,id',
             'seo_title' => 'required|string|max:255',
             'seo_description' => 'required|string',
@@ -33,6 +34,9 @@ class StorePostRequest extends FormRequest
             'title.required' => 'Tiêu đề là bắt buộc.',
             'title.unique' => 'Tiêu đề đã tồn tại.',
             'title.max' => 'Tiêu đề không được vượt quá 255 ký tự.',
+            'slug.required' => 'Đường dẫn là bắt buộc.',
+            'slug.unique' => 'Đường dẫn đã tồn tại.',
+            'slug.max' => 'Đường dẫn không được vượt quá 255 ký tự.',
             'content.required' => 'Nội dung là bắt buộc.',
             'category_id.required' => 'Danh mục là bắt buộc.',
             'category_id.exists' => 'Danh mục không hợp lệ.',
@@ -43,7 +47,7 @@ class StorePostRequest extends FormRequest
             'seo_keywords.required' => 'Từ khóa SEO là bắt buộc.',
             'image.image' => 'File phải là một hình ảnh.',
             'image.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg, hoặc gif.',
-            'image.max' => 'Ảnh không được vượt quá 2MB.',
+            'image.max' => 'Ảnh không được vượt quá 5MB.',
         ];
     }
 }

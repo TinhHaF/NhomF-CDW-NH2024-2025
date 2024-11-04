@@ -15,8 +15,8 @@
     <link rel="stylesheet" href="{{ asset('css/fontawesome-free-6.6.0-web/css/all.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     {{-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> --}}
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
     {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
     <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
     <script src="{{ asset('js/highcharts.js') }}"></script>
@@ -45,7 +45,7 @@
 </head>
 
 <body class="bg-gray-100">
-@include('components.notifications')
+    @include('components.notifications')
     <div class="flex flex-col md:flex-row">
         <!-- Sidebar -->
         <div class="w-64 bg-white shadow-md">
@@ -63,7 +63,8 @@
                         </a>
                     </li>
                     <li class="px-4 py-2 hover:bg-gray-200">
-                        <a class="flex items-center hover:text-red-500 cursor-pointer" data-toggle="dropdown" href="{{ route('posts.index') }}">
+                        <a class="flex items-center hover:text-red-500 cursor-pointer" data-toggle="dropdown"
+                            href="{{ route('posts.index') }}">
                             <i class="fa-solid fa-newspaper mr-2"></i>
                             Quản lý bài viết
                             <i class="fa-solid fa-chevron-up ml-auto"></i>
@@ -135,13 +136,58 @@
 
         </div>
     </div>
-
+    @stack('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <script>
         // Khởi tạo CKEditor 4 cho phần tử textarea với id "editor"
-        CKEDITOR.replace('editor');
+        CKEDITOR.replace('editor', {
+            height: 400,
+            removeButtons: 'PasteFromWord',
+            //Cấu hình thêm cho CKEditor nếu cần
+            filebrowserImageBrowseUrl: '/filemanager?type=Images',
+            filebrowserImageUploadUrl: '/filemanager/upload?type=Images&_token=',
+            filebrowserBrowseUrl: '/filemanager?type=Files',
+            filebrowserUploadUrl: '/filemanager/upload?type=Files&_token=',
+        });
+        CKEDITOR.on('instanceReady', function(ev) {
+            var editor = ev.editor;
+            editor.on('notificationShow', function(evt) {
+                if (evt.data.message.indexOf('This CKEditor') !== -1) {
+                    evt.cancel();
+                }
+            });
+        });
+
+
+        // tính số lượng bài viết được chọn để xóa
+        const selectAllCheckbox = document.getElementById("selectAll"); // Lấy checkbox "Chọn tất cả"
+        const itemCheckboxes = document.querySelectorAll(".selectItem"); // Lấy tất cả checkbox trong bảng
+        const selectedCountSpan = document.getElementById("selectedCount"); // Lấy phần tử hiển thị số lượng đã chọn
+
+        // Hàm cập nhật số lượng bài viết được chọn
+        function updateSelectedCount() {
+            const selectedCount = document.querySelectorAll(
+                ".selectItem:checked"
+            ).length; // Đếm số checkbox được chọn
+            selectedCountSpan.textContent = selectedCount; // Cập nhật số lượng vào phần tử hiển thị
+        }
+
+        // Lắng nghe sự kiện thay đổi cho từng checkbox
+        itemCheckboxes.forEach((checkbox) => {
+            checkbox.addEventListener("change", updateSelectedCount); // Gọi hàm cập nhật khi checkbox thay đổi
+        });
+
+        // Lắng nghe sự kiện cho checkbox "Chọn tất cả" để cập nhật tất cả checkbox và số lượng
+        selectAllCheckbox.addEventListener("click", function() {
+            itemCheckboxes.forEach((checkbox) => {
+                checkbox.checked = selectAllCheckbox
+                    .checked; // Đặt trạng thái checkbox theo trạng thái của "Chọn tất cả"
+            });
+            updateSelectedCount(); // Cập nhật số lượng đã chọn
+        });
     </script>
+   
     <script src="{{ asset('js/custom.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>

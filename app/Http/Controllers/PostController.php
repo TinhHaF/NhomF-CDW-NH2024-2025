@@ -128,10 +128,11 @@ class PostController extends Controller
         try {
             $categories = Cache::remember('categories.all', 3600, fn() => Category::all());
             $authors = Cache::remember('authors.all', 3600, fn() => Author::all());
-
+            Log::info('Categories being passed to view:', ['categories' => $categories->toArray()]);
             return view('admin.posts.create', compact('categories', 'authors'));
         } catch (\Exception $e) {
             Log::error('Error loading create post form', ['error' => $e->getMessage()]);
+
             return back()->with('error', 'Có lỗi xảy ra khi tải form tạo bài viết.');
         }
     }
@@ -139,6 +140,7 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
         try {
+            // dd($request->all()); // Thêm dòng này để debug
             $post = $this->postService->create(
                 $request->validated(),
                 $request->hasFile('image') ? $request->file('image') : null
@@ -159,6 +161,7 @@ class PostController extends Controller
                 'error' => $e->getMessage(),
                 'user_id' => Auth::id()
             ]);
+            Log::info('Category ID received:', ['category_id' => $request->category_id]);
             return $request->expectsJson()
                 ? response()->json(['error' => 'Không thể tạo bài viết.'], 500)
                 : back()->withInput()->with('error', 'Có lỗi xảy ra khi tạo bài viết.');
@@ -237,14 +240,18 @@ class PostController extends Controller
         }
     }
 
-    public function updateStatus(Request $request, Post $post)
+    public function updateStatus(Request $request, $id)
     {
         try {
+            $post = Post::findOrFail($id);
+
+            // Cập nhật trạng thái
             $post->updateStatus(
                 $request->has('is_featured'),
                 $request->has('is_published')
             );
 
+            // Log khi cập nhật thành công
             Log::info('Post status updated', [
                 'post_id' => $post->id,
                 'user_id' => Auth::id(),
@@ -252,21 +259,23 @@ class PostController extends Controller
                 'published' => $request->has('is_published')
             ]);
 
-            // Cache::tags(['posts', 'homepage'])->flush();
-
             return request()->expectsJson()
                 ? new PostResource($post)
                 : redirect()->route('posts.index')->with('success', 'Trạng thái bài viết đã cập nhật!');
         } catch (\Exception $e) {
+            // Ghi log lỗi với ID nếu bài viết không tìm thấy
             Log::error('Post status update failed', [
-                'post_id' => $post->id,
+                'post_id' => $id,
                 'error' => $e->getMessage()
             ]);
+
             return request()->expectsJson()
                 ? response()->json(['error' => 'Không thể cập nhật trạng thái.'], 500)
                 : back()->with('error', 'Có lỗi xảy ra khi cập nhật trạng thái.');
         }
     }
+
+
 
     public function bulkDelete(Request $request)
     {

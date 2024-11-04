@@ -22,11 +22,9 @@
                     </ol>
                 </nav>
 
-                <!-- Buttons moved outside of the form -->
                 <div class="flex flex-col md:flex-row mb-4">
-                    <button
-                        class="flex items-center bg-blue-500 text-white px-4 py-2 rounded mr-2 mb-2 md:mb-0 hover:bg-blue-600"
-                        type="submit" form="postForm">
+                    <button type="submit" form="postForm"
+                        class="flex items-center bg-blue-500 text-white px-4 py-2 rounded mr-2 mb-2 md:mb-0 hover:bg-blue-600">
                         <i class="fas fa-save mr-2"></i>Cập Nhật
                     </button>
                     <button type="reset" onclick="history.back()"
@@ -71,36 +69,22 @@
                                         </div>
                                         <div class="p-4">
                                             <div class="tab-content" id="custom-tabs-three-tabContent-lang">
-                                                <div class="tab-pane fade show active" id="tabs-sluglang-vi" role="tabpanel"
+                                                <div class="tab-pane fade show active" id="tabs-sluglang-vi"
                                                     aria-labelledby="tabs-lang">
                                                     <div class="mb-0">
                                                         <label class="block">Đường dẫn mẫu (vi):<span
                                                                 class="pl-2 font-normal text-gray-700"
-                                                                id="slugurlpreviewvi">http://lacoly.com.vn/<strong
-                                                                    class="text-blue-600">top-san-pham-kem-duong-trang-da-toan-than-cap-toc-an-toan</strong></span></label>
-                                                        <div id="slugDuplicateError" class="text-red-600 hidden">
-                                                            Slug đã tồn tại, vui lòng chọn slug khác.
-                                                        </div>
+                                                                id="slugurlpreviewvi">http://127.0.0.1:8000/<strong
+                                                                    class="text-blue-600"
+                                                                    id="slug-preview">{{ $post->slug }}</strong></span></label>
+                                                        <div id="slugDuplicateError" class="text-red-600 hidden">Slug đã tồn
+                                                            tại, vui lòng chọn slug khác.</div>
                                                         <div class="mb-4">
                                                             <input type="text" name="slug" id="slug"
                                                                 value="{{ $post->slug }}" required
                                                                 class="h-10 border border-gray-300 rounded w-full px-3 focus:outline-none focus:border-blue-500 placeholder-gray-500"
                                                                 placeholder="Slug tự động tạo">
                                                         </div>
-                                                        <input type="hidden" id="slug-defaultvi"
-                                                            value="top-san-pham-kem-duong-trang-da-toan-than-cap-toc-an-toan">
-                                                        <p class="alert-slugvi text-red-500 hidden mt-2 mb-0"
-                                                            id="alert-slug-dangervi">
-                                                            <i class="fas fa-exclamation-triangle mr-1"></i>
-                                                            <span>Đường dẫn đã tồn tại. Đường dẫn truy cập mục này có thể bị
-                                                                trùng
-                                                                lặp.</span>
-                                                        </p>
-                                                        <p class="alert-slugvi text-green-500 hidden mt-2 mb-0"
-                                                            id="alert-slug-successvi">
-                                                            <i class="fas fa-check-circle mr-1"></i>
-                                                            <span>Đường dẫn hợp lệ.</span>
-                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -130,14 +114,14 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="w-full md:w-1/3 pl-0 md:pl-4 mt-4 md:mt-0">
                             <div class="mb-4 bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
                                 <label class="block font-semibold mb-2">Hình ảnh Tin tức</label>
                                 <div class="border border-gray-300 rounded p-4 text-center">
                                     <img alt="Preview image" class="mx-auto mb-4" height="205" width="250"
-                                        {{-- id="previewImage" --}} src="{{ asset('storage/' . $post->image) }}"
+                                        id="previewImage" src="{{ asset('storage/' . $post->image) }}"
                                         style="display: block;" />
-
                                     <div class="bg-[#F5F5F5] border-dashed border-2 border-gray-400 p-4">
                                         <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
                                         <p>Kéo và thả hình vào đây</p>
@@ -154,19 +138,20 @@
                                         (.jpg|.gif|.png|.jpeg|.JPG|.PNG|.GIF)</p>
                                 </div>
                             </div>
+
                             <div class="mb-4 bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
                                 <label class="block font-semibold mb-2">Danh Mục</label>
                                 <select name="category_id"
                                     class="bg-white border border-gray-300 rounded px-3 h-10 w-full" required>
                                     <option value="">Chọn danh mục</option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}"
-                                            {{ $post->category_id == $category->id ? 'selected' : '' }}>
-                                            {{ $category->name }}
-                                        </option>
+                                        <option value="{{ $category->category_id }}"
+                                            {{ $post->category_id == $category->category_id ? 'selected' : '' }}>
+                                            {{ $category->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
+
                             <div class="mb-4 bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
                                 <label class="block font-semibold mb-2">Tác Giả</label>
                                 <select name="author_id" class="bg-white border border-gray-300 rounded px-3 h-10 w-full"
@@ -175,8 +160,7 @@
                                     @foreach ($authors as $author)
                                         <option value="{{ $author->id }}"
                                             {{ $post->author_id == $author->id ? 'selected' : '' }}>
-                                            {{ $author->pen_name }}
-                                        </option>
+                                            {{ $author->pen_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -200,25 +184,192 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Buttons moved outside of the form -->
-                    <div class="flex flex-col md:flex-row mt-4">
-                        <button
-                            class="flex items-center bg-blue-500 text-white px-4 py-2 rounded mr-2 mb-2 md:mb-0 hover:bg-blue-600"
-                            type="submit" form="postForm">
-                            <i class="fas fa-save mr-2"></i>Cập Nhật
-                        </button>
-                        <button type="reset" onclick="history.back()"
-                            class="flex items-center bg-gray-300 text-gray-800 px-4 py-2 rounded mr-2 mb-2 md:mb-0 hover:bg-gray-400">
-                            <i class="fas fa-redo mr-2"></i>Làm Lại
-                        </button>
-                        <a href="{{ route('posts.index') }}"
-                            class="flex items-center bg-red-500 text-white px-4 py-2 rounded mr-2 mb-2 md:mb-0 hover:bg-red-600">
-                            <i class="fas fa-times mr-2"></i>Thoát
-                        </a>
-                    </div>
                 </form>
-
+                <div class="flex flex-col md:flex-row mb-4">
+                    <button type="submit" form="postForm"
+                        class="flex items-center bg-blue-500 text-white px-4 py-2 rounded mr-2 mb-2 md:mb-0 hover:bg-blue-600">
+                        <i class="fas fa-save mr-2"></i>Cập Nhật
+                    </button>
+                    <button type="reset" onclick="history.back()"
+                        class="flex items-center bg-gray-300 text-gray-800 px-4 py-2 rounded mr-2 mb-2 md:mb-0 hover:bg-gray-400">
+                        <i class="fas fa-redo mr-2"></i>Làm Lại
+                    </button>
+                    <a href="{{ route('posts.index') }}"
+                        class="flex items-center bg-red-500 text-white px-4 py-2 rounded mr-2 mb-2 md:mb-0 hover:bg-red-600">
+                        <i class="fas fa-times mr-2"></i>Thoát
+                    </a>
+                </div>
             </div>
         </div>
     </body>
 @endsection
+
+@push('scripts')
+    <script>
+        // function previewFile() {
+        //     const preview = document.getElementById('previewImage');
+        //     const file = document.getElementById('image').files[0];
+        //     const reader = new FileReader();
+
+        //     reader.onloadend = function() {
+        //         preview.src = reader.result;
+        //     };
+
+        //     if (file) {
+        //         reader.readAsDataURL(file);
+        //     } else {
+        //         preview.src = "";
+        //     }
+        // }
+
+        // Xử lý sự kiện khi người dùng nhập tiêu đề
+        // Xử lý sự kiện khi người dùng nhập tiêu đề
+        document.getElementById('title').addEventListener('input', function() {
+            const title = this.value;
+            const slugField = document.getElementById('slug');
+            const slugPreview = document.getElementById('slug-preview'); // Lấy phần tử hiển thị slug
+
+            if (document.getElementById('slugchange').checked) {
+                // Tạo slug từ tiêu đề
+                let slug = title
+                    .normalize("NFKD") // Chuyển đổi chuẩn
+                    .replace(/[\u0300-\u036f]/g, "") // Xóa dấu
+                    .replace(/[đĐ]/g, "d") // Thay thế chữ có dấu
+                    .trim() // Cắt khoảng trắng đầu và cuối
+                    .toLowerCase() // Chuyển thành chữ thường
+                    .replace(/[^a-z0-9\s-]/g, "") // Xóa ký tự đặc biệt
+                    .replace(/[\s-]+/g, "-"); // Thay khoảng trắng bằng dấu '-', không cho 2 dấu '-' liên tiếp
+
+                // Cập nhật giá trị slug và preview
+                slugField.value = slug;
+                slugPreview.textContent = slug; // Cập nhật hiển thị slug
+            }
+        });
+
+        // Xử lý checkbox để tạo slug tự động
+        document.getElementById('slugchange').addEventListener('change', function() {
+            const slugField = document.getElementById('slug');
+            const title = document.getElementById('title').value; // Lấy giá trị tiêu đề
+            const slugPreview = document.getElementById('slug-preview'); // Lấy phần tử hiển thị slug
+
+            if (this.checked) {
+                // Tạo slug từ tiêu đề
+                let slug = title
+                    .normalize("NFKD") // Chuyển đổi chuẩn
+                    .replace(/[\u0300-\u036f]/g, "") // Xóa dấu
+                    .replace(/[đĐ]/g, "d") // Thay thế chữ có dấu
+                    .trim() // Cắt khoảng trắng đầu và cuối
+                    .toLowerCase() // Chuyển thành chữ thường
+                    .replace(/[^a-z0-9\s-]/g, "") // Xóa ký tự đặc biệt
+                    .replace(/[\s-]+/g, "-"); // Thay khoảng trắng bằng dấu '-', không cho 2 dấu '-' liên tiếp
+
+                slugField.value = slug; // Cập nhật slug
+                slugPreview.textContent = slug; // Cập nhật hiển thị slug
+            } else {
+                slugField.value = '{{ $post->slug }}'; // Khôi phục lại slug gốc
+                slugPreview.textContent = slugField.value; // Khôi phục hiển thị slug
+            }
+        });
+
+        // Kiểm tra slug trùng lặp
+        document.getElementById('slug').addEventListener('input', function() {
+            const slug = this.value;
+            const slugDuplicateError = document.getElementById('slugDuplicateError');
+
+            // Thực hiện AJAX kiểm tra slug trùng lặp
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `/check-slug?slug=${slug}`, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    if (xhr.responseText === 'duplicate') {
+                        slugDuplicateError.classList.remove('hidden'); // Hiện thông báo lỗi
+                    } else {
+                        slugDuplicateError.classList.add('hidden'); // Ẩn thông báo lỗi
+                    }
+                }
+            };
+            xhr.send();
+        });
+
+
+        // Add change event listener to all form elements
+        form.addEventListener("change", () => {
+            formChanged = true;
+        });
+
+        // Add confirmation before leaving page
+        window.addEventListener("beforeunload", (e) => {
+            if (formChanged) {
+                e.preventDefault();
+                e.returnValue =
+                    "Bạn có thay đổi chưa được lưu. Bạn có chắc chắn muốn rời đi?";
+            }
+        });
+
+        // Loading state for submit button
+        form.addEventListener("submit", (e) => {
+            const submitBtn = document.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Đang cập nhật...`;
+        });
+        // SEO Preview
+        const seoTitleInput = document.getElementById("seo_title");
+        const seoDescriptionInput = document.getElementById("seo_description");
+
+        // Update SEO Preview
+        function updateSEOPreview() {
+            const titlePreview = document.getElementById("seoPreviewTitle");
+            const descriptionPreview = document.getElementById("seoPreviewDescription");
+            const slugPreview = document.getElementById("seoPreviewSlug");
+
+            // Update title
+            seoTitleInput.addEventListener("input", function() {
+                titlePreview.textContent = this.value || "SEO Title Preview";
+            });
+
+            // Update description
+            seoDescriptionInput.addEventListener("input", function() {
+                descriptionPreview.textContent =
+                    this.value || "SEO Description Preview";
+            });
+
+            // Update slug
+            document.getElementById("slug").addEventListener("input", function() {
+                slugPreview.textContent = this.value;
+            });
+        }
+
+        // Initialize SEO Preview
+        document.addEventListener("DOMContentLoaded", function() {
+            updateSEOPreview();
+        });
+
+        // Character count for SEO fields
+        function addCharacterCount(input, maxLength) {
+            const wrapper = input.parentElement;
+            const counter = document.createElement("div");
+            counter.className = "text-sm text-gray-500 mt-1";
+            wrapper.appendChild(counter);
+
+            function updateCounter() {
+                const remaining = maxLength - input.value.length;
+                counter.textContent = `${input.value.length}/${maxLength} ký tự`;
+                counter.className = `text-sm mt-1 ${
+            remaining < 0 ? "text-red-500" : "text-gray-500"
+        }`;
+            }
+
+            input.addEventListener("input", updateCounter);
+            updateCounter();
+        }
+
+        // Add character counters
+        addCharacterCount(seoTitleInput, 60);
+        addCharacterCount(seoDescriptionInput, 160);
+    </script>
+@endpush
