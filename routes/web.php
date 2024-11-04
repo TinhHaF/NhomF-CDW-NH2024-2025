@@ -32,9 +32,9 @@ Route::post('/change-password', [UserController::class, 'changePassword'])->name
 Route::get('/change_pw', [UserController::class, 'change_user_password'])->name('user.change_show');
 
 // Route cho bài viết
-Route::get('/homepage/posts/{id}-{slug}', [PostController::class, 'show'])->name('posts.post_detail');
+Route::get('/homepage/posts/{id}-{slug}', [PostController::class, 'detail'])->name('posts.post_detail');
 //bình luận
-Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('post.comments.store');
+Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments_store');
 
 
 

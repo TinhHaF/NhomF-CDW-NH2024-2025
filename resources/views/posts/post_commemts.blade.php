@@ -108,7 +108,7 @@
         <h2>Bình Luận ({{ $post->comments->count() }})</h2>
 
         <!-- Form bình luận -->
-        <form action="{{ route('post.comments.store', ['post' => $post->id]) }}" method="POST">
+        <form action="{{ route('comments_store', ['post' => $post->id]) }}" method="POST">
             @csrf
             <textarea class="comment-input" name="content" placeholder="Chia sẻ ý kiến của bạn" required></textarea>
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded mt-2">

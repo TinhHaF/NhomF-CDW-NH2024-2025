@@ -57,7 +57,7 @@ class PostController extends Controller
         }
     }
 
-    public function show($id, $slug)
+    public function detail($id, $slug)
     {
         try {
             $post = Post::find($id);
