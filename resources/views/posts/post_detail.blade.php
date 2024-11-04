@@ -6,55 +6,105 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{{ $post->title }}</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .container {
+            width: 800px;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: #666666;
+        }
+
+        .breadcrumb a {
+            color: #666666;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            font-size: 16px;
+        }
+
+        .content p {
+            margin: 10px 0;
+        }
+
+        .image {
+            text-align: center;
+            /* Căn giữa hình ảnh */
+        }
+
+        .image img {
+            max-width: 100%;
+            height: auto;
+            display: inline-block;
+            /* Đảm bảo hình ảnh không bị kéo dài */
+        }
+
+        .image-caption {
+            font-size: 14px;
+            color: #666666;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100 p-8">
     @include('components.notifications')
-
-    <div class="container mx-auto px-4 bg-white rounded-lg shadow-md">
-        <h1 class="text-3xl font-bold mb-4">{{ $post->title }}</h1>
-
-        @if($post->image)
-        <img src="{{ asset('storage/' . $post->image) }}" class="w-full h-64 object-cover rounded-lg mb-4" alt="{{ $post->title }}">
-        @endif
-
-        <p class="text-gray-500 mb-4">Ngày đăng: {{ $post->created_at->format('d/m/Y') }}</p>
-
-        <div class="text-gray-700 mb-6">
-            <p>{!! $post->content !!}</p>
+    <div class="container">
+        <div class="title">
+            {{ $post->title }}
         </div>
-
-        <!-- Hiển thị form bình luận -->
-        <div class="mt-6">
-            <h2 class="text-xl font-semibold mb-4">Bình luận</h2>
-
-            <form action="{{ route('post.comments.store', $post->id) }}" method="POST">
-                @csrf
-                <div class="mb-4">
-                    <textarea name="content" class="w-full h-24 p-2 border rounded" placeholder="Nhập bình luận của bạn..." required></textarea>
-                </div>
-                <button type="submit" class="bg-blue-600 mt-2 text-white px-4 py-2 rounded">
-                    Gửi bình luận
-                </button>
-            </form>
-
-            <!-- Hiển thị danh sách bình luận -->
-            <div class="mt-6">
-                <h3 class="text-lg font-semibold">Ý Kiến:</h3>
-                @foreach ($post->comments->reverse() as $comment)
-                <div class="comment mb-4 p-4 border rounded">
-                    <p><strong>{{ $comment->user->username }}</strong></p>
-                    <p class="text-gray-500">{{ $comment->created_at->format('H:i:s') }}</p>
-                    <p>{{ $comment->content }}</p>
-                </div>
-                @endforeach
+        <div class="meta">
+            <div class="date">
+                {{ $post->created_at->format('d/m/Y H:i') }} (GMT+7)
+            </div>
+            <div class="author">
+                Tác giả: {{ $post->author->pen_name ?? 'Chưa có tác giả' }}
             </div>
         </div>
-
-        <div class="mt-4 flex justify-center">
-            <a href="{{ route('home') }}" class="text-blue-600 hover:underline">Trở về danh sách bài viết</a>
+        <div class="content">
+            <div class="image">
+                <img alt="{{ $post->title }}"  src="{{ asset('storage/' . $post->image) }}"  />
+            </div>
+            <p>
+                {!! $post->content !!}
+            </p>
         </div>
     </div>
+    @include('posts.post_commemts')
 </body>
 
 </html>

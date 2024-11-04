@@ -46,6 +46,11 @@ class Post extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function author()
+    {
+        return $this->belongsTo(Author::class, 'author_id');
+    }
     // public function toSearchableArray()
     // {
     //     $array = $this->toArray();
