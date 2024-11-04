@@ -78,6 +78,7 @@
             color: #666666;
             margin-top: 5px;
         }
+        
     </style>
 </head>
 
@@ -106,5 +107,6 @@
     </div>
     @include('posts.post_commemts')
 </body>
+
 
 </html>
