@@ -15,7 +15,7 @@ class PostPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->role === '2'; // Chỉ admin mới có thể xem tất cả các bài viết
+        return $user->role === '2'||$user->role === '3'; // Chỉ admin mới có thể xem tất cả các bài viết
     }
 
     /**
