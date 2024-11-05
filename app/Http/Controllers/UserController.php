@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -28,6 +29,15 @@ class UserController extends Controller
     public function detail_user()
     {
         return view('crud_user.read_user');
+    }
+    public function store_user()
+    {
+        return view('crud_user.create');
+    }
+    public function show($id)
+    {
+        $user = User::findOrFail($id); // Retrieve the user by ID or throw a 404 if not found
+        return view('crud_user.detail', compact('user')); // Pass $user to the view
     }
     public function change_user_password()
     {
@@ -203,4 +213,71 @@ class UserController extends Controller
         // 4. Trả về thông báo thành công
         return back()->with('success', 'Đổi mật khẩu thành công!');
     }
+
+    public function index(Request $request)
+    {
+        // Lấy danh sách người dùng từ bảng `users`, kèm theo tìm kiếm nếu cần
+        $users = User::query();
+
+        if ($request->has('search')) {
+            $users->where('username', 'like', '%' . $request->search . '%')
+                ->orWhere('email', 'like', '%' . $request->search . '%');
+        }
+
+        // Thêm phân trang, mỗi trang hiển thị 10 người dùng
+        $users = $users->paginate(5);
+
+        // Trả về view và truyền dữ liệu người dùng vào
+        return view('crud_user.index', compact('users'));
+    }
+    public function store(Request $request)
+    {
+        // Kiểm tra dữ liệu đầu vào
+        $request->validate([
+            'username' => 'required|string|max:50|unique:users',
+            'email' => 'required|string|email|max:100|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'role' => 'required|string|max:1', // Yêu cầu nhập vai trò
+        ]);
+
+        try {
+            // Khởi tạo người dùng mới
+            $user = new User();
+            $user->username = $request->username;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->role = $request->role; // Lưu vai trò người dùng
+
+            // Xử lý file avatar nếu người dùng tải lên
+            if ($request->hasFile('avatar')) {
+                $avatarPath = $request->file('avatar')->store('avatars', 'public');
+                $user->image = $avatarPath; // Lưu đường dẫn của avatar vào cột 'image' trong bảng users
+            }
+
+            // Lưu người dùng vào cơ sở dữ liệu
+            $user->save();
+
+            // Chuyển hướng về trang danh sách người dùng kèm thông báo thành công
+            return redirect()->route('users.index')->with('success', 'Người dùng mới đã được thêm thành công!');
+        } catch (\Exception $e) {
+            // Nếu có lỗi xảy ra, chuyển hướng với thông báo lỗi
+            return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra khi thêm người dùng.'])->withInput();
+        }
+    }
+    public function destroy($id)
+{
+    $user = User::findOrFail($id);
+    
+    // Xóa ảnh đại diện nếu có
+    if ($user->image) {
+        Storage::disk('public')->delete($user->image);
+    }
+    
+    // Xóa người dùng
+    $user->delete();
+    
+    // Chuyển hướng với thông báo thành công
+    return redirect()->route('users.index')->with('success', 'Người dùng đã được xóa thành công!');
+}
 }

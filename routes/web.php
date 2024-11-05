@@ -52,8 +52,6 @@ Route::get('/authors', [AuthorController::class, 'index']);
 
 // Routes cho các hành động khác liên quan đến bài viết
 Route::patch('posts/{post}/update-status', [PostController::class, 'updateStatus'])->name('posts.updateStatus');
-
-
 Route::post('posts/bulk-delete', [PostController::class, 'bulkDelete'])->name('posts.bulk-delete');
 Route::post('/posts/{post}/copy', [PostController::class, 'copy'])->name('posts.copy');
 
@@ -84,5 +82,16 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         Route::resource('posts', PostController::class);
+
+
+        //quản lý user
+        Route::get('users', [UserController::class, 'index'])->name('users.index');
+        Route::post('/storeUser', [UserController::class, 'store'])->name('user.storeUser');
+        Route::get('user/create', [UserController::class, 'store_user'])->name('users.create');
+        Route::delete('user/destroyUser/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+        Route::get('user/deital/{id}', [UserController::class, 'show'])->name('user_view');
+
     });
 });
+
+
