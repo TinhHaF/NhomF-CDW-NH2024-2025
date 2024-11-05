@@ -28,10 +28,10 @@ class PostController extends Controller
 
     public function __construct(PostService $postService)
     {
-        $this->postService = $postService;
-        $this->middleware('auth')->except(['homepage', 'show']);
-        $this->middleware('auth')->except(['homepage', 'show']);
-        $this->authorizeResource(Post::class, 'post'); // Phương thức này sẽ hoạt động nếu trait được sử dụng
+        // $this->postService = $postService;
+        // $this->middleware('auth')->except(['homepage', 'show']);
+        // $this->middleware('auth')->except(['homepage', 'show']);
+        // $this->authorizeResource(Post::class, 'post'); // Phương thức này sẽ hoạt động nếu trait được sử dụng
     }
 
     public function homepage()

@@ -32,7 +32,7 @@
         </div>
         @foreach ($comments as $comment)
         <div class="flex items-start space-x-4">
-            <img alt="User avatar" class="rounded-full" height="40" src="https://storage.googleapis.com/a1aa/image/WpUYotWj5d53GBMddf9StdrqQCZdqqxAMphBxXqv4RZsr12JA.jpg" width="40" />
+            <img alt="User avatar" class="rounded-full mt-5" height="40" src="{{ asset('storage/' . $comment->user->image) }}" width="40" />
             <div>
                 <div class="font-semibold">
                     {{ $comment->user->username }}
@@ -40,7 +40,7 @@
                 <div class="text-gray-700">
                     {{ $comment->content }}
                 </div>
-                <div class="flex items-center text-gray-500 text-sm mt-2 space-x-4">
+                <div class="flex items-center text-gray-500 text-sm mt-2 mb-5 space-x-4">
                     <div class="flex items-center space-x-1">
                         <i class="fas fa-thumbs-up">
                         </i>
