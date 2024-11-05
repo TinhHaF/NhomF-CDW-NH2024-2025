@@ -25,7 +25,7 @@ Route::post('/register', [UserController::class, 'addUser'])->name('user.addUser
 Route::get('/login', [UserController::class, 'login'])->name('login');
 Route::post('/login', [UserController::class, 'loginUser'])->name('user.loginUser');
 Route::get('logout', [UserController::class, 'logout'])->name('user.logout');
-
+Route::post('/user/update-avatar', [UserController::class, 'updateAvatar'])->name('user.update_avatar');
 // Route cho thông tin người dùng
 Route::get('/profile', [UserController::class, 'getUserInfo'])->name('user.profile');
 Route::post('/change-password', [UserController::class, 'changePassword'])->name('user.change_pw');
@@ -90,6 +90,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('user/create', [UserController::class, 'store_user'])->name('users.create');
         Route::delete('user/destroyUser/{id}', [UserController::class, 'destroy'])->name('user.destroy');
         Route::get('user/deital/{id}', [UserController::class, 'show'])->name('user_view');
+        Route::get('user/edit/{id}', [UserController::class, 'update'])->name('users.edit');
+        
+        Route::get('user/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('user/update/{id}', [UserController::class, 'update'])->name('user.update');
 
     });
 });
