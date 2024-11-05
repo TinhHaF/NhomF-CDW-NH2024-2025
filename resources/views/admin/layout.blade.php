@@ -96,15 +96,10 @@
                             </a>
                         </li>
                         <li class="px-4 py-2 hover:bg-gray-200">
-                            <a class="flex items-center hover:text-red-500" href="#">
+                            <a class="flex items-center hover:text-red-500" href="{{ route('PostsComment') }}">
                                 <i class="fa-solid fa-comments mr-2"></i>
                                 Quản lý Bình Luận
                             </a>
-                            <ul class="ml-6 mt-2">
-                                <li class="px-4 py-2 bg-blue-100">
-                                    Bình Luận
-                                </li>
-                            </ul>
                         </li>
                     @endif
                 </ul>

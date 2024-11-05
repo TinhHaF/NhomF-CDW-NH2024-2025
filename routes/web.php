@@ -90,6 +90,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('user/create', [UserController::class, 'store_user'])->name('users.create');
         Route::delete('user/destroyUser/{id}', [UserController::class, 'destroy'])->name('user.destroy');
         Route::get('user/deital/{id}', [UserController::class, 'show'])->name('user_view');
+        //crud comments
+        Route::get('/PostsComment', [CommentController::class, 'index'])->name('PostsComment');
+
 
     });
 });
