@@ -189,7 +189,7 @@ class UserController extends Controller
     {
         Session::flush();
         Auth::logout();
-        return Redirect('/login');
+        return Redirect('/');
     }
     public function changePassword(Request $request)
     {
