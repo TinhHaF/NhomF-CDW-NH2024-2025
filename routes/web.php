@@ -94,6 +94,10 @@ Route::middleware(['auth'])->group(function () {
         
         Route::get('user/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
         Route::put('user/update/{id}', [UserController::class, 'update'])->name('user.update');
+        //crud comments
+        Route::get('/PostsComment', [CommentController::class, 'index'])->name('PostsComment');
+
+
 
     });
 });

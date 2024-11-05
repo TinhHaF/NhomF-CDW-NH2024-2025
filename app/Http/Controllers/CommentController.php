@@ -10,6 +10,16 @@ use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
+
+    public function index()
+    {
+        // Lấy tất cả bài viết cùng với số bình luận tương ứng
+        $posts = Post::withCount('comments')->paginate(5);
+
+        // Trả về view với danh sách bài viết
+        return view('admin.comments.posts_comments', compact('posts'));
+    }
+
     public function store(Request $request, Post $post)
     {
         // Kiểm tra đăng nhập
