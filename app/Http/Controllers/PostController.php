@@ -30,7 +30,7 @@ class PostController extends Controller
     {
         $this->postService = $postService;
         // Middleware auth yêu cầu xác thực cho tất cả các phương thức ngoại trừ homepage và show
-        $this->middleware('auth')->except(['homepage', 'detail']);
+        $this->middleware('auth')->except(['homepage', 'detail', 'search']);
         $this->authorizeResource(Post::class, 'post'); // Phương thức này sẽ hoạt động nếu trait được sử dụng
     }
 
@@ -79,6 +79,28 @@ class PostController extends Controller
             return back()->with('error', 'Có lỗi xảy ra. Vui lòng thử lại sau.');
         }
     }
+
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        if (strlen($query) < 2) {
+            // Nếu từ khóa quá ngắn, sử dụng LIKE để tìm kiếm
+            $posts = Post::where('title', 'like', '%' . $query . '%')
+                ->orWhere('content', 'like', '%' . $query . '%')
+                ->paginate(6);
+        } else {
+            // Nếu từ khóa đủ dài, thực hiện tìm kiếm bằng Full-Text Search
+            $posts = Post::whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$query])
+                ->paginate(6);
+        }
+
+        return view('posts.posts_search', compact('posts'));
+    }
+
+
+
 
 
     public function index(Request $request)

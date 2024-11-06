@@ -19,6 +19,25 @@ class CommentController extends Controller
         // Trả về view với danh sách bài viết
         return view('admin.comments.posts_comments', compact('posts'));
     }
+
+    public function search(Request $request)
+    {
+        $search = $request->input('search'); // Lấy giá trị tìm kiếm
+
+        if ($search) {
+            // Nếu có từ khóa tìm kiếm, lọc bài viết theo tiêu đề và nội dung
+            $posts = Post::where('title', 'like', '%' . $search . '%')
+                ->orWhere('content', 'like', '%' . $search . '%')
+                ->withCount('comments') // Đếm số lượng bình luận cho mỗi bài viết
+                ->paginate(5);
+        } else {
+            // Nếu không có tìm kiếm, hiển thị tất cả bài viết
+            $posts = Post::withCount('comments')->paginate(10);
+        }
+
+        return view('admin.comments.posts_comments', compact('posts'));
+    }
+
     public function Comments($id)
     {
         // Lấy bài viết và tất cả các bình luận kèm theo thông tin người dùng
@@ -30,6 +49,7 @@ class CommentController extends Controller
         // Trả về view với danh sách bình luận
         return view('admin.comments.comments_index', compact('post', 'comments'));
     }
+
     public function store(Request $request, Post $post)
     {
         // Kiểm tra đăng nhập
