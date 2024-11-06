@@ -14,10 +14,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ asset('css/fontawesome-free-6.6.0-web/css/all.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-    {{-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> --}}
+    {{--
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
-    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
+    {{--
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
+    {{--
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
     <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
     <script src="{{ asset('js/highcharts.js') }}"></script>
 
@@ -63,6 +66,11 @@
                         </a>
                     </li>
                     <li class="px-4 py-2 hover:bg-gray-200">
+                        <a class="flex items-center hover:text-red-500" href="{{ route('home') }}">
+                            <i class="fa-solid fa-home mr-2"></i>
+                            Trang homepage
+                        </a>
+                    <li class="px-4 py-2 hover:bg-gray-200">
                         <a class="flex items-center hover:text-red-500 cursor-pointer" data-toggle="dropdown"
                             href="{{ route('posts.index') }}">
                             <i class="fa-solid fa-newspaper mr-2"></i>
@@ -101,6 +109,7 @@
                                 Quản lý Bình Luận
                             </a>
                         </li>
+
                     @endif
                 </ul>
             </nav>
@@ -140,9 +149,9 @@
             filebrowserBrowseUrl: '/filemanager?type=Files',
             filebrowserUploadUrl: '/filemanager/upload?type=Files&_token=',
         });
-        CKEDITOR.on('instanceReady', function(ev) {
+        CKEDITOR.on('instanceReady', function (ev) {
             var editor = ev.editor;
-            editor.on('notificationShow', function(evt) {
+            editor.on('notificationShow', function (evt) {
                 if (evt.data.message.indexOf('This CKEditor') !== -1) {
                     evt.cancel();
                 }
@@ -169,7 +178,7 @@
         });
 
         // Lắng nghe sự kiện cho checkbox "Chọn tất cả" để cập nhật tất cả checkbox và số lượng
-        selectAllCheckbox.addEventListener("click", function() {
+        selectAllCheckbox.addEventListener("click", function () {
             itemCheckboxes.forEach((checkbox) => {
                 checkbox.checked = selectAllCheckbox
                     .checked; // Đặt trạng thái checkbox theo trạng thái của "Chọn tất cả"
@@ -177,7 +186,7 @@
             updateSelectedCount(); // Cập nhật số lượng đã chọn
         });
     </script>
-   
+
     <script src="{{ asset('js/custom.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
