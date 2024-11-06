@@ -48,7 +48,7 @@
                         <th class="px-6 py-4 text-center">STT</th>
                         <th class="px-6 py-4 text-left">Tên Người Dùng</th>
                         <th class="px-6 py-4 text-left">Email</th>
-                        <th class="px-6 py-4 text-center">Avatar</th>
+                        <th class="px-6 py-4 text-left">Avatar</th>
                         <th class="px-6 py-4 text-center">Ngày Tạo</th>
                         <th class="px-6 py-4 text-center">Thao Tác</th>
                     </tr>
@@ -60,7 +60,7 @@
                                 <input type="checkbox"
                                     class="userCheckbox rounded border-gray-300 text-blue-600 cursor-pointer">
                             </td>
-                            <td class="px-6 py-4 text-center">{{ $index + 1 }}</td>
+                            <td class="px-6 py-4 text-center">{{ $users->firstItem() + $index }}</td>
                             <td class="px-6 py-4">{{ $user->username }}</td>
                             <td class="px-6 py-4">{{ $user->email }}</td>
                             <td class="px-6 py-4 text-center">

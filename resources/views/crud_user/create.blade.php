@@ -39,7 +39,7 @@
         @endif
 
         <!-- User Form -->
-        <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition duration-200 ease-in-out transform hover:-translate-y-1">
+        <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition duration-200 ease-in-out transform ">
             <form action="{{ route('user.storeUser') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 

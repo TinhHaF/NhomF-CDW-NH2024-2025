@@ -41,11 +41,14 @@
                         <i class="fas fa-user-circle text-blue-500 mr-3"></i>
                         <span>Thông Tin Tài Khoản</span>
                     </a>
+
+                    @if (Auth::user()->role == 2 || Auth::user()->role == 3) 
                     <a href="{{ route('admin.dashboard') }}"
                         class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition mt-2">
                         <i class="fas fa-cogs text-green-500 mr-3"></i>
                         <span>Quản lý</span>
                     </a>
+                    @endif            
                     <a href="{{ route('user.logout') }}"
                         class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition mt-2">
                         <i class="fas fa-sign-out-alt text-red-500 mr-3"></i>

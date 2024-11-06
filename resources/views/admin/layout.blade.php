@@ -114,13 +114,15 @@
                 </ul>
             </nav>
         </div>
-
+        @php
+        $user = Auth::user(); // Lấy thông tin người dùng đã đăng nhập
+    @endphp
         <!-- Main Content -->
         <div class="flex-grow">
             <div class="flex justify-between items-center mb-4 border-b p-4 bg-white text-[#adacad]">
                 <div class="flex items-center">
                     <i class="fa-solid fa-bars mr-2"></i>
-                    <span class="font-semi">Xin chào, admin</span>
+                    <span> Xin Chào {{ $user->username }}</span>
                 </div>
                 <div class="flex items-center">
                     <i class="fa-solid fa-cog mr-4"></i>
