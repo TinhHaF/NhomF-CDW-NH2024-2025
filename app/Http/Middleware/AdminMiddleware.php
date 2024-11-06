@@ -11,7 +11,7 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         // Kiểm tra nếu người dùng không phải là admin, chuyển hướng
-        if (!$request->user() && (!$request->user()->isAdmin() && !$request->user()->isAuthor())) {
+        if (!$request->user() && (!$request->user()->isAdmin())) {
             return redirect('/'); // Hoặc trang khác tùy vào yêu cầu của bạn
         }
 

@@ -13,6 +13,8 @@ use App\Http\Controllers\UserStatsController;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\AdministrationMiddleware;
 
 // Route trang chủ
 Route::get('/', [PostController::class, 'homepage'])->name('home');
@@ -78,30 +80,37 @@ Route::get('/total-visits', [UserStatsController::class, 'getTotalVisits']);
 // Route cho việc lưu bình luận
 
 // Group routes cho admin, chỉ cho phép admin đã xác thực truy cập
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('admin')->middleware(['admin'])->group(function () {
+
+// Middleware kiểm tra quyền Admin và Author
+Route::middleware([AdministrationMiddleware::class])->group(function () {
+    // Các route cho Admin và Author
+    Route::prefix('admin')->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-        Route::resource('posts', PostController::class);
+        Route::resource('posts', PostController::class);  // Admin và Author có thể quản lý posts
+    });
+});
 
-
-        //quản lý user
+// Middleware chỉ dành riêng cho Admin
+Route::middleware([AdminMiddleware::class])->group(function () {
+    Route::prefix('admin')->group(function () {
+        // Quản lý user (chỉ dành cho Admin)
         Route::get('users', [UserController::class, 'index'])->name('users.index');
         Route::post('/storeUser', [UserController::class, 'store'])->name('user.storeUser');
         Route::get('user/create', [UserController::class, 'store_user'])->name('users.create');
         Route::delete('user/destroyUser/{id}', [UserController::class, 'destroy'])->name('user.destroy');
-        Route::get('user/deital/{id}', [UserController::class, 'show'])->name('user_view');
-        Route::get('user/edit/{id}', [UserController::class, 'update'])->name('users.edit');
-
+        Route::get('user/detail/{id}', [UserController::class, 'show'])->name('user_view');
         Route::get('user/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
         Route::put('user/update/{id}', [UserController::class, 'update'])->name('user.update');
-        //crud comments
+
+        // Quản lý bình luận (chỉ dành cho Admin)
         Route::get('/PostsComment', [CommentController::class, 'index'])->name('PostsComment');
         Route::get('/comments/{id}', [CommentController::class, 'Comments'])->name('comments_index');
         Route::get('/comments/detail/{id}', [CommentController::class, 'detail'])->name('comments_detail');
 
-        // Route cho người dùng (xóa bình luận của chính họ)
-        Route::delete('/comments/user/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.user_delete');
-        // Route cho admin (xóa bình luận bất kỳ)
+        // Xóa bình luận (chỉ dành cho Admin)
         Route::delete('/comments/admin/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.admin_delete');
     });
 });
+
+
+
