@@ -16,7 +16,7 @@
 
         <!-- Action Buttons -->
         <div class="flex items-center mb-6">
-            <form action="{{ route('users.index') }}" method="GET" class="flex items-center ml-auto">
+            <form action="{{ route('Search_PostsComment') }}" method="GET" class="flex items-center ml-auto">
                 @csrf
                 <input name="search" type="text" placeholder="Tìm kiếm" value="{{ request()->get('search') }}"
                     class="px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" />

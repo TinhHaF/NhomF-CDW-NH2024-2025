@@ -37,7 +37,7 @@ Route::get('/change_pw', [UserController::class, 'change_user_password'])->name(
 Route::get('/homepage/posts/{id}-{slug}', [PostController::class, 'detail'])->name('posts.post_detail');
 //bình luận
 Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments_store');
-
+Route::get('/search', [PostController::class, 'search'])->name('posts.search');
 
 
 
@@ -104,13 +104,12 @@ Route::middleware([AdminMiddleware::class])->group(function () {
 
         // Quản lý bình luận (chỉ dành cho Admin)
         Route::get('/PostsComment', [CommentController::class, 'index'])->name('PostsComment');
+        Route::get('/SearchPComment', [CommentController::class, 'search'])->name('Search_PostsComment');
         Route::get('/comments/{id}', [CommentController::class, 'Comments'])->name('comments_index');
         Route::get('/comments/detail/{id}', [CommentController::class, 'detail'])->name('comments_detail');
 
         // Xóa bình luận (chỉ dành cho Admin)
         Route::delete('/comments/admin/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.admin_delete');
+        Route::delete('/comments/user/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.user_delete');
     });
 });
-
-
-
