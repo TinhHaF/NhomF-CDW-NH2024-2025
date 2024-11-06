@@ -6,6 +6,7 @@ use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\IdEncoder;
 
 
 class CommentController extends Controller
@@ -32,7 +33,7 @@ class CommentController extends Controller
                 ->paginate(5);
         } else {
             // Nếu không có tìm kiếm, hiển thị tất cả bài viết
-            $posts = Post::withCount('comments')->paginate(10);
+            $posts = Post::withCount('comments')->paginate(5);
         }
 
         return view('admin.comments.posts_comments', compact('posts'));
@@ -59,7 +60,16 @@ class CommentController extends Controller
 
         // Xác thực dữ liệu đầu vào
         $request->validate([
-            'content' => 'required|string|max:1000',
+            'content' => [
+                'required',               // Không được để trống
+                'string',                 // Phải là chuỗi
+                'max:255',                // Không quá 255 ký tự
+                'regex:/\S+/',            // Không phải chỉ có khoảng trắng
+            ],
+        ], [
+            'content.required' => 'Nội dung bình luận không được để trống.',
+            'content.max' => 'Nội dung bình luận không được vượt quá 255 ký tự.',
+            'content.regex' => 'Nội dung bình luận không được chỉ có khoảng trắng.',
         ]);
 
         // Tạo bình luận mới
@@ -73,15 +83,30 @@ class CommentController extends Controller
         return redirect()->route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug])
             ->with('success', 'Bình luận đã được thêm thành công!');
     }
+    // public function delete($comment_id)
+    // {
+    //     // Tìm bình luận cần xóa theo comment_id
+    //     $comment = Comment::findOrFail($comment_id);
+
+    //     // Xóa bình luận
+    //     $comment->delete();
+
+    //     // Chuyển hướng về trang danh sách bình luận mà không cần `id`
+    //     return redirect()->back()->with('success', 'Bình luận đã được xóa thành công!');
+    // }
     public function delete($comment_id)
     {
+        // Giải mã comment_id
+        $comment_id = IdEncoder::decode($comment_id);
+        // dd($comment_id);
+
         // Tìm bình luận cần xóa theo comment_id
         $comment = Comment::findOrFail($comment_id);
 
         // Xóa bình luận
         $comment->delete();
 
-        // Chuyển hướng về trang danh sách bình luận mà không cần `id`
+        // Chuyển hướng về trang danh sách bình luận
         return redirect()->back()->with('success', 'Bình luận đã được xóa thành công!');
     }
     public function detail($id)

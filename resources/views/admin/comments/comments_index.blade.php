@@ -58,7 +58,7 @@
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <!-- Delete Action -->
-                                <form action="{{ route('comments.admin_delete', $comment->comment_id) }}" method="POST"
+                                <!-- <form action="{{ route('comments.admin_delete', $comment->comment_id) }}" method="POST"
                                     onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?')"
                                     style="display: inline;">
                                     @csrf
@@ -67,7 +67,17 @@
                                         style="background: none; border: none;">
                                         <i class="fas fa-trash"></i>
                                     </button>
+                                </form> -->
+                                <form action="{{ route('comments.admin_delete', $comment->encoded_comment_id) }}" method="POST"
+                                    onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?')" style="display: inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" title="Xóa bình luận" class="text-red-500 hover:text-red-600"
+                                        style="background: none; border: none;">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 </form>
+
                             </div>
                         </td>
                     </tr>

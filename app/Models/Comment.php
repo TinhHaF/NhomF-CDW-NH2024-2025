@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\IdEncoder;
 
 class Comment extends Model
 {
@@ -29,5 +30,9 @@ class Comment extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function getEncodedCommentIdAttribute()
+    {
+        return IdEncoder::encode($this->comment_id);
     }
 }
