@@ -61,7 +61,15 @@ class CommentController extends Controller
         // Xóa bình luận
         $comment->delete();
 
-        // Chuyển hướng về trang trước với thông báo thành công
+        // Chuyển hướng về trang danh sách bình luận mà không cần `id`
         return redirect()->back()->with('success', 'Bình luận đã được xóa thành công!');
+    }
+    public function detail($id)
+    {
+        // Lấy thông tin bình luận theo ID, cùng với thông tin người dùng
+        $comment = Comment::with('user')->findOrFail($id);
+
+        // Trả về view chi tiết bình luận, truyền dữ liệu bình luận vào view
+        return view('admin.comments.comment_detail', compact('comment'));
     }
 }

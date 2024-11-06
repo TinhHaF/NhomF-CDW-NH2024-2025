@@ -97,6 +97,8 @@ Route::middleware(['auth'])->group(function () {
         //crud comments
         Route::get('/PostsComment', [CommentController::class, 'index'])->name('PostsComment');
         Route::get('/comments/{id}', [CommentController::class, 'Comments'])->name('comments_index');
+        Route::get('/comments/detail/{id}', [CommentController::class, 'detail'])->name('comments_detail');
+
         // Route cho người dùng (xóa bình luận của chính họ)
         Route::delete('/comments/user/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.user_delete');
         // Route cho admin (xóa bình luận bất kỳ)
