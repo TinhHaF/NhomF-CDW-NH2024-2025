@@ -75,13 +75,15 @@
                             <td class="px-6 py-4 text-center">{{ $user->created_at->format('d/m/Y') }}</td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-center space-x-4">
-                                    <a href="{{  route('user_view', ['id' => $user->id]) }}" title="Xem người dùng" class="text-blue-500 hover:text-blue-600">
+                                    <a href="{{  route('user_view', ['id' => $user->id]) }}" title="Xem người dùng"
+                                        class="text-blue-500 hover:text-blue-600">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="" title="Sửa người dùng" class="text-green-500 hover:text-green-600">
+                                    <a href="{{ route('users.edit', $user->id) }}" title="Sửa người dùng"
+                                        class="text-green-500 hover:text-green-600">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                   
+
                                     <form action="{{ route('user.destroy', $user->id) }}" method="POST"
                                         onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?')"
                                         style="display: inline;">

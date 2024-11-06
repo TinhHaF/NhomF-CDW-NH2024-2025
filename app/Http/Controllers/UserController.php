@@ -189,7 +189,7 @@ class UserController extends Controller
     {
         Session::flush();
         Auth::logout();
-        return Redirect('/login');
+        return Redirect('/');
     }
     public function changePassword(Request $request)
     {
@@ -280,4 +280,68 @@ class UserController extends Controller
     // Chuyển hướng với thông báo thành công
     return redirect()->route('users.index')->with('success', 'Người dùng đã được xóa thành công!');
 }
+
+
+public function updateAvatar(Request $request)
+{
+    $user = Auth::user();
+    
+    // Xác thực ảnh tải lên
+    $request->validate([
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048' // Giới hạn kích thước và định dạng ảnh
+    ]);
+
+    // Xóa avatar cũ nếu có
+    if ($user->image && Storage::exists($user->image)) {
+        Storage::delete($user->image);
+    }
+
+    // Lưu image mới
+    $path = $request->file('image')->store('images', 'public');
+    $user->image = $path; // Cập nhật cột 'image'
+    $user->save();
+
+    return redirect()->back()->with('success', 'Cập nhật hình ảnh thành công!');
+}
+
+
+public function edit($id)
+{
+    $user = User::findOrFail($id);
+    return view('crud_user.edit', compact('user'));
+}
+
+public function update(Request $request, $id)
+{
+    // Xác thực dữ liệu đầu vào
+    $request->validate([
+        'username' => 'required|string|max:255',
+        'email' => 'required|email|max:255|unique:users,email,' . $id,
+        'password' => 'nullable|string|min:8|confirmed', // Xác thực mật khẩu nếu có nhập
+        'image' => 'nullable|image|max:2048', // Kiểm tra nếu có hình ảnh
+    ]);
+
+    // Cập nhật thông tin người dùng
+    $user = User::findOrFail($id);
+    $user->username = $request->username;
+    $user->email = $request->email;
+
+    if ($request->filled('password')) {
+        $user->password = Hash::make($request->password); // Mã hóa mật khẩu
+    }
+
+    // Xử lý hình ảnh
+    if ($request->hasFile('image')) {
+        // Xóa hình ảnh cũ nếu có
+        if ($user->image) {
+            Storage::delete('public/' . $user->image);
+        }
+        $user->image = $request->file('image')->store('avatars', 'public'); // Lưu hình ảnh mới
+    }
+
+    $user->save(); // Lưu thông tin người dùng
+
+    return redirect()->route('users.index')->with('success', 'Cập nhật người dùng thành công.');
+}
+
 }
