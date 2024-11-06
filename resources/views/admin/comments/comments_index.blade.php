@@ -62,7 +62,7 @@
                                 class="userCheckbox rounded border-gray-300 text-blue-600 cursor-pointer">
                         </td>
                         <td class="px-6 py-4 text-center">{{ $index + 1 }}</td>
-                        <td class="px-6 py-4">{{ $comment->user->username }}</td>
+                        <td class="px-6 py-4">{{ optional($comment->user)->username ?? 'Không có tên' }}</td>
                         <td class="px-6 py-4">{{ Str::limit($comment->content, 50) }}</td>
                         <td class="px-6 py-4 text-center">{{ $comment->created_at->format('d/m/Y') }}</td>
                         <td class="px-6 py-4">
@@ -73,7 +73,7 @@
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <!-- Delete Action -->
-                                <form action="" method="POST"
+                                <form action="{{ route('comments.admin_delete', $comment->comment_id) }}" method="POST"
                                     onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?')"
                                     style="display: inline;">
                                     @csrf

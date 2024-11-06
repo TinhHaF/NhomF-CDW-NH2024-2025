@@ -23,7 +23,7 @@
                     <div class="bg-white rounded-lg shadow-md">
                         <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}" class="block">
                             <h5 class="text-lg font-semibold p-4 hover:underline">
-                                {{ $post->title }}
+                                {{ Str::limit($post->title, 40) }}
                             </h5>
                             <div class="flex">
                                 @if ($post->image)
@@ -32,7 +32,7 @@
                                     alt="{{ $post->title }}">
                                 @endif
                                 <div class="p-4 w-1/2">
-                                    <p class="text-gray-600">{!! Str::limit($post->content, 100) !!}</p>
+                                    <p class="text-gray-600">{!! Str::limit($post->content, 50) !!}</p>
                                 </div>
                             </div>
                         </a>
@@ -56,7 +56,7 @@
                     <div class="bg-white rounded-lg shadow-md">
                         <a href="{{ route('posts.post_detail', ['id' => $postf->id, 'slug' => $postf->slug]) }}" class="block">
                             <h5 class="text-lg font-semibold p-4 hover:underline">
-                                {{ $postf->title }}
+                                {{ Str::limit($postf->title, 40) }}
                             </h5>
                             <div class="flex">
                                 @if ($postf->image)

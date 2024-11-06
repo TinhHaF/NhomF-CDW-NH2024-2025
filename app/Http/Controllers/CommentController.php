@@ -30,11 +30,6 @@ class CommentController extends Controller
         // Trả về view với danh sách bình luận
         return view('admin.comments.comments_index', compact('post', 'comments'));
     }
-
-
-
-
-
     public function store(Request $request, Post $post)
     {
         // Kiểm tra đăng nhập
@@ -57,5 +52,16 @@ class CommentController extends Controller
         // Chuyển hướng về trang bài viết với thông báo thành công
         return redirect()->route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug])
             ->with('success', 'Bình luận đã được thêm thành công!');
+    }
+    public function delete($comment_id)
+    {
+        // Tìm bình luận cần xóa theo comment_id
+        $comment = Comment::findOrFail($comment_id);
+
+        // Xóa bình luận
+        $comment->delete();
+
+        // Chuyển hướng về trang trước với thông báo thành công
+        return redirect()->back()->with('success', 'Bình luận đã được xóa thành công!');
     }
 }
