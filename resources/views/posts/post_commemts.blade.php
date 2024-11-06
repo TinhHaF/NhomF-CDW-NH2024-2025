@@ -40,21 +40,31 @@
                 <div class="text-gray-700">
                     {{ $comment->content }}
                 </div>
-                <div class="flex items-center text-gray-500 text-sm mt-2 mb-5 space-x-4">
+                <form action="{{ route('comments.user_delete', $comment->comment_id) }}" method="POST" class="flex items-center text-gray-500 text-sm mt-2 mb-5 space-x-4 ml-[-15px]">
+                    @csrf
+                    @method('DELETE')
+
+                    <!-- Like Button -->
                     <div class="flex items-center space-x-1">
-                        <i class="fas fa-thumbs-up">
-                        </i>
-                        <span>
-                            Thích 14
-                        </span>
+                        <i class="fas fa-thumbs-up"></i>
+                        <span>Thích 14</span>
                     </div>
+
+                    <!-- Reply Text -->
                     <div>
                         Trả lời
                     </div>
+
+                    <!-- Delete Button (only show for the comment owner or admin) -->
+                    @if (Auth::id() === $comment->user_id || Auth::user()->is_admin)
+                    <button type="submit" class="text-red-600 hover:text-red-800">Xóa</button>
+                    @endif
+
+                    <!-- Timestamp -->
                     <div>
                         {{ $comment->created_at->format('H:i:s') }}
                     </div>
-                </div>
+                </form>
             </div>
         </div>
         @endforeach

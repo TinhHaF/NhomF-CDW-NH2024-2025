@@ -30,13 +30,55 @@ class PostController extends Controller
     {
         $this->postService = $postService;
         // Middleware auth yêu cầu xác thực cho tất cả các phương thức ngoại trừ homepage và show
-        $this->middleware('auth')->except(['homepage','detail']);
+        $this->middleware('auth')->except(['homepage', 'detail']);
         $this->authorizeResource(Post::class, 'post'); // Phương thức này sẽ hoạt động nếu trait được sử dụng
     }
 
 
+    public function homepage()
+    {
+        try {
+            $posts = Post::where('is_published', true)
+                ->latest()
+                ->take(6) // Lấy đúng 6 bài
+                ->get(); // Lấy tất cả mà không phân trang
+
+            $featuredPosts = Post::where('is_featured', true)
+                ->latest()
+                ->paginate(6); // Chuyển sang sử dụng phân trang thay vì get()
+
+            return view('home', compact('posts', 'featuredPosts'));
+        } catch (\Exception $e) {
+            Log::error('Homepage loading failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return view('home')->with('error', 'Không thể tải trang chủ. Vui lòng thử lại sau.');
+        }
+    }
 
 
+    public function detail($id, $slug)
+    {
+        try {
+            $post = Post::find($id);
+            if (!$post || $post->slug !== $slug) {
+                return abort(404, 'Bài viết không tồn tại.');
+            }
+
+            // Lấy bình luận và phân trang
+            $comments = $post->comments()->orderBy('created_at', 'desc')->paginate(5);
+
+            return view('posts.post_detail', compact('post', 'comments'));
+        } catch (ModelNotFoundException $e) {
+            Log::info('Post not found', ['id' => $id]);
+            return request()->expectsJson()
+                ? response()->json(['error' => 'Bài viết không tồn tại.'], 404)
+                : abort(404, 'Bài viết không tồn tại.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Có lỗi xảy ra. Vui lòng thử lại sau.');
+        }
+    }
 
 
     public function index(Request $request)
@@ -170,7 +212,7 @@ class PostController extends Controller
                 'post_id' => $post->id,
                 'user_id' => Auth::id()
             ]);
-            
+
 
             // Cache::tags(['posts', 'homepage'])->flush();
 

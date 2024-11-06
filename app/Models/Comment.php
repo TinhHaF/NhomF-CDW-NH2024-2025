@@ -11,7 +11,8 @@ class Comment extends Model
 
     // Các thuộc tính có thể được gán hàng loạt
     protected $fillable = ['post_id', 'user_id', 'content'];
-
+    // Chỉ định khóa chính
+    protected $primaryKey = 'comment_id';
     /**
      * Thiết lập quan hệ với model Post.
      * Mỗi comment thuộc về một bài viết.
