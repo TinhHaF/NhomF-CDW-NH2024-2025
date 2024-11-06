@@ -13,12 +13,27 @@ class CommentController extends Controller
 
     public function index()
     {
-        // Lấy tất cả bài viết cùng với số bình luận tương ứng
-        $posts = Post::withCount('comments')->paginate(5);
+        // Lấy tất cả bài viết có ít nhất một bình luận cùng với số bình luận tương ứng
+        $posts = Post::has('comments')->withCount('comments')->paginate(5);
 
         // Trả về view với danh sách bài viết
         return view('admin.comments.posts_comments', compact('posts'));
     }
+    public function Comments($id)
+    {
+        // Lấy bài viết và tất cả các bình luận kèm theo thông tin người dùng
+        $post = Post::findOrFail($id);
+
+        // Lấy tất cả các bình luận kèm theo thông tin người dùng
+        $comments = $post->comments()->with('user')->paginate(5);
+
+        // Trả về view với danh sách bình luận
+        return view('admin.comments.comments_index', compact('post', 'comments'));
+    }
+
+
+
+
 
     public function store(Request $request, Post $post)
     {

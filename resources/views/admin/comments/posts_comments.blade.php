@@ -7,10 +7,10 @@
         <nav class="flex mb-6" aria-label="Breadcrumb">
             <ol class="flex items-center space-x-2 text-sm font-medium text-gray-600">
                 <li>
-                    <a href="#" class="text-blue-600 hover:text-blue-700">Bảng điều khiển</a>
+                    <a href="{{ route('admin.dashboard') }}">Bảng điều khiển</a>
                 </li>
                 <li>/</li>
-                <li>Quản lý Người dùng</li>
+                <li><a class="text-blue-600 hover:text-blue-700">Bài Viết</a></li>
             </ol>
         </nav>
 
@@ -39,19 +39,18 @@
                 </thead>
                 <tbody>
                     @foreach($posts as $index => $post)
-                    <tr class="border-b hover:bg-gray-100 transition duration-200">
+                    <tr class="border-b hover:bg-gray-100 transition duration-200 cursor-pointer"
+                        onclick="window.location='{{ route('comments_index', ['id' => $post->id]) }}'">
                         <td class="px-6 py-4 text-center">{{ $index + 1 }}</td>
                         <td class="px-6 py-4 text-center">
                             @if($post->image)
-                            <img src="{{ asset('storage/' . $post->image) }}" alt="Avatar"
-                                class="w-10 h-10 rounded-full border">
+                            <img src="{{ asset('storage/' . $post->image) }}" alt="Avatar" class="w-10 h-10 rounded-full border">
                             @else
-                            <img src="{{ asset('path/to/default-avatar.png') }}" alt="Default Avatar"
-                                class="w-10 h-10 rounded-full border">
+                            <img src="{{ asset('path/to/default-avatar.png') }}" alt="Default Avatar" class="w-10 h-10 rounded-full border">
                             @endif
                         </td>
                         <td class="px-6 py-4">{{ Str::limit($post->title, 50) }}</td>
-                        <td class="px-6 py-4 text-center">{{ $post->comments_count }} </td>
+                        <td class="px-6 py-4 text-center">{{ $post->comments_count }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -62,6 +61,8 @@
                 {{ $posts->links() }}
             </div>
         </div>
+
     </div>
 </body>
+
 @endsection

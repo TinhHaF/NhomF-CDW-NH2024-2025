@@ -91,15 +91,11 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('user/destroyUser/{id}', [UserController::class, 'destroy'])->name('user.destroy');
         Route::get('user/deital/{id}', [UserController::class, 'show'])->name('user_view');
         Route::get('user/edit/{id}', [UserController::class, 'update'])->name('users.edit');
-        
+
         Route::get('user/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
         Route::put('user/update/{id}', [UserController::class, 'update'])->name('user.update');
         //crud comments
         Route::get('/PostsComment', [CommentController::class, 'index'])->name('PostsComment');
-
-
-
+        Route::get('/comments/{id}', [CommentController::class, 'Comments'])->name('comments_index');
     });
 });
-
-
