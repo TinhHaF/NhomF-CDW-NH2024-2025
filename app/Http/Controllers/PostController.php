@@ -34,6 +34,7 @@ class PostController extends Controller
         $this->authorizeResource(Post::class, 'post'); // Phương thức này sẽ hoạt động nếu trait được sử dụng
     }
 
+
     public function homepage()
     {
         try {
@@ -78,9 +79,6 @@ class PostController extends Controller
             return back()->with('error', 'Có lỗi xảy ra. Vui lòng thử lại sau.');
         }
     }
-
-
-
 
 
     public function index(Request $request)
