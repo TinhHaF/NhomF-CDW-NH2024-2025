@@ -56,13 +56,12 @@
                     </div>
 
                     <!-- Delete Button (only show for the comment owner or admin) -->
-                    @if (Auth::id() === $comment->user_id || Auth::user()->is_admin)
+                    @if (Auth::id() === $comment->user_id)
                     <button type="submit" class="text-red-600 hover:text-red-800">Xóa</button>
                     @endif
-
                     <!-- Timestamp -->
                     <div>
-                        {{ $comment->created_at->format('H:i:s') }}
+                        {{ $comment->created_at->format('d/m/Y H:i') }}
                     </div>
                 </form>
             </div>

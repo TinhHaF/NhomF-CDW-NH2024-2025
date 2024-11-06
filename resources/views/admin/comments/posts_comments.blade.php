@@ -10,7 +10,7 @@
                     <a href="{{ route('admin.dashboard') }}">Bảng điều khiển</a>
                 </li>
                 <li>/</li>
-                <li><a class="text-blue-600 hover:text-blue-700">Bài Viết</a></li>
+                <li><a class="">Bài Viết</a></li>
             </ol>
         </nav>
 

@@ -17,13 +17,6 @@
         </nav>
         <!-- Action Buttons -->
         <div class="flex items-center mb-6">
-            <form action="" method="POST" id="bulkDeleteForm" class="inline">
-                @csrf
-                <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-md shadow"
-                    onclick="bulkDeleteSystem.confirmDelete()">
-                    <i class="fas fa-trash mr-2"></i>Xóa tất cả (<span id="selectedCount">0</span>)
-                </button>
-            </form>
             <form action="" method="GET" class="flex items-center ml-auto">
                 <input name="search" type="text" placeholder="Tìm kiếm" value="{{ request()->get('search') }}"
                     class="px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
@@ -38,10 +31,6 @@
             <table class="min-w-full bg-white">
                 <thead class="bg-gray-50 text-gray-600">
                     <tr class="text-sm uppercase font-semibold tracking-wider">
-                        <th class="px-6 py-4 text-center">
-                            <input type="checkbox" id="selectAll"
-                                class="rounded border-gray-300 text-blue-600 cursor-pointer">
-                        </th>
                         <th class="px-6 py-4 text-center">STT</th>
                         <th class="px-6 py-4 text-left">Tên Người Dùng</th>
                         <th class="px-6 py-4 text-left">Nội Dung</th>
@@ -57,10 +46,6 @@
                     @else
                     @foreach($comments as $index => $comment)
                     <tr class="border-b hover:bg-gray-100 transition duration-200">
-                        <td class="px-6 py-4 text-center">
-                            <input type="checkbox"
-                                class="userCheckbox rounded border-gray-300 text-blue-600 cursor-pointer">
-                        </td>
                         <td class="px-6 py-4 text-center">{{ $index + 1 }}</td>
                         <td class="px-6 py-4">{{ optional($comment->user)->username ?? 'Không có tên' }}</td>
                         <td class="px-6 py-4">{{ Str::limit($comment->content, 50) }}</td>
@@ -68,7 +53,7 @@
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center space-x-4">
                                 <!-- View Action -->
-                                <a href="" title="Xem bình luận"
+                                <a href="{{route('comments_detail', ['id' => $comment->comment_id])}}" title="Xem bình luận"
                                     class="text-blue-500 hover:text-blue-600">
                                     <i class="fas fa-eye"></i>
                                 </a>
