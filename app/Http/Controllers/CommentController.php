@@ -58,19 +58,14 @@ class CommentController extends Controller
             return redirect()->back()->with('error', 'Bạn cần đăng nhập để bình luận.');
         }
 
-        // Xác thực dữ liệu đầu vào
-        $request->validate([
-            'content' => [
-                'required',               // Không được để trống
-                'string',                 // Phải là chuỗi
-                'max:255',                // Không quá 255 ký tự
-                'regex:/\S+/',            // Không phải chỉ có khoảng trắng
-            ],
-        ], [
-            'content.required' => 'Nội dung bình luận không được để trống.',
-            'content.max' => 'Nội dung bình luận không được vượt quá 255 ký tự.',
-            'content.regex' => 'Nội dung bình luận không được chỉ có khoảng trắng.',
-        ]);
+       $request->validate([
+        'content' => [
+            'required',
+            'string',
+            'max:255',
+            'regex:/\S/', // Kiểm tra nội dung không phải là khoảng trắng
+        ],
+    ]);
 
         // Tạo bình luận mới
         Comment::create([
