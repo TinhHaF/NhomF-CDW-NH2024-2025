@@ -23,7 +23,8 @@
                             class="fab fa-twitter bg-blue-400 text-white p-2 rounded-full w-8 h-8 flex items-center justify-center"></i>
                     </a>
                     <a href="#" class="hover:-translate-y-1 transition-transform duration-200">
-                        <i class="fab fa-tiktok bg-black text-white p-2 rounded-full w-8 h-8 flex items-center justify-center"></i>
+                        <i
+                            class="fab fa-tiktok bg-black text-white p-2 rounded-full w-8 h-8 flex items-center justify-center"></i>
                     </a>
                     <a href="#" class="hover:-translate-y-1 transition-transform duration-200">
                         <i
@@ -52,23 +53,19 @@
             <div class="col-span-1">
                 <h5 class="font-bold text-xl text-black mb-4">Tin Nổi Bật</h5>
                 <ul class="space-y-4">
-                    @foreach ($featuredPosts as $post)
-                        <li>
-                            <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}"
-                                class="group">
-                                <div class="flex items-center">
-                                    
-                                    <div>
-                                        <h6
-                                            class="text-sm text-gray-400 group-hover:text-black transition-colors duration-200 line-clamp-2">
-                                            {{ $post->title }}
-                                        </h6>
-                                        
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    @endforeach
+                    @if (isset($featuredPosts))
+                        <ul>
+                            @foreach ($featuredPosts as $post)
+                                <li>
+                                    <a
+                                        href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}">
+                                        {{ $post->title }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+
                 </ul>
             </div>
 

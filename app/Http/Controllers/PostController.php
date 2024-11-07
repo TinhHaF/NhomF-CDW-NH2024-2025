@@ -45,7 +45,8 @@ class PostController extends Controller
 
             $featuredPosts = Post::where('is_featured', true)
                 ->latest()
-                ->paginate(6); // Chuyển sang sử dụng phân trang thay vì get()
+                ->take(6) // Lấy đúng 6 bài nổi bật
+                ->get(); // Không phân trang, chỉ lấy các bài viết cần thiết
 
             return view('home', compact('posts', 'featuredPosts'));
         } catch (\Exception $e) {

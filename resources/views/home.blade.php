@@ -18,29 +18,30 @@
             <div class="container mx-auto px-4">
                 <h2 class="text-2xl font-bold mb-6">Tin Đề Xuất</h2>
                 @if (isset($posts) && $posts->count())
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    @foreach ($posts as $post)
-                    <div class="bg-white rounded-lg shadow-md">
-                        <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}" class="block">
-                            <h5 class="text-lg font-semibold p-4 hover:underline">
-                                {{ Str::limit($post->title, 40) }}
-                            </h5>
-                            <div class="flex">
-                                @if ($post->image)
-                                <img src="{{ asset('storage/' . $post->image) }}"
-                                    class="w-1/2 h-48 object-cover rounded-l-lg ml-1 mb-1"
-                                    alt="{{ $post->title }}">
-                                @endif
-                                <div class="p-4 w-1/2">
-                                    <p class="text-gray-600">{!! Str::limit($post->content, 50) !!}</p>
-                                </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        @foreach ($posts as $post)
+                            <div class="bg-white rounded-lg shadow-md">
+                                <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}"
+                                    class="block">
+                                    <h5 class="text-lg font-semibold p-4 hover:underline">
+                                        {{ Str::limit($post->title, 40) }}
+                                    </h5>
+                                    <div class="flex">
+                                        @if ($post->image)
+                                            <img src="{{ asset('storage/' . $post->image) }}"
+                                                class="w-1/2 h-48 object-cover rounded-l-lg ml-1 mb-1"
+                                                alt="{{ $post->title }}">
+                                        @endif
+                                        <div class="p-4 w-1/2">
+                                            <p class="text-gray-600">{!! Str::limit($post->content, 50) !!}</p>
+                                        </div>
+                                    </div>
+                                </a>
                             </div>
-                        </a>
+                        @endforeach
                     </div>
-                    @endforeach
-                </div>
                 @else
-                <p class="text-gray-500">Không có tin đề xuất nào để hiển thị.</p>
+                    <p class="text-gray-500">Không có tin đề xuất nào để hiển thị.</p>
                 @endif
             </div>
         </div>
@@ -51,32 +52,33 @@
             <div class="container mx-auto px-4">
                 <h2 class="text-2xl font-bold mb-6">Tin Nổi Bật</h2>
                 @if (isset($featuredPosts) && $featuredPosts->count())
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    @foreach ($featuredPosts as $postf)
-                    <div class="bg-white rounded-lg shadow-md">
-                        <a href="{{ route('posts.post_detail', ['id' => $postf->id, 'slug' => $postf->slug]) }}" class="block">
-                            <h5 class="text-lg font-semibold p-4 hover:underline">
-                                {{ Str::limit($postf->title, 40) }}
-                            </h5>
-                            <div class="flex">
-                                @if ($postf->image)
-                                <img src="{{ asset('storage/' . $postf->image) }}"
-                                    class="w-1/2 h-48 object-cover rounded-l-lg ml-1 mb-1"
-                                    alt="{{ $postf->title }}">
-                                @endif
-                                <div class="p-4 w-1/2">
-                                    <p class="text-gray-600">{!! Str::limit($postf->content, 100) !!}</p>
-                                </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        @foreach ($featuredPosts as $postf)
+                            <div class="bg-white rounded-lg shadow-md">
+                                <a href="{{ route('posts.post_detail', ['id' => $postf->id, 'slug' => $postf->slug]) }}"
+                                    class="block">
+                                    <h5 class="text-lg font-semibold p-4 hover:underline">
+                                        {{ Str::limit($postf->title, 40) }}
+                                    </h5>
+                                    <div class="flex">
+                                        @if ($postf->image)
+                                            <img src="{{ asset('storage/' . $postf->image) }}"
+                                                class="w-1/2 h-48 object-cover rounded-l-lg ml-1 mb-1"
+                                                alt="{{ $postf->title }}">
+                                        @endif
+                                        <div class="p-4 w-1/2">
+                                            <p class="text-gray-600">{!! Str::limit($postf->content, 100) !!}</p>
+                                        </div>
+                                    </div>
+                                </a>
                             </div>
-                        </a>
+                        @endforeach
                     </div>
-                    @endforeach
-                </div>
-                <div class="mt-4">
+                    {{-- <div class="mt-4">
                     {{ $featuredPosts->links() }}
-                </div>
+                </div> --}}
                 @else
-                <p class="text-gray-500">Không có tin nổi bật nào để hiển thị.</p>
+                    <p class="text-gray-500">Không có tin nổi bật nào để hiển thị.</p>
                 @endif
             </div>
         </div>
