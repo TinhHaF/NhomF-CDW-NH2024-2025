@@ -163,8 +163,8 @@
                                     class="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="">Chọn danh mục</option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->category_id }}"
-                                            {{ old('category_id') == $category->category_id ? 'selected' : '' }}>
+                                        <option value="{{ $category->id }}"
+                                            {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                             {{ $category->name }}
                                         </option>
                                     @endforeach

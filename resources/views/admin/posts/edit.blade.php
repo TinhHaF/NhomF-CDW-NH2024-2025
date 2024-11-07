@@ -145,8 +145,8 @@
                                     class="bg-white border border-gray-300 rounded px-3 h-10 w-full" required>
                                     <option value="">Chọn danh mục</option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->category_id }}"
-                                            {{ $post->category_id == $category->category_id ? 'selected' : '' }}>
+                                        <option value="{{ $category->id }}"
+                                            {{ $post->category_id == $category->id ? 'selected' : '' }}>
                                             {{ $category->name }}</option>
                                     @endforeach
                                 </select>

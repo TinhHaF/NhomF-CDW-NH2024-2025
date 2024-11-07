@@ -104,9 +104,6 @@ class PostController extends Controller
     }
 
 
-
-
-
     public function index(Request $request)
     {
         try {
@@ -141,9 +138,12 @@ class PostController extends Controller
     public function create()
     {
         try {
-            $categories = Cache::remember('categories.all', 3600, fn() => Category::all());
-            $authors = Cache::remember('authors.all', 3600, fn() => Author::all());
+            // Lấy danh mục và tác giả từ database thay vì cache
+            $categories = Category::orderBy('created_at', 'desc')->get(); // Truy vấn tất cả danh mục từ cơ sở dữ liệu
+            $authors = Author::orderBy('created_at', 'desc')->get(); // Truy vấn tất cả tác giả từ cơ sở dữ liệu
+
             Log::info('Categories being passed to view:', ['categories' => $categories->toArray()]);
+
             return view('admin.posts.create', compact('categories', 'authors'));
         } catch (\Exception $e) {
             Log::error('Error loading create post form', ['error' => $e->getMessage()]);
@@ -152,21 +152,36 @@ class PostController extends Controller
         }
     }
 
+
     public function store(StorePostRequest $request)
     {
         try {
-            // dd($request->all()); // Thêm dòng này để debug
-            $post = $this->postService->create(
-                $request->validated(),
-                $request->hasFile('image') ? $request->file('image') : null
-            );
-
-            Log::info('Post created', [
-                'post_id' => $post->id,
+            // Kiểm tra dữ liệu và log để debug nếu cần
+            Log::info('Creating post', [
+                'request_data' => $request->all(),
                 'user_id' => Auth::id()
             ]);
 
-            // Cache::tags(['posts', 'homepage'])->flush();
+            // Xử lý ảnh (nếu có)
+            $imageUrl = null;
+            if ($request->hasFile('image')) {
+                $request->validate([
+                    'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Kiểm tra định dạng và kích thước ảnh
+                ]);
+                $imageUrl = $request->file('image')->store('posts', 'public');
+            }
+
+            // Tạo bài viết
+            $post = $this->postService->create(
+                $request->validated(),
+                $imageUrl
+            );
+
+            // Log thông tin tạo bài viết thành công
+            Log::info('Post created successfully', [
+                'post_id' => $post->id,
+                'user_id' => Auth::id()
+            ]);
 
             return $request->expectsJson()
                 ? new PostResource($post)
@@ -174,9 +189,10 @@ class PostController extends Controller
         } catch (\Exception $e) {
             Log::error('Post creation failed', [
                 'error' => $e->getMessage(),
-                'user_id' => Auth::id()
+                'user_id' => Auth::id(),
+                'request_data' => $request->all()
             ]);
-            Log::info('Category ID received:', ['category_id' => $request->category_id]);
+
             return $request->expectsJson()
                 ? response()->json(['error' => 'Không thể tạo bài viết.'], 500)
                 : back()->withInput()->with('error', 'Có lỗi xảy ra khi tạo bài viết.');
@@ -186,8 +202,9 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         try {
-            $categories = Cache::remember('categories.all', 3600, fn() => Category::all());
-            $authors = Cache::remember('authors.all', 3600, fn() => Author::all());
+            // Lấy danh mục và tác giả từ database thay vì cache
+            $categories = Category::all(); // Lấy tất cả danh mục từ database
+            $authors = Author::all(); // Lấy tất cả tác giả từ database
 
             return view('admin.posts.edit', compact('post', 'categories', 'authors'));
         } catch (\Throwable $e) {
@@ -195,6 +212,7 @@ class PostController extends Controller
                 'post_id' => $post->id,
                 'error' => $e->getMessage()
             ]);
+
             return back()->with('error', 'Có lỗi xảy ra khi tải form chỉnh sửa.');
         }
     }
@@ -202,18 +220,32 @@ class PostController extends Controller
     public function update(UpdatePostRequest $request, Post $post)
     {
         try {
-            $updatedPost = $this->postService->update(
-                $post,
-                $request->validated(),
-                $request->hasFile('image') ? $request->file('image') : null
-            );
-
-            Log::info('Post updated', [
+            Log::info('Updating post', [
                 'post_id' => $post->id,
+                'request_data' => $request->all(),
                 'user_id' => Auth::id()
             ]);
 
-            // Cache::tags(['posts', 'homepage'])->flush();
+            // Xử lý ảnh (nếu có) và xác thực
+            $imageUrl = null;
+            if ($request->hasFile('image')) {
+                $request->validate([
+                    'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                ]);
+                $imageUrl = $request->file('image')->store('posts', 'public');
+            }
+
+            // Cập nhật bài viết
+            $updatedPost = $this->postService->update(
+                $post,
+                $request->validated(),
+                $imageUrl
+            );
+
+            Log::info('Post updated successfully', [
+                'post_id' => $updatedPost->id,
+                'user_id' => Auth::id()
+            ]);
 
             return $request->expectsJson()
                 ? new PostResource($updatedPost)
@@ -221,13 +253,17 @@ class PostController extends Controller
         } catch (\Exception $e) {
             Log::error('Post update failed', [
                 'post_id' => $post->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'user_id' => Auth::id(),
+                'request_data' => $request->all()
             ]);
+
             return $request->expectsJson()
                 ? response()->json(['error' => 'Không thể cập nhật bài viết.'], 500)
                 : back()->withInput()->with('error', 'Có lỗi xảy ra khi cập nhật bài viết.');
         }
     }
+
 
     public function destroy(Post $post)
     {
