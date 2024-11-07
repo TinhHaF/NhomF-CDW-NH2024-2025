@@ -16,21 +16,18 @@ class CategorySeeder extends Seeder
     {
         DB::table('categories')->insert([
             [
-                'category_id' => 1,
                 'name' => 'Thế giới',
                 'description' => 'Tin tức thế giới',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'category_id' => 2,
                 'name' => 'Thời sự',
                 'description' => 'Tin tức thời sự',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'category_id' => 3,
                 'name' => 'Góc nhìn',
                 'description' => 'Các góc nhìn từ chuyên gia',
                 'created_at' => Carbon::now(),

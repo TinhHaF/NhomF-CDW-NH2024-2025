@@ -87,6 +87,9 @@ Route::middleware([AdministrationMiddleware::class])->group(function () {
     Route::prefix('admin')->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         Route::resource('posts', PostController::class);  // Admin và Author có thể quản lý posts
+
+        // Route category
+        Route::resource('categories', CategoryController::class);
     });
 });
 
