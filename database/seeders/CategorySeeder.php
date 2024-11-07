@@ -16,7 +16,6 @@ class CategorySeeder extends Seeder
     {
         DB::table('categories')->insert([
             [
-                'category_id' => 1,
                 'name' => 'Thế giới',
                 'description' => 'Tin tức thế giới',
                 'created_at' => Carbon::now(),
