@@ -69,7 +69,7 @@
                     <i class="fas fa-user"></i>
                     <span>Đăng nhập</span>
                 </a>
-                <a href="{{ route('register') }}"
+                <a href="{{ route('user.registerUser') }}"
                     class="hidden md:flex items-center space-x-2 px-4 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 font-medium">
                     <i class="fas fa-user-plus"></i>
                     <span>Đăng ký</span>

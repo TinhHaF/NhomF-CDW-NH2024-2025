@@ -35,17 +35,22 @@ class PostController extends Controller
     }
 
 
+    // Trong Controller
     public function homepage()
     {
         try {
             $posts = Post::where('is_published', true)
+                ->whereNotNull('image') // Chỉ lấy bài viết có ảnh
+                ->where('image', '!=', '') // Kiểm tra thêm nếu image là chuỗi rỗng
                 ->latest()
-                ->take(6) // Lấy đúng 6 bài
-                ->get(); // Lấy tất cả mà không phân trang
+                ->take(6)
+                ->get();
 
             $featuredPosts = Post::where('is_featured', true)
+                ->whereNotNull('image') // Chỉ lấy bài viết nổi bật có ảnh
+                ->where('image', '!=', '') // Kiểm tra thêm nếu image là chuỗi rỗng
                 ->latest()
-                ->paginate(6); // Chuyển sang sử dụng phân trang thay vì get()
+                ->paginate(6);
 
             return view('home', compact('posts', 'featuredPosts'));
         } catch (\Exception $e) {
@@ -56,6 +61,8 @@ class PostController extends Controller
             return view('home')->with('error', 'Không thể tải trang chủ. Vui lòng thử lại sau.');
         }
     }
+
+
 
 
     public function detail($id, $slug)
