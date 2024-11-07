@@ -267,6 +267,7 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
+
         try {
             $this->postService->delete($post);
 
@@ -291,6 +292,38 @@ class PostController extends Controller
                 : back()->with('error', 'Có lỗi xảy ra khi xóa bài viết.');
         }
     }
+    // public function destroy($id)
+    // {
+    //     dd($id);
+    //     try {
+    //         // Giải mã ID trước khi tìm bài viết
+    //         $decodedId = IdEncoder::decode($id);
+
+    //         // Tìm bài viết bằng ID đã giải mã
+    //         $post = Post::findOrFail($decodedId);
+
+    //         // Tiến hành xóa bài viết
+    //         $this->postService->delete($post);
+
+    //         Log::info('Post deleted', [
+    //             'post_id' => $post->id,
+    //             'user_id' => Auth::id()
+    //         ]);
+
+    //         return request()->expectsJson()
+    //             ? response()->json(['message' => 'Xóa bài viết thành công'])
+    //             : redirect()->route('posts.index')->with('success', 'Bài viết đã được xóa thành công!');
+    //     } catch (\Exception $e) {
+    //         Log::error('Post deletion failed', [
+    //             'error' => $e->getMessage()
+    //         ]);
+
+    //         return request()->expectsJson()
+    //             ? response()->json(['error' => 'Không thể xóa bài viết.'], 500)
+    //             : back()->with('error', 'Có lỗi xảy ra khi xóa bài viết.');
+    //     }
+    // }
+
 
     public function updateStatus(Request $request, $id)
     {

@@ -115,7 +115,10 @@ Route::middleware([AdministrationMiddleware::class])->group(function () {
 //     // Route để xóa bài viết (destroy)
 //     Route::delete('admin/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
 
-//           Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+//     Route::resource('categories', CategoryController::class);
+
+
+//     Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
 // });
 // Middleware chỉ dành riêng cho Admin

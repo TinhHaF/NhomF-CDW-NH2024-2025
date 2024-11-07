@@ -33,7 +33,7 @@ class Post extends Model
     {
         return $this->belongsTo(Category::class, 'id');
     }
- 
+
 
     /**
      * Thiết lập quan hệ với model Comment.
@@ -150,4 +150,9 @@ class Post extends Model
     {
         return IdEncoder::decode($encodedId);
     }
+
+    // public function getEncodedPostIdAttribute()
+    // {
+    //     return IdEncoder::encode($this->id);
+    // }
 }
