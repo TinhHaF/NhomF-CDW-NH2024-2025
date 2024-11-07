@@ -44,77 +44,74 @@
                 <!-- Search Bar -->
                 <div class="relative flex-1 max-w-xl">
                     <div class="relative">
-                        <input type="text" placeholder="Tìm kiếm..."
-                            class="w-full px-4 py-2 pl-10 pr-12 rounded-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 text-gray-600 text-sm">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <button
-                            class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white p-1.5 rounded-full hover:bg-blue-700 transition-colors duration-200">
-                            <i class="fas fa-arrow-right text-xs"></i>
-                        </button>
+                        <form action="{{ route('posts.search') }}" method="GET" class="flex items-center">
+
+                            <input type="text" name="query" placeholder="Tìm kiếm..."
+                                class="w-full px-4 py-2 pl-10 pr-12 rounded-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 text-gray-600 text-sm">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <button
+                                class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white p-1.5 rounded-full hover:bg-blue-700 transition-colors duration-200">
+                                <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
 
             <!-- User Section -->
             @php
-                $user = Auth::user();
+            $user = Auth::user();
             @endphp
             @guest
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('login') }}"
-                        class="flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200 font-medium">
-                        <i class="fas fa-user"></i>
-                        <span>Đăng nhập</span>
-                    </a>
-                    <a href="{{ route('register') }}"
-                        class="hidden md:flex items-center space-x-2 px-4 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 font-medium">
-                        <i class="fas fa-user-plus"></i>
-                        <span>Đăng ký</span>
-                    </a>
-                </div>
+            <div class="flex items-center space-x-4">
+                <a href="{{ route('login') }}"
+                    class="flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200 font-medium">
+                    <i class="fas fa-user"></i>
+                    <span>Đăng nhập</span>
+                </a>
+                <a href="{{ route('register') }}"
+                    class="hidden md:flex items-center space-x-2 px-4 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 font-medium">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Đăng ký</span>
+                </a>
+            </div>
             @else
-                <div class="relative group">
-                    <button class="flex items-center space-x-3 focus:outline-none">
-                        <div class="flex flex-col items-end">
-                            <span class="text-sm font-medium text-gray-700">{{ $user->username }}</span>
-                            <span class="text-xs text-gray-500">{{ $user->email }}</span>
-                        </div>
-                        <img src="{{ asset($user->image) }}" alt="Profile"
-                            class="w-10 h-10 rounded-full border-2 border-gray-200 group-hover:border-blue-500 transition-colors duration-200 object-cover">
-                    </button>
+            <div
+                class="login relative flex items-center font-bold text-gray-800 hover:text-red-500 transition duration-300">
+                <a href="#" id="userMenuToggle" class="flex items-center space-x-2">
+                    <div class="flex flex-col items-start">
+                        <span class="text-sm font-medium text-gray-700">{{ $user->username }}</span>
+                        <span class="text-xs text-gray-500">{{ $user->email }}</span>
+                    </div>
+                    <img src="{{ asset('storage/' . $user->image) }}" alt="Avatar"
+                        class="w-10 h-10 rounded-full border-2 border-gray-300">
+                    <i class="fas fa-caret-down"></i>
+                </a>
 
-                    <!-- Dropdown Menu -->
-                    <div
-                        class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right">
-                        <div class="p-4 border-b">
-                            <p class="text-sm font-medium text-gray-600">Đã đăng nhập với</p>
-                            <p class="text-sm text-gray-800 font-bold truncate">{{ $user->email }}</p>
-                        </div>
-                        <div class="p-2">
-                            <a href="{{ route('user.profile') }}"
-                                class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                                <i class="fas fa-user-circle text-gray-600"></i>
-                                <div>
-                                    <p class="text-sm font-medium text-gray-700">Hồ sơ của tôi</p>
-                                    <p class="text-xs text-gray-500">Quản lý thông tin cá nhân</p>
-                                </div>
-                            </a>
-                            {{-- <a href="{{ route('user.settings') }}"
-                                class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                                <i class="fas fa-cog text-gray-600"></i>
-                                <div>
-                                    <p class="text-sm font-medium text-gray-700">Cài đặt</p>
-                                    <p class="text-xs text-gray-500">Quản lý tài khoản</p>
-                                </div>
-                            </a> --}}
-                            <a href="{{ route('user.logout') }}"
-                                class="flex items-center space-x-3 p-3 rounded-lg hover:bg-red-50 text-red-600 transition-colors duration-200">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span class="text-sm font-medium">Đăng xuất</span>
-                            </a>
-                        </div>
+                <div id="userMenu"
+                    class="absolute right-0 mt-12 w-56 bg-white border border-gray-300 rounded-lg shadow-lg hidden z-50 transition-all duration-300 ease-out transform scale-95">
+                    <div class="p-4">
+                        <a href="{{ route('user.profile') }}"
+                            class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition">
+                            <i class="fas fa-user-circle text-blue-500 mr-3"></i>
+                            <span>Thông Tin Tài Khoản</span>
+                        </a>
+
+                        @if (Auth::user()->role == 2 || Auth::user()->role == 3)
+                        <a href="{{ route('admin.dashboard') }}"
+                            class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition mt-2">
+                            <i class="fas fa-cogs text-green-500 mr-3"></i>
+                            <span>Quản lý</span>
+                        </a>
+                        @endif
+                        <a href="{{ route('user.logout') }}"
+                            class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition mt-2">
+                            <i class="fas fa-sign-out-alt text-red-500 mr-3"></i>
+                            <span>Đăng Xuất</span>
+                        </a>
                     </div>
                 </div>
+            </div>
             @endguest
         </div>
     </div>
@@ -139,36 +136,59 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Hiển thị ngày hiện tại
-        function formatDate() {
-            const today = new Date();
-            const options = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            };
-            document.getElementById('currentDate').textContent = today.toLocaleDateString('vi-VN', options);
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     // Hiển thị ngày hiện tại
+    //     function formatDate() {
+    //         const today = new Date();
+    //         const options = {
+    //             weekday: 'long',
+    //             year: 'numeric',
+    //             month: 'long',
+    //             day: 'numeric'
+    //         };
+    //         document.getElementById('currentDate').textContent = today.toLocaleDateString('vi-VN', options);
+    //     }
+    //     formatDate();
+
+    //     // Xử lý thanh tìm kiếm
+    //     const searchInput = document.querySelector('input[type="text"]');
+    //     searchInput.addEventListener('focus', function() {
+    //         this.parentElement.classList.add('ring-2', 'ring-blue-200');
+    //     });
+
+    //     searchInput.addEventListener('blur', function() {
+    //         this.parentElement.classList.remove('ring-2', 'ring-blue-200');
+    //     });
+
+    //     // Mobile menu toggle (nếu cần)
+    //     const mobileMenuBtn = document.querySelector('#mobile-menu-btn');
+    //     if (mobileMenuBtn) {
+    //         mobileMenuBtn.addEventListener('click', function() {
+    //             document.querySelector('#mobile-menu').classList.toggle('hidden');
+    //         });
+    //     }
+    // });
+    const userMenuToggle = document.getElementById('userMenuToggle');
+    const userMenu = document.getElementById('userMenu');
+
+    // Toggle dropdown menu visibility with smooth transition
+    userMenuToggle.addEventListener('click', function(event) {
+        event.preventDefault();
+        userMenu.classList.toggle('hidden');
+
+        if (!userMenu.classList.contains('hidden')) {
+            userMenu.classList.remove('opacity-0', 'scale-95');
+            userMenu.classList.add('opacity-100', 'scale-100');
+        } else {
+            userMenu.classList.remove('opacity-100', 'scale-100');
+            userMenu.classList.add('opacity-0', 'scale-95');
         }
-        formatDate();
+    });
 
-        // Xử lý thanh tìm kiếm
-        const searchInput = document.querySelector('input[type="text"]');
-        searchInput.addEventListener('focus', function() {
-            this.parentElement.classList.add('ring-2', 'ring-blue-200');
-        });
-
-        searchInput.addEventListener('blur', function() {
-            this.parentElement.classList.remove('ring-2', 'ring-blue-200');
-        });
-
-        // Mobile menu toggle (nếu cần)
-        const mobileMenuBtn = document.querySelector('#mobile-menu-btn');
-        if (mobileMenuBtn) {
-            mobileMenuBtn.addEventListener('click', function() {
-                document.querySelector('#mobile-menu').classList.toggle('hidden');
-            });
+    // Close dropdown when clicking outside
+    window.addEventListener('click', function(event) {
+        if (!userMenu.contains(event.target) && !userMenuToggle.contains(event.target)) {
+            userMenu.classList.add('hidden', 'opacity-0', 'scale-95');
         }
     });
 </script>

@@ -102,7 +102,6 @@ class PostController extends Controller
 
 
 
-
     public function index(Request $request)
     {
         try {

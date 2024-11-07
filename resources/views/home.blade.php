@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <div class="min-h-screen flex flex-col">
+    <div class="min-h-screen flex flex-col ">
         @include('home.nav')
 
         <!-- Tin Đề Xuất -->
@@ -81,7 +81,7 @@
             </div>
         </div>
 
-        @include('home.footer')
+       
     </div>
 </body>
 

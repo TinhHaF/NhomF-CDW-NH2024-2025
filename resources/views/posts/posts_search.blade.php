@@ -47,7 +47,6 @@
             </div>
         </div>
 
-        @include('home.footer')
     </div>
 </body>
 

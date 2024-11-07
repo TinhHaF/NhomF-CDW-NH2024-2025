@@ -1,7 +1,7 @@
-<body>
-    @include('home.nav')
+<body class="">
+@include('home.nav')
     @include('components.notifications')
-    <div class="container mx-auto border border-gray-300 rounded-lg p-5 bg-gray-50 my-10 " style="width: 800px;">
+    <div class="container mx-auto border border-gray-300 rounded-lg p-5 bg-gray-50 mt-10" style="width: 800px;">
 
         <div class="text-2xl font-bold mb-2">
             {{ $post->title }}
@@ -27,5 +27,5 @@
         </div>
     </div>
     @include('posts.post_commemts')
-    @include('home.footer')
+
 </body>
