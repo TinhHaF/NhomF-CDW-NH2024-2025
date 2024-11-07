@@ -86,7 +86,7 @@
                         </ul>
                     </li>
                     <li class="px-4 py-2 hover:bg-gray-200">
-                        <a class="flex items-center hover:text-red-500" href="#">
+                        <a class="flex items-center hover:text-red-500" href="{{ route('categories.index') }}">
                             <i class="fa-solid fa-folder mr-2"></i>
                             Quản lý danh mục
                         </a>
