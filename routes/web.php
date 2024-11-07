@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LogoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
@@ -7,9 +8,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\SlugController;
-use App\Http\Controllers\UserStatsController;
+use App\Services\VisitorTrackingService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
@@ -72,10 +72,10 @@ Route::post('/check-slug', function (Request $request) {
 });
 
 // Routes thống kê người dùng
-Route::get('/online-users', [UserStatsController::class, 'getOnlineUsers']);
-Route::get('/weekly-visits', [UserStatsController::class, 'getWeeklyVisits']);
-Route::get('/monthly-visits', [UserStatsController::class, 'getMonthlyVisits']);
-Route::get('/total-visits', [UserStatsController::class, 'getTotalVisits']);
+Route::get('/online-users', [VisitorTrackingService::class, 'getOnlineUsers']);
+Route::get('/weekly-visits', [VisitorTrackingService::class, 'getWeeklyVisits']);
+Route::get('/monthly-visits', [VisitorTrackingService::class, 'getMonthlyVisits']);
+Route::get('/total-visits', [VisitorTrackingService::class, 'getTotalVisits']);
 
 // Route cho việc lưu bình luận
 
@@ -84,5 +84,14 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->middleware(['admin'])->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         Route::resource('posts', PostController::class);
+
+        // Route để xử lý khi gửi form tải lên logo
     });
 });
+
+Route::get('/admin/logo/upload', [LogoController::class, 'showUploadForm'])->name('logo.upload.form');
+Route::post('/admin/logo/upload', [LogoController::class, 'upload'])->name('logo.upload');
+Route::delete('/admin/logo/{id}', [LogoController::class, 'delete'])->name('logo.delete');
+
+
+Route::get('/admin/analytics/chart-data', [DashboardController::class, 'getChartData']);

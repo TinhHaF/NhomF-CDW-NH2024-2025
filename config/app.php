@@ -1,6 +1,10 @@
 <?php
 
 return [
+    // 'providers' => [
+    //     // ...
+    //     App\Providers\VisitorTrackingServiceProvider::class,
+    // ],
 
     /*
     |--------------------------------------------------------------------------

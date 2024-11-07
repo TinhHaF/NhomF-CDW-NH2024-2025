@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\TrackVisits;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Đăng ký alias cho middleware 'admin'
         $middleware->alias([
             'admin' => AdminMiddleware::class,
+            'trackVisits' => TrackVisits::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

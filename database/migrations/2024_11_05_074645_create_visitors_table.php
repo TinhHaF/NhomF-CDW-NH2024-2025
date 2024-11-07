@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('visits', function (Blueprint $table) {
+        Schema::create('visitors', function (Blueprint $table) {
             $table->id();
             $table->string('ip_address');
             $table->string('user_agent');
-            $table->timestamp('visit_date');
+            $table->string('page_url');
+            $table->boolean('is_admin')->default(false);
+            $table->timestamp('visited_at');
             $table->timestamps();
         });
     }
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('visits');
+        Schema::dropIfExists('visitors');
     }
 };

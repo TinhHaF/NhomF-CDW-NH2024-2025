@@ -2,101 +2,81 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Visit;
+use App\Http\Controllers\Controller;
+use App\Services\VisitorTrackingService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Models\Visitor;
-use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    // public function index()
-    // {
-    //     // Số người đang online (truy cập trong 5 phút gần nhất)
-    //     $onlineUsers = Visitor::where('visit_date', '>=', Carbon::now()->subMinutes(5))
-    //         ->distinct('ip_address')
-    //         ->count();
+    protected $visitorService;
 
-    //     // Số truy cập trong tuần
-    //     $weeklyVisits = Visitor::whereBetween('visit_date', [
-    //         Carbon::now()->startOfWeek(),
-    //         Carbon::now()->endOfWeek()
-    //     ])->count();
-
-    //     // Số truy cập trong tháng
-    //     $monthlyVisits = Visitor::whereBetween('visit_date', [
-    //         Carbon::now()->startOfMonth(),
-    //         Carbon::now()->endOfMonth()
-    //     ])->count();
-
-    //     // Tổng số truy cập
-    //     $totalVisits = Visitor::count();
-
-    //     // Dữ liệu cho biểu đồ
-    //     $chartData = collect(range(1, Carbon::now()->daysInMonth))->map(function($day) {
-    //         $date = Carbon::now()->startOfMonth()->addDays($day - 1);
-    //         return [
-    //             'date' => $date->format('d/m'),
-    //             'visits' => Visitor::whereDate('visit_date', $date)->count()
-    //         ];
-    //     });
-
-    //     return view('admin.dashboard.dashboard', compact(
-    //         'onlineUsers',
-    //         'weeklyVisits',
-    //         'monthlyVisits',
-    //         'totalVisits',
-    //         'chartData'
-    //     ));
-    // }
+    public function __construct(VisitorTrackingService $visitorService)
+    {
+        $this->visitorService = $visitorService;
+    }
 
     public function index()
     {
-        // Số người đang online (truy cập trong 5 phút gần nhất)
-        $onlineUsers = Visit::where('visit_date', '>=', Carbon::now()->subMinutes(5))
-            ->distinct('ip_address')
-            ->count();
+        $statistics = $this->visitorService->getStatistics();
 
-        // Số truy cập trong tuần
-        $weeklyVisits = Visit::whereBetween('visit_date', [
-            Carbon::now()->startOfWeek(),
-            Carbon::now()->endOfWeek()
-        ])->count();
+        // Thêm browser stats
+        $statistics['browserStats'] = [
+            ['name' => 'Chrome', 'y' => 45],
+            ['name' => 'Firefox', 'y' => 25],
+            ['name' => 'Safari', 'y' => 20],
+            ['name' => 'Others', 'y' => 10]
+        ];
 
-        // Số truy cập trong tháng
-        $monthlyVisits = Visit::whereBetween('visit_date', [
-            Carbon::now()->startOfMonth(),
-            Carbon::now()->endOfMonth()
-        ])->count();
+        // Thêm device stats
+        $statistics['deviceStats'] = [
+            ['name' => 'Desktop', 'y' => 60],
+            ['name' => 'Mobile', 'y' => 35],
+            ['name' => 'Tablet', 'y' => 5]
+        ];
 
-        // Tổng số truy cập
-        $totalVisits = Visit::count();
+        // Lấy dữ liệu lượt truy cập trong 30 ngày
+        $data = $this->visitorService->getVisitsByPeriod(30);
+        $statistics['dates'] = $data->pluck('date')->toArray();
+        $statistics['visitCounts'] = $data->pluck('count')->toArray();
 
-        // Dữ liệu cho biểu đồ
-        $visitsThisMonth = Visit::whereMonth('visit_date', Carbon::now()->month)
-            ->get()
-            ->groupBy(function ($date) {
-                return Carbon::parse($date->visit_date)->format('d'); // Lấy ngày
-            });
-
-        $chartData = collect(range(1, Carbon::now()->daysInMonth))->map(function ($day) use ($visitsThisMonth) {
-            return [
-                'date' => sprintf("%02d/%02d", $day, Carbon::now()->month),
-                'visits' => $visitsThisMonth->get($day, collect())->count()
-            ];
-        });
-
-        // Thêm biến $dates và $visitCounts
-        $dates = $chartData->pluck('date')->toArray(); // Lấy ngày từ chartData
-        $visitCounts = $chartData->pluck('visits')->toArray(); // Lấy số lượt truy cập từ chartData
-
-        return view('admin.dashboard.dashboard', compact(
-            'onlineUsers',
-            'weeklyVisits',
-            'monthlyVisits',
-            'totalVisits',
-            'chartData',
-            'dates',      // Thêm biến $dates vào view
-            'visitCounts' // Thêm biến $visitCounts vào view
-        ));
+        // Truyền dữ liệu vào view
+        return view('admin.dashboard.dashboard', compact('statistics'));
     }
+
+
+    public function getChartData(Request $request)
+    {
+        $period = $request->get('period', 30);
+        $data = $this->visitorService->getVisitsByPeriod($period);
+
+        return response()->json([
+            'dates' => $data->pluck('date'),
+            'visitCounts' => $data->pluck('count')
+        ]);
+    }
+
+    // public function getOnlineUsers(): JsonResponse
+    // {
+    //     $onlineUsers = $this->visitorService->getOnlineUsers();
+    //     return response()->json(['count' => $onlineUsers]);
+    // }
+
+    // public function getWeeklyVisits(): JsonResponse
+    // {
+    //     $weeklyVisits = $this->visitorService->getWeeklyVisits();
+    //     return response()->json(['count' => $weeklyVisits]);
+    // }
+
+    // public function getMonthlyVisits(): JsonResponse
+    // {
+    //     $monthlyVisits = $this->visitorService->getMonthlyVisits();
+    //     return response()->json(['count' => $monthlyVisits]);
+    // }
+
+    // public function getTotalVisits(): JsonResponse
+    // {
+    //     $totalVisits = $this->visitorService->getTotalVisits();
+    //     return response()->json(['count' => $totalVisits]);
+    // }
 }

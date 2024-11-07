@@ -206,23 +206,6 @@
 
 @push('scripts')
     <script>
-        // function previewFile() {
-        //     const preview = document.getElementById('previewImage');
-        //     const file = document.getElementById('image').files[0];
-        //     const reader = new FileReader();
-
-        //     reader.onloadend = function() {
-        //         preview.src = reader.result;
-        //     };
-
-        //     if (file) {
-        //         reader.readAsDataURL(file);
-        //     } else {
-        //         preview.src = "";
-        //     }
-        // }
-
-        // Xử lý sự kiện khi người dùng nhập tiêu đề
         // Xử lý sự kiện khi người dùng nhập tiêu đề
         document.getElementById('title').addEventListener('input', function() {
             const title = this.value;

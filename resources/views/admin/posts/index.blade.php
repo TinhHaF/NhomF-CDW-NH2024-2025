@@ -94,7 +94,7 @@
                                         {{ $post->created_at->format('d/m/Y') }}
                                     </div>
                                     <div class="flex space-x-2">
-                                        <a class="text-blue-500" href="{{ route('posts.show', $encodeId($post->id)) }}"
+                                        <a class="text-blue-500" href="{{ route('posts.show', $post->id) }}"
                                             title="Xem bài viết">
                                             <i class="fas fa-eye"></i> View
                                         </a>

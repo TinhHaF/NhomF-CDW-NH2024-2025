@@ -12,8 +12,8 @@ const CONFIG = {
         "GIF",
     ],
     MAX_FILE_SIZE: 5 * 1024 * 1024, // 5MB
-    IMAGE_WIDTH: 1200,
-    IMAGE_HEIGHT: 900,
+    // IMAGE_WIDTH: 1200,
+    // IMAGE_HEIGHT: 900,
     DEFAULT_IMAGE: "/images/no-image-available.jpg",
     TOAST_DURATION: 5000,
 };
@@ -235,20 +235,20 @@ class ImageHandler {
                 const img = new Image();
                 img.src = URL.createObjectURL(file);
 
-                img.onload = () => {
-                    URL.revokeObjectURL(img.src);
-                    if (
-                        img.width !== CONFIG.IMAGE_WIDTH ||
-                        img.height < CONFIG.IMAGE_HEIGHT
-                    ) {
-                        this.modalSystem.show(
-                            `Kích thước hình ảnh phải là ${CONFIG.IMAGE_WIDTH}x${CONFIG.IMAGE_HEIGHT} pixels`
-                        );
-                        resolve(false);
-                    } else {
-                        resolve(true);
-                    }
-                };
+                // img.onload = () => {
+                //     URL.revokeObjectURL(img.src);
+                //     if (
+                //         img.width < CONFIG.IMAGE_WIDTH &&
+                //         img.height < CONFIG.IMAGE_HEIGHT
+                //     ) {
+                //         this.modalSystem.show(
+                //             `Kích thước hình ảnh phải không hợp lệ, phải nằm trong khoảng ${CONFIG.IMAGE_WIDTH}x${CONFIG.IMAGE_HEIGHT} pixels`
+                //         );
+                //         resolve(false);
+                //     } else {
+                //         resolve(true);
+                //     }
+                // };
 
                 img.onerror = () => {
                     URL.revokeObjectURL(img.src);
@@ -374,7 +374,9 @@ function generateSlug() {
         .replace(/[^a-z0-9\s-]/g, "") //Xóa ký tự đặc biệt
         .replace(/[\s-]+/g, "-"); //Thay khoảng trắng bằng dấu -, ko cho 2 -- liên tục
     document.getElementById("slug").value = slug;
-    document.getElementById('slugurlpreviewvi').querySelector('strong').textContent = slug;
+    document
+        .getElementById("slugurlpreviewvi")
+        .querySelector("strong").textContent = slug;
 }
 
 // function slugConvert(slug, focus = false) {
@@ -569,4 +571,3 @@ function hasFormChanged() {
     }
     return false;
 }
-

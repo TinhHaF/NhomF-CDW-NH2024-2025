@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('posts', function (Blueprint $table) {
-            $table->fullText(['title', 'content']);
+        Schema::create('logos', function (Blueprint $table) {
+            $table->id();
+            $table->string('path'); // Đường dẫn đến logo
+            $table->boolean('visible')->default(true); // Trạng thái hiển thị
+            $table->timestamps(); // Ngày tạo và cập nhật logo
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('posts', function (Blueprint $table) {
-            $table->dropFullText(['title', 'content']);
-        });
+        Schema::dropIfExists('logos');
     }
 };

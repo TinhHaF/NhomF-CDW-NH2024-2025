@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator; 
-use App\Services\UserStatsService;
+use App\Services\VisitorTrackingService;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -14,8 +14,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(UserStatsService::class, function ($app) {
-            return new UserStatsService();
+        $this->app->singleton(VisitorTrackingService::class, function ($app) {
+            return new VisitorTrackingService();
         });
     }
 

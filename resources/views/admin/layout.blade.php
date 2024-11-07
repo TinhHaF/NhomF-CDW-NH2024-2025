@@ -124,6 +124,7 @@
                     <span class="font-semi">Xin chào, admin</span>
                 </div>
                 <div class="flex items-center">
+                    <a href="{{ route('home') }}"><i class="fa-solid fa-house mr-4"></i></a>
                     <i class="fa-solid fa-cog mr-4"></i>
                     <i class="fa-solid fa-bell mr-4"></i>
                     <button class="font-semi" onclick="window.location.href='{{ route('user.logout') }}'">
@@ -187,7 +188,7 @@
             updateSelectedCount(); // Cập nhật số lượng đã chọn
         });
     </script>
-   
+
     <script src="{{ asset('js/custom.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
