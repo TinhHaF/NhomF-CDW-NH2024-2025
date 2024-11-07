@@ -31,12 +31,9 @@ class Post extends Model
     ];
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category_id', 'category_id');
     }
-    // public function getEncodedIdAttribute()
-    // {
-    //     return \App\Http\Controllers\PostController::encodeId($this->id);
-    // }
+ 
 
     /**
      * Thiết lập quan hệ với model Comment.

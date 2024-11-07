@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
             UsersSeeder::class,  // Seeder cho bảng users
             AuthorSeeder::class, // Seeder cho bảng authors
             CategorySeeder::class, // Seeder cho bảng category
-            PostSeeder::class
+            PostSeeder::class,
+            CommentSeeder::class
         ]);
     }
 }

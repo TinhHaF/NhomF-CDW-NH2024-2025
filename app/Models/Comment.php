@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\IdEncoder;
 
 class Comment extends Model
 {
@@ -11,7 +12,8 @@ class Comment extends Model
 
     // Các thuộc tính có thể được gán hàng loạt
     protected $fillable = ['post_id', 'user_id', 'content'];
-
+    // Chỉ định khóa chính
+    protected $primaryKey = 'comment_id';
     /**
      * Thiết lập quan hệ với model Post.
      * Mỗi comment thuộc về một bài viết.
@@ -28,5 +30,9 @@ class Comment extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function getEncodedCommentIdAttribute()
+    {
+        return IdEncoder::encode($this->comment_id);
     }
 }

@@ -34,16 +34,17 @@
 </head>
 
 <body class="flex items-center justify-center h-screen">
-    <div class="bg-white w-full max-w-3xl mx-auto p-8 rounded-lg shadow-lg fadeIn flex">
+    <div class="bg-white w-full max-w-3xl mx-auto p-8 rounded-lg shadow-lg fadeIn flex relative">
+        <!-- Nút đóng di chuyển sang góc bên phải -->
+        <button class="absolute top-4 right-4 text-black text-xl transition duration-300 hover:text-red-500" onclick="window.location.href='{{ route('home') }}'">
+            <i class="fas fa-times"></i>
+        </button>
         <!-- Phần biểu mẫu -->
         <div class="w-1/2 pr-4">
             <h2 class="text-2xl font-bold text-center mb-6 text-gray-700">Đăng Ký Tài Khoản</h2>
             <div class="flex justify-between mb-8">
                 <button class="text-gray-500 flex-1 text-center" onclick="window.location.href='{{ route('login') }}'">Đăng Nhập</button>
                 <button class="text-red-500 border-b-2 border-red-500 flex-1 text-center font-semibold transition duration-300 hover:text-red-700 hover:border-red-700">Đăng Ký</button>
-                <button class="text-black text-xl transition duration-300 hover:text-red-500">
-                    <i class="fas fa-times"></i>
-                </button>
             </div>
             <form method="post" action="{{ route('user.addUser') }}" enctype="multipart/form-data">
                 @csrf

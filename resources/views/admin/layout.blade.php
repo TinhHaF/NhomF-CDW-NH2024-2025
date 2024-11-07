@@ -14,10 +14,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ asset('css/fontawesome-free-6.6.0-web/css/all.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-    {{-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> --}}
+    {{--
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
-    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
+    {{--
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
+    {{--
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
     <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
     <script src="{{ asset('js/highcharts.js') }}"></script>
 
@@ -63,6 +66,11 @@
                         </a>
                     </li>
                     <li class="px-4 py-2 hover:bg-gray-200">
+                        <a class="flex items-center hover:text-red-500" href="{{ route('home') }}">
+                            <i class="fa-solid fa-home mr-2"></i>
+                            Trang homepage
+                        </a>
+                    <li class="px-4 py-2 hover:bg-gray-200">
                         <a class="flex items-center hover:text-red-500 cursor-pointer" data-toggle="dropdown"
                             href="{{ route('posts.index') }}">
                             <i class="fa-solid fa-newspaper mr-2"></i>
@@ -90,38 +98,31 @@
                     </li>
                     @if (Auth::user()->role == 2)
                         <li class="px-4 py-2 hover:bg-gray-200">
-                            <a class="flex items-center hover:text-red-500" href="">
+                            <a class="flex items-center hover:text-red-500" href="{{ route('users.index') }}">
                                 <i class="fa-solid fa-users mr-2"></i>
                                 Quản lý người dùng
                             </a>
-                            <ul class="ml-6 mt-2">
-                                <li class="px-4 py-2 bg-blue-100">
-                                    Người dùng
-                                </li>
-                            </ul>
                         </li>
                         <li class="px-4 py-2 hover:bg-gray-200">
-                            <a class="flex items-center hover:text-red-500" href="#">
+                            <a class="flex items-center hover:text-red-500" href="{{ route('PostsComment') }}">
                                 <i class="fa-solid fa-comments mr-2"></i>
                                 Quản lý Bình Luận
                             </a>
-                            <ul class="ml-6 mt-2">
-                                <li class="px-4 py-2 bg-blue-100">
-                                    Bình Luận
-                                </li>
-                            </ul>
                         </li>
+
                     @endif
                 </ul>
             </nav>
         </div>
-
+        @php
+        $user = Auth::user(); // Lấy thông tin người dùng đã đăng nhập
+    @endphp
         <!-- Main Content -->
         <div class="flex-grow">
             <div class="flex justify-between items-center mb-4 border-b p-4 bg-white text-[#adacad]">
                 <div class="flex items-center">
                     <i class="fa-solid fa-bars mr-2"></i>
-                    <span class="font-semi">Xin chào, admin</span>
+                    <span> Xin Chào {{ $user->username }}</span>
                 </div>
                 <div class="flex items-center">
                     <a href="{{ route('home') }}"><i class="fa-solid fa-house mr-4"></i></a>
@@ -151,9 +152,9 @@
             filebrowserBrowseUrl: '/filemanager?type=Files',
             filebrowserUploadUrl: '/filemanager/upload?type=Files&_token=',
         });
-        CKEDITOR.on('instanceReady', function(ev) {
+        CKEDITOR.on('instanceReady', function (ev) {
             var editor = ev.editor;
-            editor.on('notificationShow', function(evt) {
+            editor.on('notificationShow', function (evt) {
                 if (evt.data.message.indexOf('This CKEditor') !== -1) {
                     evt.cancel();
                 }
