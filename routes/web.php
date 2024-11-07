@@ -92,7 +92,32 @@ Route::middleware([AdministrationMiddleware::class])->group(function () {
         Route::resource('categories', CategoryController::class);
     });
 });
+// Route::middleware([AdministrationMiddleware::class])->group(function () {
+    
+//     // Route cho danh sách bài viết (index)
+//     Route::get('admin/posts', [PostController::class, 'index'])->name('posts.index');
 
+//     // Route cho hiển thị chi tiết bài viết (show)
+//     Route::get('admin/posts/{id}', [PostController::class, 'show'])->name('posts.show');
+
+//     // Route cho trang tạo bài viết (create)
+//     Route::get('admin/posts/create', [PostController::class, 'create'])->name('posts.create');
+
+//     // Route để lưu bài viết mới (store)
+//     Route::post('admin/posts', [PostController::class, 'store'])->name('posts.store');
+
+//     // Route cho trang chỉnh sửa bài viết (edit)
+//     Route::get('admin/posts/{id}/edit', [PostController::class, 'edit'])->name('posts.edit');
+
+//     // Route để cập nhật bài viết (update)
+//     Route::put('admin/posts/{id}', [PostController::class, 'update'])->name('posts.update');
+
+//     // Route để xóa bài viết (destroy)
+//     Route::delete('admin/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
+
+//           Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+// });
 // Middleware chỉ dành riêng cho Admin
 Route::middleware([AdminMiddleware::class])->group(function () {
     Route::prefix('admin')->group(function () {

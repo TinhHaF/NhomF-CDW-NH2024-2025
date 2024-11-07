@@ -54,7 +54,7 @@
         <div class="w-64 bg-white shadow-md">
             <div class="p-4">
                 <img alt="Lacoly Logo" class="mx-auto" height="50"
-                    src="https://storage.googleapis.com/a1aa/image/tkMOcGFkfmyvdq3JhGQHzAhhaTpAVYMnMUGYFRdsJEfj28nTA.jpg"
+                    src="{{asset('images/logo.jpg')}}"
                     width="150" />
             </div>
             <nav class="mt-6">
@@ -97,18 +97,18 @@
                         </ul>
                     </li>
                     @if (Auth::user()->role == 2)
-                        <li class="px-4 py-2 hover:bg-gray-200">
-                            <a class="flex items-center hover:text-red-500" href="{{ route('users.index') }}">
-                                <i class="fa-solid fa-users mr-2"></i>
-                                Quản lý người dùng
-                            </a>
-                        </li>
-                        <li class="px-4 py-2 hover:bg-gray-200">
-                            <a class="flex items-center hover:text-red-500" href="{{ route('PostsComment') }}">
-                                <i class="fa-solid fa-comments mr-2"></i>
-                                Quản lý Bình Luận
-                            </a>
-                        </li>
+                    <li class="px-4 py-2 hover:bg-gray-200">
+                        <a class="flex items-center hover:text-red-500" href="{{ route('users.index') }}">
+                            <i class="fa-solid fa-users mr-2"></i>
+                            Quản lý người dùng
+                        </a>
+                    </li>
+                    <li class="px-4 py-2 hover:bg-gray-200">
+                        <a class="flex items-center hover:text-red-500" href="{{ route('PostsComment') }}">
+                            <i class="fa-solid fa-comments mr-2"></i>
+                            Quản lý Bình Luận
+                        </a>
+                    </li>
 
                     @endif
                 </ul>
@@ -116,7 +116,7 @@
         </div>
         @php
         $user = Auth::user(); // Lấy thông tin người dùng đã đăng nhập
-    @endphp
+        @endphp
         <!-- Main Content -->
         <div class="flex-grow">
             <div class="flex justify-between items-center mb-4 border-b p-4 bg-white text-[#adacad]">
@@ -152,9 +152,9 @@
             filebrowserBrowseUrl: '/filemanager?type=Files',
             filebrowserUploadUrl: '/filemanager/upload?type=Files&_token=',
         });
-        CKEDITOR.on('instanceReady', function (ev) {
+        CKEDITOR.on('instanceReady', function(ev) {
             var editor = ev.editor;
-            editor.on('notificationShow', function (evt) {
+            editor.on('notificationShow', function(evt) {
                 if (evt.data.message.indexOf('This CKEditor') !== -1) {
                     evt.cancel();
                 }

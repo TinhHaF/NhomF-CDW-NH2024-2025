@@ -6,7 +6,7 @@
             <div class="col-span-1">
                 <h5 class="font-bold text-xl text-black mb-4">Về Chúng Tôi</h5>
                 <div class="mb-4">
-                    <img src="/logo.png" alt="Logo" class="h-12 mb-4">
+                    <img src="{{asset('images/logo.jpg')}}" alt="Logo" class="h-12 mb-4">
                     <p class="text-gray-400 leading-relaxed mb-4">
                         Chúng tôi cung cấp những thông tin hữu ích và đáng tin cậy nhất về công nghệ,
                         giúp bạn luôn cập nhật với xu hướng mới nhất.
@@ -39,7 +39,7 @@
                 <ul class="space-y-3">
                     {{-- @foreach ($categories as $category)
                         <li>
-                            <a href="{{ route('category.show', $category->category_id) }}"
+                            <a href="{{ route('category.show', $category->id) }}"
                                 class="text-gray-400 hover:text-black hover:pl-2 transition-all duration-200 flex items-center">
                                 <i class="fas fa-chevron-right mr-2 text-sm"></i>
                                 {{ $category->name }}

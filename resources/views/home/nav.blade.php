@@ -25,10 +25,10 @@
             <div class="flex items-center space-x-2">
                 <div
                     class="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg flex items-center justify-center text-white font-bold shadow-lg transform hover:scale-105 transition-transform duration-200">
-                    Logo
+                    <img src="{{asset('images/logo.jpg')}}" alt="">
                 </div>
                 <div class="hidden md:block">
-                    <h1 class="text-xl font-bold text-gray-800">Your Brand</h1>
+                    <h1 class="text-xl font-bold text-gray-800">Group F</h1>
                     <p class="text-sm text-gray-500">Professional Solutions</p>
                 </div>
             </div>
