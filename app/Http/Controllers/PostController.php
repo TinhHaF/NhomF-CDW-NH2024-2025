@@ -92,19 +92,18 @@ class PostController extends Controller
     {
         $query = $request->input('query');
 
-        if (strlen($query) < 2) {
-            // Nếu từ khóa quá ngắn, sử dụng LIKE để tìm kiếm
-            $posts = Post::where('title', 'like', '%' . $query . '%')
-                ->orWhere('content', 'like', '%' . $query . '%')
-                ->paginate(6);
-        } else {
-            // Nếu từ khóa đủ dài, thực hiện tìm kiếm bằng Full-Text Search
-            $posts = Post::whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$query])
-                ->paginate(6);
-        }
+        // Tìm kiếm bài viết có ảnh
+        $posts = Post::where(function ($queryBuilder) use ($query) {
+            $queryBuilder->where('title', 'like', '%' . $query . '%')
+                ->orWhere('content', 'like', '%' . $query . '%');
+        })
+            ->whereNotNull('image')  // Chỉ lấy bài viết có ảnh
+            ->where('image', '!=', '')  // Kiểm tra thêm nếu image là chuỗi rỗng
+            ->paginate(6);
 
         return view('posts.posts_search', compact('posts'));
     }
+
 
 
 
