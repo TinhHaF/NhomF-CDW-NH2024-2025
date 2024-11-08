@@ -60,13 +60,20 @@
                     </a>
 
                     <!-- Nút xóa -->
-                    <form action="{{ route('categories.destroy', Crypt::encryptString($category->id)) }}" method="POST" style="display:inline;">
+                    <form action="{{ route('categories.destroy', Crypt::encryptString($category->id)) }}" method="POST" style="display:inline;" onsubmit="return confirmDelete();">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
                             <i class="fas fa-trash"></i> Xóa
                         </button>
                     </form>
+
+                    <script>
+                        function confirmDelete() {
+                            return confirm("Bạn có chắc chắn muốn xóa mục này?");
+                        }
+                    </script>
+
                 </td>
             </tr>
             @endforeach
@@ -75,7 +82,7 @@
 
     <!-- Phân trang -->
     <div class="mt-4">
-        {{ $categories->links() }}  <!-- Hiển thị các liên kết phân trang -->
+        {{ $categories->links() }} <!-- Hiển thị các liên kết phân trang -->
     </div>
     @endif
 </div>

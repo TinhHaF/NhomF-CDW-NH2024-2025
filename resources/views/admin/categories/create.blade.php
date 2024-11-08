@@ -50,10 +50,11 @@
                     </div>
 
                     <div class="flex justify-end space-x-3">
-                        <button type="reset"
-                            class="px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            Làm mới
-                        </button>
+                    <button type="reset"
+                        class="flex items-center bg-gray-300 text-gray-800 px-4 py-2 rounded mr-2 mb-2 md:mb-0 hover:bg-gray-400"
+                        onclick="confirmReset()">
+                        <i class="fas"></i>Làm Mới
+                    </button>
                         <button type="submit"
                             class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             Thêm danh mục

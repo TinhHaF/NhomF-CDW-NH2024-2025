@@ -36,13 +36,13 @@ class CategoryController extends Controller
         // Validate đầu vào
         $request->validate([
             'name' => 'required|string|max:50|unique:categories,name',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:100|unique:categories,description',
         ]);
 
         // Tạo mới danh mục
         Category::create($request->all());
 
-        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
+        return redirect()->route('categories.index')->with('success', 'Thêm danh mục thành công');
     }
 
     public function edit($id)
