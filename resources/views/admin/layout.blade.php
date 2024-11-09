@@ -12,18 +12,21 @@
         Admin Dashboard
     </title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{{ asset('css/fontawesome-free-6.6.0-web/css/all.min.css') }}">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     {{--
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> --}}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    {{--
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
-    {{--
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ asset('css/fontawesome-free-6.6.0-web/css/all.min.css') }}">
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
     <script src="{{ asset('js/highcharts.js') }}"></script>
-
     <style>
         /* Custom styles for the responsive menu */
         @media (max-width: 768px) {
@@ -48,14 +51,12 @@
 </head>
 
 <body class="bg-gray-100">
-    @include('components.notifications')
     <div class="flex flex-col md:flex-row">
         <!-- Sidebar -->
         <div class="w-64 bg-white shadow-md">
             <div class="p-4">
-                <img alt="Lacoly Logo" class="mx-auto" height="50"
-                    src="{{asset('images/logo.jpg')}}"
-                    width="150" />
+                <img alt="Lacoly Logo" class="mx-auto" height="50" width="150"
+                    src="{{ asset('images/logo.jpg') }}" />
             </div>
             <nav class="mt-6">
                 <ul class="space-y-2">
@@ -75,7 +76,7 @@
                             href="{{ route('posts.index') }}">
                             <i class="fa-solid fa-newspaper mr-2"></i>
                             Quản lý bài viết
-                            <i class="fa-solid fa-chevron-up ml-auto"></i>
+                            {{-- <i class="fa-solid fa-chevron-up ml-auto"></i> --}}
                         </a>
                         <ul class="ml-6 mt-2 hidden">
                             <li class="px-4 py-2 bg-blue-100">
@@ -90,32 +91,42 @@
                             <i class="fa-solid fa-folder mr-2"></i>
                             Quản lý danh mục
                         </a>
-                        <ul class="ml-6 mt-2">
+                        {{-- <ul class="ml-6 mt-2">
                             <li class="px-4 py-2 bg-blue-100">
                                 Danh mục
                             </li>
-                        </ul>
+                        </ul> --}}
                     </li>
                     @if (Auth::user()->role == 2)
-                    <li class="px-4 py-2 hover:bg-gray-200">
-                        <a class="flex items-center hover:text-red-500" href="{{ route('users.index') }}">
-                            <i class="fa-solid fa-users mr-2"></i>
-                            Quản lý người dùng
-                        </a>
-                    </li>
-                    <li class="px-4 py-2 hover:bg-gray-200">
-                        <a class="flex items-center hover:text-red-500" href="{{ route('PostsComment') }}">
-                            <i class="fa-solid fa-comments mr-2"></i>
-                            Quản lý Bình Luận
-                        </a>
-                    </li>
-
+                        <li class="px-4 py-2 hover:bg-gray-200">
+                            <a class="flex items-center hover:text-red-500" href="{{ route('users.index') }}">
+                                <i class="fa-solid fa-users mr-2"></i>
+                                Quản lý người dùng
+                            </a>
+                        </li>
+                        <li class="px-4 py-2 hover:bg-gray-200">
+                            <a class="flex items-center hover:text-red-500" href="{{ route('PostsComment') }}">
+                                <i class="fa-solid fa-comments mr-2"></i>
+                                Quản lý Bình Luận
+                            </a>
+                        </li>
                     @endif
+                    <li class="px-4 py-2 hover:bg-gray-200">
+                        <a class="flex items-center hover:text-red-500" href="{{ route('logo.upload') }}">
+                            <i class="fa-solid fa-folder mr-2"></i>
+                            Quản lý ảnh
+                        </a>
+                        {{-- <ul class="ml-6 mt-2">
+                            <li class="px-4 py-2 bg-blue-100">
+                                Logo
+                            </li>
+                        </ul> --}}
+                    </li>
                 </ul>
             </nav>
         </div>
         @php
-        $user = Auth::user(); // Lấy thông tin người dùng đã đăng nhập
+            $user = Auth::user(); // Lấy thông tin người dùng đã đăng nhập
         @endphp
         <!-- Main Content -->
         <div class="flex-grow">
@@ -134,6 +145,8 @@
                     </button>
                 </div>
             </div>
+            @include('components.notifications')
+
             @yield('content')
 
         </div>
@@ -189,6 +202,8 @@
             updateSelectedCount(); // Cập nhật số lượng đã chọn
         });
     </script>
+
+
 
     <script src="{{ asset('js/custom.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>

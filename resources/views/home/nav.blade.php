@@ -24,9 +24,11 @@
             <!-- Logo Section -->
             <div class="flex items-center space-x-2">
                 <div
-                    class="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg flex items-center justify-center text-white font-bold shadow-lg transform hover:scale-105 transition-transform duration-200">
-                    <img src="{{asset('images/logo.jpg')}}" alt="">
+                    class="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-800 rounded-full flex items-center justify-center text-white font-bold shadow-lg transform hover:scale-105 transition-transform duration-200">
+                    <img src="{{ asset($logoPath) }}"
+                        alt="logo" id="logoPreview" class="w-full h-full object-cover rounded-full">
                 </div>
+
                 <div class="hidden md:block">
                     <h1 class="text-xl font-bold text-gray-800">Group F</h1>
                     <p class="text-sm text-gray-500">Professional Solutions</p>
@@ -40,7 +42,6 @@
                     <i class="far fa-calendar-alt mr-2 text-blue-600"></i>
                     <span id="currentDate" class="text-sm"></span>
                 </div>
-
                 <!-- Search Bar -->
                 <div class="relative flex-1 max-w-xl">
                     <div class="relative">
@@ -48,7 +49,8 @@
 
                             <input type="text" name="query" placeholder="Tìm kiếm..."
                                 class="w-full px-4 py-2 pl-10 pr-12 rounded-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 text-gray-600 text-sm">
-                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <i
+                                class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                             <button
                                 class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white p-1.5 rounded-full hover:bg-blue-700 transition-colors duration-200">
                                 <i class="fas fa-arrow-right text-xs"></i>
@@ -60,16 +62,16 @@
 
             <!-- User Section -->
             @php
-            $user = Auth::user();
+                $user = Auth::user();
             @endphp
             @guest
-            <div class="flex items-center space-x-4">
-                <a href="{{ route('login') }}"
-                    class="flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200 font-medium">
-                    <i class="fas fa-user"></i>
-                    <span>Đăng nhập</span>
-                </a>
-            </div>
+                <div class="flex items-center space-x-4">
+                    <a href="{{ route('login') }}"
+                        class="flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200 font-medium">
+                        <i class="fas fa-user"></i>
+                        <span>Đăng nhập</span>
+                    </a>
+                </div>
             @else
                 <div
                     class="login relative flex items-center font-bold text-gray-800 hover:text-red-500 transition duration-300">
@@ -115,54 +117,50 @@
     <div class="border-t hidden md:block">
         <div class="container mx-auto px-4">
             <nav class="flex space-x-6 py-3">
-                <a href="#"
-                    class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">Trang chủ</a>
-                <a href="#"
-                    class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">Tin tức</a>
-                <a href="#"
-                    class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">Sản phẩm</a>
-                <a href="#"
-                    class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">Dịch vụ</a>
-                <a href="#"
-                    class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">Liên hệ</a>
+                @foreach ($categories as $category)
+                    <a href="{{ route('category.show', $category->id) }}"
+                        class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">
+                        {{ $category->name }}
+                    </a>
+                @endforeach
             </nav>
         </div>
     </div>
 </div>
 
 <script>
-    // document.addEventListener('DOMContentLoaded', function() {
-    //     // Hiển thị ngày hiện tại
-    //     function formatDate() {
-    //         const today = new Date();
-    //         const options = {
-    //             weekday: 'long',
-    //             year: 'numeric',
-    //             month: 'long',
-    //             day: 'numeric'
-    //         };
-    //         document.getElementById('currentDate').textContent = today.toLocaleDateString('vi-VN', options);
-    //     }
-    //     formatDate();
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hiển thị ngày hiện tại
+        function formatDate() {
+            const today = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            document.getElementById('currentDate').textContent = today.toLocaleDateString('vi-VN', options);
+        }
+        formatDate();
 
-    //     // Xử lý thanh tìm kiếm
-    //     const searchInput = document.querySelector('input[type="text"]');
-    //     searchInput.addEventListener('focus', function() {
-    //         this.parentElement.classList.add('ring-2', 'ring-blue-200');
-    //     });
+        // // Xử lý thanh tìm kiếm
+        // const searchInput = document.querySelector('input[type="text"]');
+        // searchInput.addEventListener('focus', function() {
+        //     this.parentElement.classList.add('ring-2', 'ring-blue-200');
+        // });
 
-    //     searchInput.addEventListener('blur', function() {
-    //         this.parentElement.classList.remove('ring-2', 'ring-blue-200');
-    //     });
+        // searchInput.addEventListener('blur', function() {
+        //     this.parentElement.classList.remove('ring-2', 'ring-blue-200');
+        // });
 
-    //     // Mobile menu toggle (nếu cần)
-    //     const mobileMenuBtn = document.querySelector('#mobile-menu-btn');
-    //     if (mobileMenuBtn) {
-    //         mobileMenuBtn.addEventListener('click', function() {
-    //             document.querySelector('#mobile-menu').classList.toggle('hidden');
-    //         });
-    //     }
-    // });
+        // // Mobile menu toggle (nếu cần)
+        // const mobileMenuBtn = document.querySelector('#mobile-menu-btn');
+        // if (mobileMenuBtn) {
+        //     mobileMenuBtn.addEventListener('click', function() {
+        //         document.querySelector('#mobile-menu').classList.toggle('hidden');
+        //     });
+        // }
+    });
     const userMenuToggle = document.getElementById('userMenuToggle');
     const userMenu = document.getElementById('userMenu');
 

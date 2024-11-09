@@ -15,8 +15,13 @@ class PostService
     {
         try {
             $imageUrl = null;
-            if ($image) {
+
+            if ($image && $image instanceof UploadedFile) {
+                // Nếu $image là một đối tượng UploadedFile, tiến hành lưu ảnh
                 $imageUrl = $image->store('posts', 'public');
+            } elseif (is_string($image)) {
+                // Nếu $image là chuỗi, có thể đây là một đường dẫn tệp đã có sẵn, bạn có thể xử lý theo cách khác nếu cần
+                $imageUrl = $image; // Đặt lại giá trị $imageUrl nếu cần
             }
 
             return Post::create([

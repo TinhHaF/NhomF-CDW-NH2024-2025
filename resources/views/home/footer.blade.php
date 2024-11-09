@@ -6,7 +6,12 @@
             <div class="col-span-1">
                 <h5 class="font-bold text-xl text-black mb-4">Về Chúng Tôi</h5>
                 <div class="mb-4">
-                    <img src="{{asset('images/logo.jpg')}}" alt="Logo" class="h-12 mb-4">
+                    <div
+                        class="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-800 rounded-full flex items-center justify-center text-white font-bold shadow-lg transform hover:scale-105 transition-transform duration-200">
+                        <img src="{{ asset($logoPath) }}" alt="logo" id="logoPreview"
+                            class="w-full h-full object-cover rounded-full">
+                    </div>
+
                     <p class="text-gray-400 leading-relaxed mb-4">
                         Chúng tôi cung cấp những thông tin hữu ích và đáng tin cậy nhất về công nghệ,
                         giúp bạn luôn cập nhật với xu hướng mới nhất.
@@ -37,7 +42,7 @@
             <div class="col-span-1">
                 <h5 class="font-bold text-xl text-black mb-4">Danh Mục</h5>
                 <ul class="space-y-3">
-                    {{-- @foreach ($categories as $category)
+                    @foreach ($categories as $category)
                         <li>
                             <a href="{{ route('category.show', $category->id) }}"
                                 class="text-gray-400 hover:text-black hover:pl-2 transition-all duration-200 flex items-center">
@@ -45,7 +50,7 @@
                                 {{ $category->name }}
                             </a>
                         </li>
-                    @endforeach --}}
+                    @endforeach
                 </ul>
             </div>
 
@@ -53,19 +58,17 @@
             <div class="col-span-1">
                 <h5 class="font-bold text-xl text-black mb-4">Tin Nổi Bật</h5>
                 <ul class="space-y-4">
-                    @if (isset($featuredPosts))
-                        <ul>
-                            @foreach ($featuredPosts as $post)
-                                <li>
-                                    <a
-                                        href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}">
-                                        {{ $post->title }}
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    @endif
-
+                    <ul>
+                        @foreach ($featuredPosts as $post)
+                            <li>
+                                <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}"
+                                    class="text-gray-400 hover:text-black hover:pl-2 transition-all duration-200 flex items-center">
+                                    <i class="fas fa-chevron-right mr-2 text-sm"></i>
+                                    {{ $post->title }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
                 </ul>
             </div>
 

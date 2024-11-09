@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Logo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LogoController extends Controller
 {
     public function showUploadForm()
     {
         $logo = Logo::latest()->first();
-        $logoPath = $logo ? $logo->path : null;
+        $logoPath = $logo ? $logo->path : 'images/no-image-available';
         return view('admin.logo.upload', compact('logoPath'));
     }
+
     public function upload(Request $request)
     {
         $request->validate([
@@ -24,11 +26,15 @@ class LogoController extends Controller
 
             // Kiểm tra nếu file là hình ảnh hợp lệ
             if ($file->isValid() && in_array($file->getClientOriginalExtension(), ['jpeg', 'png', 'jpg', 'gif'])) {
-                // Tiến hành lưu tệp
+                // Tạo tên tệp duy nhất
                 $filename = time() . '_' . $file->getClientOriginalName();
-                $path = $file->store('logos', $filename, 'public'); // Lưu vào thư mục logos
 
-                Logo::create(['path' => $path]);
+                // Đường dẫn lưu tệp vào public/upload/logos/
+                $destinationPath = public_path('upload/logos');
+                $file->move($destinationPath, $filename);
+
+                // Lưu đường dẫn vào database (nếu cần)
+                Logo::create(['path' => 'upload/logos/' . $filename]);
 
                 return back()->with('success', 'Logo đã được tải lên thành công!');
             }

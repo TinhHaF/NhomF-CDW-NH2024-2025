@@ -146,10 +146,10 @@ class Post extends Model
      * @param string $encodedId
      * @return int
      */
-    public static function decodeId($encodedId)
-    {
-        return IdEncoder::decode($encodedId);
-    }
+    // public static function decodeId($encodedId)
+    // {
+    //     return IdEncoder::decode($encodedId);
+    // }
 
     // public function getEncodedPostIdAttribute()
     // {

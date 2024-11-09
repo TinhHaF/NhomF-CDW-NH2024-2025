@@ -263,16 +263,16 @@ class ImageHandler {
         }
     }
 
-    previewFile(file) {
-        const preview = document.getElementById("previewImage");
-        if (preview && file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                preview.src = reader.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    }
+    // previewFile(file) {
+    //     const preview = document.getElementById("previewImage");
+    //     if (preview && file) {
+    //         const reader = new FileReader();
+    //         reader.onloadend = () => {
+    //             preview.src = reader.result;
+    //         };
+    //         reader.readAsDataURL(file);
+    //     }
+    // }
 
     setDefaultImage() {
         const preview = document.getElementById("previewImage");
@@ -379,183 +379,6 @@ function generateSlug() {
         .querySelector("strong").textContent = slug;
 }
 
-// function slugConvert(slug, focus = false) {
-//     slug = slug.toLowerCase();
-//     slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, "a");
-//     slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, "e");
-//     slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, "i");
-//     slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, "o");
-//     slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, "u");
-//     slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, "y");
-//     slug = slug.replace(/đ/gi, "d");
-//     slug = slug.replace(
-//         /\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi,
-//         ""
-//     );
-//     slug = slug.replace(/ /gi, "-");
-//     slug = slug.replace(/\-\-\-\-\-/gi, "-");
-//     slug = slug.replace(/\-\-\-\-/gi, "-");
-//     slug = slug.replace(/\-\-\-/gi, "-");
-//     slug = slug.replace(/\-\-/gi, "-");
-
-//     if (!focus) {
-//         slug = "@" + slug + "@";
-//         slug = slug.replace(/\@\-|\-\@|\@/gi, "");
-//     }
-
-//     return slug;
-// }
-// function slugPreview(title, lang, focus = false) {
-//     var slug = slugConvert(title, focus);
-
-//     $("#slug" + lang).val(slug);
-//     $("#slugurlpreview" + lang + " strong").html(slug);
-//     $("#seourlpreview" + lang + " strong").html(slug);
-// }
-// function slugPreviewTitleSeo(title, lang) {
-//     if ($("#title" + lang).length) {
-//         var titleSeo = $("#title" + lang).val();
-//         if (!titleSeo) {
-//             if (title) $("#title-seo-preview" + lang).html(title);
-//             else $("#title-seo-preview" + lang).html("Title");
-//         }
-//     }
-// }
-// function slugPress() {
-//     var sluglang = "vi,en";
-//     var inputArticle = $(".card-article input.for-seo");
-//     var id = $(".slug-id").val();
-//     var seourlstatic = true;
-//     //var seourlstatic = $(".slug-seo-preview").data("seourlstatic");
-
-//     inputArticle.each(function (index) {
-//         var ten = $(this).attr("id");
-//         var lang = ten.substr(ten.length - 2);
-//         if (sluglang.indexOf(lang) >= 0) {
-//             if ($("#" + ten).length) {
-//                 $("body").on("keyup", "#" + ten, function () {
-//                     var title = $("#" + ten).val();
-
-//                     if (
-//                         (!id || $("#slugchange").prop("checked")) &&
-//                         seourlstatic
-//                     ) {
-//                         /* Slug preivew */
-//                         slugPreview(title, lang);
-//                     }
-
-//                     /* Slug preivew title seo */
-//                     slugPreviewTitleSeo(title, lang);
-
-//                     /* slug Alert */
-//                     slugAlert(2, lang);
-//                 });
-//             }
-
-//             if ($("#slug" + lang).length) {
-//                 $("body").on("keyup", "#slug" + lang, function () {
-//                     var title = $("#slug" + lang).val();
-
-//                     /* Slug preivew */
-//                     slugPreview(title, lang, true);
-
-//                     /* slug Alert */
-//                     slugAlert(2, lang);
-//                 });
-//             }
-//         }
-//     });
-// }
-// function slugChange(obj) {
-//     if (obj.is(":checked")) {
-//         /* Load slug theo tiêu đề mới */
-//         slugStatus(1);
-//         $(".slug-input").attr("readonly", true);
-//     } else {
-//         /* Load slug theo tiêu đề cũ */
-//         slugStatus(0);
-//         $(".slug-input").attr("readonly", false);
-//     }
-// }
-// function slugStatus(status) {
-//     var sluglang = "vi,en";
-//     var inputArticle = $(".card-article input.for-seo");
-
-//     inputArticle.each(function (index) {
-//         var ten = $(this).attr("id");
-//         var lang = ten.substr(ten.length - 2);
-//         if (sluglang.indexOf(lang) >= 0) {
-//             var title = "";
-//             if (status == 1) {
-//                 if ($("#" + ten).length) {
-//                     title = $("#" + ten).val();
-
-//                     /* Slug preivew */
-//                     slugPreview(title, lang);
-
-//                     /* Slug preivew title seo */
-//                     slugPreviewTitleSeo(title, lang);
-//                 }
-//             } else if (status == 0) {
-//                 if ($("#slug-default" + lang).length) {
-//                     title = $("#slug-default" + lang).val();
-
-//                     /* Slug preivew */
-//                     slugPreview(title, lang);
-
-//                     /* Slug preivew title seo */
-//                     slugPreviewTitleSeo(title, lang);
-//                 }
-//             }
-//         }
-//     });
-// }
-// function slugAlert(result, lang) {
-//     if (result == 1) {
-//         $("#alert-slug-danger" + lang).addClass("d-none");
-//         $("#alert-slug-success" + lang).removeClass("d-none");
-//     } else if (result == 0) {
-//         $("#alert-slug-danger" + lang).removeClass("d-none");
-//         $("#alert-slug-success" + lang).addClass("d-none");
-//     } else if (result == 2) {
-//         $("#alert-slug-danger" + lang).addClass("d-none");
-//         $("#alert-slug-success" + lang).addClass("d-none");
-//     }
-// }
-// function slugCheck() {
-//     var sluglang = "vi,en";
-//     var slugInput = $(".slug-input");
-//     var id = $(".slug-id").val(); // Giả sử đây là post_id
-//     var copy = $(".slug-copy").val();
-
-//     slugInput.each(function (index) {
-//         var slugId = $(this).attr("id");
-//         var slug = $(this).val();
-//         var lang = slugId.substr(slugId.length - 2);
-//         if (sluglang.indexOf(lang) >= 0) {
-//             if (slug) {
-//                 $.ajax({
-//                     url: "/slug/check", // Đường dẫn đến phương thức checkSlug trong SlugController
-//                     type: "POST",
-//                     dataType: "json", // Thay đổi thành json để xử lý dữ liệu trả về
-//                     async: false,
-//                     data: {
-//                         slug: slug,
-//                         post_id: id, // Gửi post_id (hoặc id của đối tượng mà bạn muốn kiểm tra)
-//                         _token: $('meta[name="csrf-token"]').attr("content"), // Nếu bạn có sử dụng CSRF
-//                     },
-//                     success: function (result) {
-//                         slugAlert(result.message, lang);
-//                     },
-//                     error: function (xhr) {
-//                         console.error(xhr.responseText); // Log lỗi nếu có
-//                     },
-//                 });
-//             }
-//         }
-//     });
-// }
-
 // Track form changes
 let formChanged = false;
 const form = document.getElementById("postForm");
@@ -570,4 +393,14 @@ function hasFormChanged() {
         }
     }
     return false;
+}
+
+function toggleLogoVisibility(checkbox) {
+    const preview = document.getElementById("logoPreview");
+    // Check if the checkbox is checked
+    if (checkbox.checked) {
+        preview.style.display = "block"; // Show the image
+    } else {
+        preview.style.display = "none"; // Hide the image
+    }
 }

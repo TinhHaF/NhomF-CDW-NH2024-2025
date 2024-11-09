@@ -10,7 +10,7 @@
 @if (session('info'))
     <meta name="flash-info" content="{{ session('info') }}">
 @endif
-@if ($errors->any())
+{{-- @if ($errors->any())
     <div>
         <ul>
             @foreach ($errors->all() as $error)
@@ -18,6 +18,6 @@
             @endforeach
         </ul>
     </div>
-@endif
+@endif --}}
 
 <script src="{{ asset('js/custom.js') }}"></script>

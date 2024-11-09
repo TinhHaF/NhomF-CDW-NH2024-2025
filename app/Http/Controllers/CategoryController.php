@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Database\QueryException;
 use App\Models\Category;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -132,4 +133,30 @@ class CategoryController extends Controller
         // Trả về view chi tiết danh mục
         return view('admin.categories.index', compact('category'));
     }
+    // public function showCategoryPosts($id)
+    // {
+    //     // Lấy danh mục theo ID
+    //     $category = Category::findOrFail($id);
+
+    //     // Lọc bài viết theo danh mục
+    //     $posts = Post::where('category_id', $category->id)->latest()->get();
+
+    //     // Trả về view với danh mục và bài viết
+    //     return view('category.show', compact('category', 'posts'));
+    // }
+
+    // public function showCategory($id)
+    // {
+    //     // Tìm kiếm danh mục theo ID
+    //     $categories = Category::find($id);
+
+    //     // Kiểm tra nếu danh mục không tồn tại
+    //     if (!$categories) {
+    //         return redirect()->route('categories.index')->with('error', 'Lỗi!');
+    //     }
+
+    //     // Trả về view chi tiết danh mục
+    //     return view('home.nav', compact('categories'));
+    // }
+
 }

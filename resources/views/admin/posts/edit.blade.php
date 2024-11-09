@@ -354,5 +354,21 @@
         // Add character counters
         addCharacterCount(seoTitleInput, 60);
         addCharacterCount(seoDescriptionInput, 160);
+
+        function previewFile() {
+            const file = document.getElementById('image').files[0];
+            const preview = document.getElementById('previewImage');
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
     </script>
 @endpush

@@ -20,12 +20,12 @@
                 </ol>
             </div>
 
-            <div class="flex flex-col sm:flex-row justify-between items-center pb-2 mb-4">
+            <div class="flex flex-col sm:flex-row justify-between items-center pt-4 mb-4">
                 <div class="space-x-2">
-                    <button class="bg-blue-500 text-white px-2 py-1 rounded text-xs sm:text-base">
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded text-xs sm:text-base">
                         <i class="fas fa-save"></i> Lưu
                     </button>
-                    <button type="reset" class="bg-gray-500 text-white px-2 py-1 rounded text-xs sm:text-base">
+                    <button type="reset" class="bg-gray-500 text-white px-4 py-2 rounded text-xs sm:text-base">
                         <i class="fas fa-redo"></i> Làm lại
                     </button>
                 </div>
@@ -42,9 +42,9 @@
                     <!-- Upload hình ảnh -->
                     <div class="mb-4">
                         <label for="image" class="block text-gray-700 mb-2 text-sm sm:text-base">Upload hình ảnh:</label>
-                        <div class="border border-gray-300 rounded p-2 sm:p-4 flex justify-center items-center mb-2">
-                            <img src="{{ asset('storage/logos' . $logoPath) }}" alt="Logo" id="logoPreview"
-                                style="width: 300px; height: 300px;">
+                        <div class="w-1/2 border border-gray-300 rounded p-2 sm:p-4 flex justify-center items-center mb-2">
+                            <img src="{{ asset($logoPath) }}"
+                                alt="Logo" id="logoPreview" style="width: 300px; height: 300px;">
                         </div>
 
                         <input type="file" name="logo" id="image" class="hidden" accept="image/*"
@@ -59,19 +59,19 @@
                         </button>
                     </div>
 
-                    <div class="text-gray-600 text-xs sm:text-sm mb-4">
+                    <div class="text-black-600 text-xs text-bold sm:text-sm mb-4">
                         Width: 370 px - Height: 90 px (.jpg|.gif|.png|.jpeg)
                     </div>
 
                     <!-- Hiển thị logo -->
                     <div class="mb-4">
-                        <label class="block text-gray-700 mb-2 text-sm sm:text-base">Hiển thị:</label>
+                        <label class="block text-black-700 mb-2 text-sm sm:text-base">Hiển thị:</label>
                         <input type="checkbox" name="visible" class="form-checkbox h-4 w-4 sm:h-5 sm:w-5 text-blue-600"
-                            checked>
+                            checked onchange="toggleLogoVisibility(this)">
                     </div>
 
                     <!-- Button group -->
-                    <div class="flex justify-end space-x-2">
+                    <div class="flex justify-start space-x-2">
                         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded text-xs sm:text-base">
                             <i class="fas fa-save"></i> Lưu
                         </button>
@@ -96,6 +96,8 @@
 
                 if (file) {
                     reader.readAsDataURL(file);
+                } else {
+                    preview.src = "{{ asset('uploads/logos/' . $logoPath) }}";
                 }
             }
 
@@ -106,6 +108,17 @@
                 }
             }
 
+            // function toggleLogoVisibility(checkbox) {
+            //     const preview = document.getElementById('logoPreview');
+            //     // Check if the checkbox is checked
+            //     if (checkbox.checked) {
+            //         preview.style.display = 'block'; // Show the image
+            //     } else {
+            //         preview.style.display = 'none'; // Hide the image
+            //     }
+            // }
+
+            // Initial image visibility check
             if (!'{{ $logoPath }}') {
                 setDefaultImage();
             }

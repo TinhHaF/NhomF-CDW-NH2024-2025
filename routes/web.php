@@ -91,6 +91,7 @@ Route::middleware([AdministrationMiddleware::class])->group(function () {
         // Route category
         Route::resource('categories', CategoryController::class);
     });
+    
 });
 // Route::middleware([AdministrationMiddleware::class])->group(function () {
     
@@ -151,3 +152,6 @@ Route::delete('/admin/logo/{id}', [LogoController::class, 'delete'])->name('logo
 
 
 Route::get('/admin/analytics/chart-data', [DashboardController::class, 'getChartData']);
+// Route cho trang chi tiết danh mục
+Route::get('/category/{id}', [CategoryController::class, 'show'])->name('category.show');
+Route::get('/homepage/nav', [CategoryController::class, 'showCategory'])->name('posts.showCategory');

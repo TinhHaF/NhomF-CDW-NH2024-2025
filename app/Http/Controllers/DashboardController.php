@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Logo;
 use App\Services\VisitorTrackingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -40,8 +41,12 @@ class DashboardController extends Controller
         $statistics['dates'] = $data->pluck('date')->toArray();
         $statistics['visitCounts'] = $data->pluck('count')->toArray();
 
+        // Logo
+        $logo = Logo::latest()->first();
+        $logoPath = $logo ? $logo->path : 'images/no-image-available';
+        
         // Truyền dữ liệu vào view
-        return view('admin.dashboard.dashboard', compact('statistics'));
+        return view('admin.dashboard.dashboard', compact('statistics', 'logoPath'));
     }
 
 

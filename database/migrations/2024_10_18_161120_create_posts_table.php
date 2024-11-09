@@ -29,6 +29,8 @@ return new class extends Migration
             $table->string('seo_keywords', 255)->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
         });
+        // Chỉ định fulltext cho title và content
+        DB::statement('ALTER TABLE posts ADD FULLTEXT(title, content)');
 
         // Chỉ định engine cho bảng
         DB::statement('ALTER TABLE posts ENGINE = InnoDB');

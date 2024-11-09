@@ -11,6 +11,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\PostCollection;
+use App\Models\Logo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -53,7 +54,12 @@ class PostController extends Controller
                 ->take(6) // Lấy đúng 6 bài nổi bật
                 ->get(); // Không phân trang, chỉ lấy các bài viết cần thiết
 
-            return view('home', compact('posts', 'featuredPosts'));
+            // Lấy tất cả các danh mục
+            $categories = Category::all();
+
+            $logo = Logo::latest()->first();
+            $logoPath = $logo ? $logo->path : 'images/no-image-available';
+            return view('home', compact('posts', 'featuredPosts', 'categories', 'logoPath'));
         } catch (\Exception $e) {
             Log::error('Homepage loading failed', [
                 'error' => $e->getMessage(),
@@ -62,7 +68,6 @@ class PostController extends Controller
             return view('home')->with('error', 'Không thể tải trang chủ. Vui lòng thử lại sau.');
         }
     }
-
 
     public function detail($id, $slug)
     {
@@ -75,7 +80,15 @@ class PostController extends Controller
             // Lấy bình luận và phân trang
             $comments = $post->comments()->orderBy('created_at', 'desc')->paginate(5);
 
-            return view('posts.post_detail', compact('post', 'comments'));
+            // Lấy tất cả các danh mục
+            $categories = Category::all();
+
+            $logo = Logo::latest()->first();
+            $logoPath = $logo ? $logo->path : 'images/no-image-available';
+
+            $featuredPosts = Post::where('is_featured', true)->latest();
+
+            return view('posts.post_detail', compact('post', 'comments', 'categories', 'logoPath', 'featuredPosts'));
         } catch (ModelNotFoundException $e) {
             Log::info('Post not found', ['id' => $id]);
             return request()->expectsJson()
@@ -109,19 +122,23 @@ class PostController extends Controller
         try {
             $query = $request->input('search');
             $posts = Post::search($query);
-            // Kiểm tra xem có bài viết nào được tìm thấy không
+
+            // Kiểm tra nếu không có bài viết nào
             if ($posts->isEmpty()) {
-                session()->flash('message', 'Không tìm thấy bài viết nào với từ khóa tìm kiếm.');
+                $message = 'Không có bài viết nào có thông tin phù hợp với kết quả bạn đang tìm';
+            } else {
+                $message = null;
             }
+
             if ($request->expectsJson()) {
-                return new PostCollection($posts);
+                return response()->json(['posts' => $posts->toArray(), 'message' => $message]);
             }
 
             $encodeId = function ($id) {
                 return IdEncoder::encode($id);
             };
 
-            return view('admin.posts.index', compact('posts', 'encodeId'));
+            return view('admin.posts.index', compact('posts', 'encodeId', 'message'));
         } catch (\Exception $e) {
             Log::error('Error listing posts', [
                 'search' => $query,
@@ -133,6 +150,7 @@ class PostController extends Controller
                 : back()->with('error', 'Có lỗi xảy ra khi tải danh sách bài viết.');
         }
     }
+
 
 
     public function create()
@@ -165,9 +183,6 @@ class PostController extends Controller
             // Xử lý ảnh (nếu có)
             $imageUrl = null;
             if ($request->hasFile('image')) {
-                $request->validate([
-                    'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Kiểm tra định dạng và kích thước ảnh
-                ]);
                 $imageUrl = $request->file('image')->store('posts', 'public');
             }
 
@@ -182,9 +197,9 @@ class PostController extends Controller
                 'post_id' => $post->id,
                 'user_id' => Auth::id()
             ]);
-
+            // Xử lý trả về kết quả tùy vào yêu cầu JSON hoặc redirect
             return $request->expectsJson()
-                ? new PostResource($post)
+                ? new PostResource($post) // Trả về tài nguyên post dưới dạng JSON
                 : redirect()->route('posts.index')->with('success', 'Bài viết đã được thêm thành công!');
         } catch (\Exception $e) {
             Log::error('Post creation failed', [
@@ -220,32 +235,18 @@ class PostController extends Controller
     public function update(UpdatePostRequest $request, Post $post)
     {
         try {
-            Log::info('Updating post', [
-                'post_id' => $post->id,
-                'request_data' => $request->all(),
-                'user_id' => Auth::id()
-            ]);
-
-            // Xử lý ảnh (nếu có) và xác thực
-            $imageUrl = null;
-            if ($request->hasFile('image')) {
-                $request->validate([
-                    'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                ]);
-                $imageUrl = $request->file('image')->store('posts', 'public');
-            }
-
-            // Cập nhật bài viết
             $updatedPost = $this->postService->update(
                 $post,
                 $request->validated(),
-                $imageUrl
+                $request->hasFile('image') ? $request->file('image') : null
             );
 
-            Log::info('Post updated successfully', [
-                'post_id' => $updatedPost->id,
+            Log::info('Post updated', [
+                'post_id' => $post->id,
                 'user_id' => Auth::id()
             ]);
+
+            // Cache::tags(['posts', 'homepage'])->flush();
 
             return $request->expectsJson()
                 ? new PostResource($updatedPost)
@@ -253,11 +254,8 @@ class PostController extends Controller
         } catch (\Exception $e) {
             Log::error('Post update failed', [
                 'post_id' => $post->id,
-                'error' => $e->getMessage(),
-                'user_id' => Auth::id(),
-                'request_data' => $request->all()
+                'error' => $e->getMessage()
             ]);
-
             return $request->expectsJson()
                 ? response()->json(['error' => 'Không thể cập nhật bài viết.'], 500)
                 : back()->withInput()->with('error', 'Có lỗi xảy ra khi cập nhật bài viết.');
@@ -292,37 +290,7 @@ class PostController extends Controller
                 : back()->with('error', 'Có lỗi xảy ra khi xóa bài viết.');
         }
     }
-    // public function destroy($id)
-    // {
-    //     dd($id);
-    //     try {
-    //         // Giải mã ID trước khi tìm bài viết
-    //         $decodedId = IdEncoder::decode($id);
 
-    //         // Tìm bài viết bằng ID đã giải mã
-    //         $post = Post::findOrFail($decodedId);
-
-    //         // Tiến hành xóa bài viết
-    //         $this->postService->delete($post);
-
-    //         Log::info('Post deleted', [
-    //             'post_id' => $post->id,
-    //             'user_id' => Auth::id()
-    //         ]);
-
-    //         return request()->expectsJson()
-    //             ? response()->json(['message' => 'Xóa bài viết thành công'])
-    //             : redirect()->route('posts.index')->with('success', 'Bài viết đã được xóa thành công!');
-    //     } catch (\Exception $e) {
-    //         Log::error('Post deletion failed', [
-    //             'error' => $e->getMessage()
-    //         ]);
-
-    //         return request()->expectsJson()
-    //             ? response()->json(['error' => 'Không thể xóa bài viết.'], 500)
-    //             : back()->with('error', 'Có lỗi xảy ra khi xóa bài viết.');
-    //     }
-    // }
 
 
     public function updateStatus(Request $request, $id)
