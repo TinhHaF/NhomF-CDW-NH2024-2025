@@ -131,38 +131,38 @@
 </div>
 
 <script>
-    // document.addEventListener('DOMContentLoaded', function() {
-    //     // Hiển thị ngày hiện tại
-    //     function formatDate() {
-    //         const today = new Date();
-    //         const options = {
-    //             weekday: 'long',
-    //             year: 'numeric',
-    //             month: 'long',
-    //             day: 'numeric'
-    //         };
-    //         document.getElementById('currentDate').textContent = today.toLocaleDateString('vi-VN', options);
-    //     }
-    //     formatDate();
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hiển thị ngày hiện tại
+        function formatDate() {
+            const today = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            document.getElementById('currentDate').textContent = today.toLocaleDateString('vi-VN', options);
+        }
+        formatDate();
 
-    //     // Xử lý thanh tìm kiếm
-    //     const searchInput = document.querySelector('input[type="text"]');
-    //     searchInput.addEventListener('focus', function() {
-    //         this.parentElement.classList.add('ring-2', 'ring-blue-200');
-    //     });
+        // // Xử lý thanh tìm kiếm
+        // const searchInput = document.querySelector('input[type="text"]');
+        // searchInput.addEventListener('focus', function() {
+        //     this.parentElement.classList.add('ring-2', 'ring-blue-200');
+        // });
 
-    //     searchInput.addEventListener('blur', function() {
-    //         this.parentElement.classList.remove('ring-2', 'ring-blue-200');
-    //     });
+        // searchInput.addEventListener('blur', function() {
+        //     this.parentElement.classList.remove('ring-2', 'ring-blue-200');
+        // });
 
-    //     // Mobile menu toggle (nếu cần)
-    //     const mobileMenuBtn = document.querySelector('#mobile-menu-btn');
-    //     if (mobileMenuBtn) {
-    //         mobileMenuBtn.addEventListener('click', function() {
-    //             document.querySelector('#mobile-menu').classList.toggle('hidden');
-    //         });
-    //     }
-    // });
+        // // Mobile menu toggle (nếu cần)
+        // const mobileMenuBtn = document.querySelector('#mobile-menu-btn');
+        // if (mobileMenuBtn) {
+        //     mobileMenuBtn.addEventListener('click', function() {
+        //         document.querySelector('#mobile-menu').classList.toggle('hidden');
+        //     });
+        // }
+    });
     const userMenuToggle = document.getElementById('userMenuToggle');
     const userMenu = document.getElementById('userMenu');
 

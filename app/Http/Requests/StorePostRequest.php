@@ -17,7 +17,7 @@ class StorePostRequest extends FormRequest
             'title' => 'required|string|max:255|unique:posts,title',
             'slug' => 'required|string|max:255|unique:posts,slug',
             'content' => 'required|string',
-            'category_id' => 'required|exists:categories,category_id',
+            'category_id' => 'required|exists:categories,id',
             'author_id' => 'required|exists:authors,id',
             'seo_title' => 'required|string|max:255',
             'seo_description' => 'required|string',
