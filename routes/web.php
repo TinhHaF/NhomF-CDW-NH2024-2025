@@ -9,12 +9,14 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SlugController;
+use App\Http\Controllers\SubcategoryController;
 use App\Services\VisitorTrackingService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\AdministrationMiddleware;
+
 
 // Route trang chủ
 Route::get('/', [PostController::class, 'homepage'])->name('home');
@@ -90,8 +92,10 @@ Route::middleware([AdministrationMiddleware::class])->group(function () {
 
         // Route category
         Route::resource('categories', CategoryController::class);
+        Route::resource('subcategories', SubcategoryController::class);
     });
 });
+
 // Route::middleware([AdministrationMiddleware::class])->group(function () {
     
 //     // Route cho danh sách bài viết (index)

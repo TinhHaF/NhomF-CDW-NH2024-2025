@@ -90,11 +90,15 @@
                             <i class="fa-solid fa-folder mr-2"></i>
                             Quản lý danh mục
                         </a>
+
                         <ul class="ml-6 mt-2">
-                            <li class="px-4 py-2 bg-blue-100">
-                                Danh mục
+                            <li class="px-4 py-2 bg-blue-100 hover:bg-blu-400">
+                                <a href="{{ route('subcategories.index') }}" class="block w-full h-full text-blue-600 hover:text-blue-800">
+                                    Danh mục cấp 1
+                                </a>
                             </li>
                         </ul>
+
                     </li>
                     @if (Auth::user()->role == 2)
                     <li class="px-4 py-2 hover:bg-gray-200">

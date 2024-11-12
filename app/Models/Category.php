@@ -14,6 +14,10 @@ class Category extends Model
     // protected $primaryKey = 'id';
 
     protected $fillable = ['name', 'description'];
+    public function subcategories()
+    {
+        return $this->hasMany(Subcategory::class);
+    }
 
     // Quan hệ với bảng posts
     public function posts()
