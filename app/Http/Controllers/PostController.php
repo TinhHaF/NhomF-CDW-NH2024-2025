@@ -77,8 +77,12 @@ class PostController extends Controller
                 return abort(404, 'Bài viết không tồn tại.');
             }
 
-            // Lấy bình luận và phân trang
-            $comments = $post->comments()->orderBy('created_at', 'desc')->paginate(5);
+            // Lấy bình luận gốc và phân trang
+            $comments = $post->comments()
+                ->whereNull('parent_id')  // Chỉ lấy bình luận gốc
+                ->with('replies')         // Lấy tất cả phản hồi lồng vào
+                ->orderBy('created_at', 'desc')
+                ->paginate(5);
 
             // Lấy tất cả các danh mục
             $categories = Category::all();

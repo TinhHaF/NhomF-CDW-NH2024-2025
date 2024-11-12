@@ -51,6 +51,33 @@ class CommentController extends Controller
         return view('admin.comments.comments_index', compact('post', 'comments'));
     }
 
+    // public function store(Request $request, Post $post)
+    // {
+    //     // Kiểm tra đăng nhập
+    //     if (!Auth::check()) {
+    //         return redirect()->back()->with('error', 'Bạn cần đăng nhập để bình luận.');
+    //     }
+
+    //    $request->validate([
+    //     'content' => [
+    //         'required',
+    //         'string',
+    //         'max:255',
+    //         'regex:/\S/', // Kiểm tra nội dung không phải là khoảng trắng
+    //     ],
+    // ]);
+
+    //     // Tạo bình luận mới
+    //     Comment::create([
+    //         'content' => $request->input('content'),
+    //         'post_id' => $post->id,
+    //         'user_id' => Auth::id(),
+    //     ]);
+
+    //     // Chuyển hướng về trang bài viết với thông báo thành công
+    //     return redirect()->route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug])
+    //         ->with('success', 'Bình luận đã được thêm thành công!');
+    // }
     public function store(Request $request, Post $post)
     {
         // Kiểm tra đăng nhập
@@ -58,37 +85,33 @@ class CommentController extends Controller
             return redirect()->back()->with('error', 'Bạn cần đăng nhập để bình luận.');
         }
 
-       $request->validate([
-        'content' => [
-            'required',
-            'string',
-            'max:255',
-            'regex:/\S/', // Kiểm tra nội dung không phải là khoảng trắng
-        ],
-    ]);
+        // Validation cho nội dung bình luận
+        $request->validate([
+            'content' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/\S/', // Kiểm tra nội dung không phải là khoảng trắng
+            ],
+        ]);
+
+        // Kiểm tra nếu có parent_id (bình luận trả lời)
+        $parentId = $request->input('parent_id'); // Nếu không có thì sẽ trả về null
 
         // Tạo bình luận mới
         Comment::create([
             'content' => $request->input('content'),
             'post_id' => $post->id,
             'user_id' => Auth::id(),
+            'parent_id' => $parentId, // Lưu lại id của bình luận mẹ nếu có
         ]);
 
         // Chuyển hướng về trang bài viết với thông báo thành công
         return redirect()->route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug])
             ->with('success', 'Bình luận đã được thêm thành công!');
     }
-    // public function delete($comment_id)
-    // {
-    //     // Tìm bình luận cần xóa theo comment_id
-    //     $comment = Comment::findOrFail($comment_id);
 
-    //     // Xóa bình luận
-    //     $comment->delete();
 
-    //     // Chuyển hướng về trang danh sách bình luận mà không cần `id`
-    //     return redirect()->back()->with('success', 'Bình luận đã được xóa thành công!');
-    // }
     public function delete($comment_id)
     {
         // Giải mã comment_id
