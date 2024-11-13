@@ -1,13 +1,15 @@
-{{-- resources/views/components/comment_item.blade.php --}}
-<div class="flex items-start space-x-4">
-    <img alt="User avatar" class="rounded-full mt-5" height="40" width="40"
-        src="{{ $comment->user->image ? asset('storage/' . $comment->user->image) : 'https://example.com/macdinh.jpg' }}" />
+<div class="flex items-start space-x-4 {{ $depth < 3 ? 'ml-' . ($depth * 4) : '' }}">
     <div>
-        <div class="flex flex-col space-y-2 p-4 border-b border-gray-300 bg-gray-50">
-            <div class="font-semibold text-sm text-gray-800">{{ $comment->user->username }}</div>
-            <div class="text-gray-800">{{ $comment->content }}</div>
-            <div class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</div>
+        <div class="flex flex-row space-x-4 p-4 border-b border-gray-300 bg-gray-50">
+            <img alt="User avatar" class="rounded-full mt-1" height="40" width="40"
+                src="{{ $comment->user->image ? asset('storage/' . $comment->user->image) : 'https://example.com/macdinh.jpg' }}" />
+            <div class="flex flex-col">
+                <div class="font-semibold text-sm text-gray-800">{{ $comment->user->username }}</div>
+                <div class="text-gray-800">{{ $comment->content }}</div>
+                <div class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</div>
+            </div>
         </div>
+
         <!-- Nút Trả lời và Xóa -->
         <form action="{{ route('comments.user_delete', $comment->encoded_comment_id) }}" method="POST" class="flex items-center space-x-4">
             @csrf
@@ -28,9 +30,9 @@
 
         <!-- Hiển thị các bình luận con -->
         @if ($comment->replies)
-        <div class="mt-4 ml-8">
+        <div class="mt-4 ml-{{ $depth < 2 ? '10' : '0' }}">
             @foreach ($comment->replies as $reply)
-            @include('posts.comment_replies', ['comment' => $reply])
+            @include('posts.comment_replies', ['comment' => $reply, 'depth' => $depth + 1])
             @endforeach
         </div>
         @endif

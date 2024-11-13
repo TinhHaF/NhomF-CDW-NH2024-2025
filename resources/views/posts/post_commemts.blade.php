@@ -31,8 +31,9 @@
         </div>
         {{-- Hiển thị danh sách bình luận --}}
         @foreach ($comments as $comment)
-        @include('posts.comment_replies', ['comment' => $comment])
+        @include('posts.comment_replies', ['comment' => $comment, 'depth' => 0])
         @endforeach
+
         <!-- Phân trang cho bình luận -->
         <div>
             {{ $comments->links() }}
