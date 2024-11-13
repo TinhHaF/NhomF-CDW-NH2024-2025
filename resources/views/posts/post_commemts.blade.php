@@ -29,53 +29,10 @@
                 </li>
             </ul>
         </div>
-
+        {{-- Hiển thị danh sách bình luận --}}
         @foreach ($comments as $comment)
-        <div class="flex items-start space-x-4">
-            <img alt="User avatar" class="rounded-full mt-5" height="40" width="40" src="{{ $comment->user->image ? asset('storage/' . $comment->user->image) : 'https://example.com/macdinh.jpg' }}" width="40" />
-            <div>
-                <div class="flex flex-col space-y-2 p-4 border-b border-gray-300 bg-gray-50">
-                    <div class="flex items-center space-x-2">
-                        <div class="font-semibold text-sm text-gray-800">{{ $comment->user->username }}</div>
-                    </div>
-                    <div class="text-gray-800">{{ $comment->content }}</div>
-                    <div class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</div>
-                </div>
-                <!-- Cả nút Trả lời và Xóa trong một form -->
-                <form action="{{ route('comments.user_delete', $comment->encoded_comment_id) }}" method="POST" class="flex items-center space-x-4">
-                    @csrf
-                    @method('DELETE')
-                    <button onclick="toggleReplyForm('{{ $comment->comment_id }}')" type="button" class="text-blue-500 hover:underline">
-                        Trả lời
-                    </button>
-                    @if (Auth::id() === $comment->user_id)
-                    <button type="submit" class="text-red-600 hover:text-red-800">
-                        Xóa
-                    </button>
-                    @endif
-                </form>
-
-
-                <!-- Form trả lời ẩn -->
-                <form id="reply-form-{{ $comment->comment_id }}" action="{{ route('comments_store', ['post' => $post->id]) }}" method="POST" class="hidden mt-4">
-                    @csrf
-                    <input type="hidden" name="parent_id" value="{{ $comment->comment_id }}">
-                    <textarea class="w-full p-2 border rounded-lg mb-2" name="content" placeholder="Nhập trả lời của bạn" rows="2" required></textarea>
-                    <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded-lg">Gửi trả lời</button>
-                </form>
-
-                <!-- Hiển thị các bình luận con -->
-                @if ($comment->replies)
-                <div class="mt-4 ml-8">
-                    @foreach ($comment->replies as $reply)
-                    @include('posts.comment_replies', ['reply' => $reply])
-                    @endforeach
-                </div>
-                @endif
-            </div>
-        </div>
+        @include('posts.comment_replies', ['comment' => $comment])
         @endforeach
-
         <!-- Phân trang cho bình luận -->
         <div>
             {{ $comments->links() }}
