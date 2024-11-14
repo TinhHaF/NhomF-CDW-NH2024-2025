@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('role',length:1);
             // $table->boolean('is_admin')->default(false);
+            $table->string('facebook_id')->nullable();
+            $table->string('google_id')->unique()->nullable();
             $table->timestamps();
         });
     }
