@@ -1,17 +1,13 @@
-    <html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Comment Section</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+</head>
 
-    <head>
-        <meta charset="utf-8" />
-        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-        <title>
-            Comment Section
-        </title>
-        <script src="https://cdn.tailwindcss.com">
-        </script>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
-    </head>
-
-    <!-- Trong file chính của bạn -->
+<body>
     <div class="max-w-[800px] mx-auto mt-10 bg-white p-6 rounded-lg shadow-md mb-10">
         <h2 class="text-xl font-semibold mb-4">
             Bình Luận ({{ $comments->total() }})
@@ -24,20 +20,17 @@
 
         <div class="border-b mb-4">
             <ul class="flex space-x-4 text-red-600">
-                <li class="border-b-2 border-red-600 pb-2">
-                    Mới nhất
-                </li>
+                <li class="border-b-2 border-red-600 pb-2">Mới nhất</li>
             </ul>
         </div>
+
         {{-- Hiển thị danh sách bình luận --}}
         @foreach ($comments as $comment)
-        @include('posts.comment_replies', ['comment' => $comment, 'depth' => 0])
+            @include('posts.comment_replies', ['comment' => $comment, 'depth' => 0])
         @endforeach
 
         <!-- Phân trang cho bình luận -->
-        <div>
-            {{ $comments->links() }}
-        </div>
+        <div>{{ $comments->links() }}</div>
     </div>
 
     <script>
@@ -48,20 +41,26 @@
 
             if (replyForm) {
                 replyForm.classList.toggle('hidden');
-
-                // Nếu textarea chưa có nội dung, thêm @username
                 if (replyTextarea && replyTextarea.value.trim() === '') {
                     replyTextarea.value = `@${username} `;
-                    replyTextarea.focus(); // Đưa con trỏ vào textarea
+                    replyTextarea.focus();
                 }
             }
         }
+
+        // Hàm ẩn/hiện các bình luận con
+        function toggleReplies(commentId) {
+            const replies = document.getElementById('replies-' + commentId);
+            if (replies) {
+                replies.classList.toggle('hidden');
+            }
+        }
+
         // Hàm tự động mở rộng textarea khi nhập
         function autoResize(textarea) {
-            textarea.style.height = 'auto'; // Đặt chiều cao về tự động
-            textarea.style.height = textarea.scrollHeight + 'px'; // Cập nhật chiều cao theo nội dung
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
         }
     </script>
-    </body>
-
-    </html>
+</body>
+</html>

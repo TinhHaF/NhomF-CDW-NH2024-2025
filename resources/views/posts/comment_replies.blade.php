@@ -18,7 +18,7 @@
             </div>
         </div>
 
-        <!-- Nút Trả lời và Xóa -->
+        <!-- Nút Trả lời và số lượng bình luận con -->
         <form action="{{ route('comments.user_delete', $comment->encoded_comment_id) }}" method="POST" class="flex items-center space-x-4 mt-2">
             @csrf
             @method('DELETE')
@@ -28,6 +28,13 @@
                 class="text-blue-500 hover:underline"
             >
                 Trả lời
+            </button>
+            <button
+                onclick="toggleReplies('{{ $comment->comment_id }}')"
+                type="button"
+                class="text-gray-500 hover:underline"
+            >
+                ({{ $comment->replies->count() }}) <!-- Hiển thị số lượng trả lời -->
             </button>
 
             @if (Auth::id() === $comment->user_id)
@@ -53,7 +60,7 @@
 
         <!-- Hiển thị các bình luận con -->
         @if ($comment->replies)
-        <div class="mt-4 {{ $depth < 2 ? 'ml-10' : '' }}">
+        <div id="replies-{{ $comment->comment_id }}" class="mt-4 {{ $depth < 2 ? 'ml-10' : '' }} hidden">
             @foreach ($comment->replies as $reply)
             @include('posts.comment_replies', ['comment' => $reply, 'depth' => $depth + 1])
             @endforeach
@@ -61,4 +68,3 @@
         @endif
     </div>
 </div>
-
