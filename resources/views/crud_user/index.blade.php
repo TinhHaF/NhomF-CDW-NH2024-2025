@@ -1,6 +1,8 @@
 @extends('admin.layout')
 @section('content')
-
+@php
+use App\Helpers\IdEncoder;
+@endphp
 <body>
     <div class="m-4">
         <!-- Dashboard Navigation -->
@@ -79,12 +81,12 @@
                                         class="text-blue-500 hover:text-blue-600">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('users.edit', $user->id) }}" title="Sửa người dùng"
+                                    <a href="{{ route('users.edit', IdEncoder::encode($user->id)) }}" title="Sửa người dùng"
                                         class="text-green-500 hover:text-green-600">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
-                                    <form action="{{ route('user.destroy', $user->id) }}" method="POST"
+                                    <form action="{{ route('user.destroy', IdEncoder::encode($user->id)) }}" method="POST"
                                         onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?')"
                                         style="display: inline;">
                                         @csrf

@@ -1,13 +1,15 @@
 @extends('admin.layout')
 
 @section('content')
-
+@php
+use App\Helpers\IdEncoder;
+@endphp
 <body>
     <div class="m-4">
         <h1 class="text-2xl font-bold mb-6">Cập Nhật Người Dùng</h1>
 
         <div class="bg-white p-6 rounded-lg shadow">
-            <form action="{{ route('user.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('user.update', IdEncoder::encode($user->id)) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 

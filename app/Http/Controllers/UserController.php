@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Helpers\IdEncoder;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+
 
 class UserController extends Controller
 {
@@ -89,7 +90,7 @@ class UserController extends Controller
         // Lưu ảnh hoặc dùng ảnh mặc định
         $imagePath = $request->file('image')
             ? $request->file('image')->store('avatars', 'public')
-            : 'avatars/default.png'; // Ảnh mặc định
+            : '9-anh-dai-dien-trang-inkythuatso-03-15-27-03.jpg';
 
         // Tạo người dùng mới
         User::create([
@@ -300,20 +301,27 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'Người dùng mới đã được thêm thành công!');
     }
 
-    public function destroy($id)
+    public function destroy($encodedId)
     {
-        $user = User::findOrFail($id);
+        try {
+            $id = IdEncoder::decode($encodedId);  // Giải mã ID
+            $user = User::findOrFail($id);  // Tìm người dùng theo ID, nếu không tìm thấy sẽ ném lỗi
+        } catch (\Exception $e) {
+            // Nếu không tìm thấy người dùng hoặc gặp lỗi
+            return redirect()->route('users.index')
+                ->with('error', 'Không tìm thấy người dùng để xóa.');
+        }
 
-        // Xóa ảnh đại diện nếu có
+        // Tiến hành xóa người dùng và xử lý ảnh đại diện nếu có
         if ($user->image) {
             Storage::disk('public')->delete($user->image);
         }
 
-        // Xóa người dùng
         $user->delete();
 
-        // Chuyển hướng với thông báo thành công
-        return redirect()->route('users.index')->with('success', 'Người dùng đã được xóa thành công!');
+        // Thông báo chi tiết
+        return redirect()->route('users.index')
+            ->with('success', "Người dùng đã được xóa thành công!");
     }
 
 
@@ -338,16 +346,23 @@ class UserController extends Controller
 
         return redirect()->back()->with('success', 'Cập nhật hình ảnh thành công!');
     }
-
-
-    public function edit($id)
+    public function edit($encodedId)
     {
+        // Giải mã ID
+        $id = IdEncoder::decode($encodedId);
+    
+        // Tìm người dùng bằng ID đã giải mã
         $user = User::findOrFail($id);
+    
+        // Trả về view với người dùng
         return view('crud_user.edit', compact('user'));
     }
-
-    public function update(Request $request, $id)
+    
+    public function update(Request $request, $encodedId)
     {
+        // Giải mã ID
+        $id = IdEncoder::decode($encodedId);
+    
         // Xác thực dữ liệu đầu vào
         $request->validate([
             'username' => [
@@ -373,47 +388,36 @@ class UserController extends Controller
             'image' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048', // Kiểm tra ảnh đại diện nếu có
             'role' => 'required|in:1,2,3', // Kiểm tra vai trò hợp lệ
         ], [
-            'username.required' => 'Tên người dùng là bắt buộc.',
-            'username.regex' => 'Tên đăng nhập phải có 6-20 ký tự và không chứa ký tự đặc biệt.',
-
-            'email.required' => 'Email là bắt buộc.',
-            'email.email' => 'Email không hợp lệ.',
-            'email.unique' => 'Email đã được sử dụng.',
-            'email.regex' => 'Email phải có đuôi @gmail.com, với tối thiểu 6 ký tự và tối đa 30 ký tự trước đuôi.',
-
-            'password.min' => 'Mật khẩu phải lớn hơn 6 ký tự.',
-            'password.max' => 'Mật khẩu không được vượt quá 20 ký tự.',
-            'password.regex' => 'Mật khẩu không được chứa khoảng trắng.',
-
-            'image.image' => 'Avatar phải là ảnh hợp lệ.',
-            'image.mimes' => 'Avatar phải có định dạng jpg, jpeg, png, hoặc gif.',
-            'image.max' => 'Avatar không được vượt quá 2MB.',
-
-            'role.required' => 'Vai trò là bắt buộc.',
-            'role.in' => 'Vai trò không hợp lệ.',
+            // Các thông báo lỗi như bạn đã khai báo
         ]);
-
+    
         // Cập nhật thông tin người dùng
         $user = User::findOrFail($id);
         $user->username = $request->username;
         $user->email = $request->email;
-        $user->role = $request->role; // Cập nhật vai trò
-
+        $user->role = $request->role;
+    
+        // Cập nhật mật khẩu nếu có
         if ($request->filled('password')) {
-            $user->password = Hash::make($request->password); // Mã hóa mật khẩu
+            $user->password = Hash::make($request->password);
         }
-
-        // Xử lý hình ảnh
+    
+        // Xử lý hình ảnh nếu có
         if ($request->hasFile('image')) {
             // Xóa hình ảnh cũ nếu có
             if ($user->image) {
                 Storage::delete('public/' . $user->image);
             }
-            $user->image = $request->file('image')->store('avatars', 'public'); // Lưu hình ảnh mới
+    
+            // Lưu hình ảnh mới
+            $user->image = $request->file('image')->store('avatars', 'public');
         }
-
-        $user->save(); // Lưu thông tin người dùng
-
+    
+        // Lưu thông tin người dùng
+        $user->save();
+    
+        // Chuyển hướng và thông báo thành công
         return redirect()->route('users.index')->with('success', 'Cập nhật người dùng thành công.');
     }
+    
 }
