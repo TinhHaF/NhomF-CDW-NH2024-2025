@@ -12,12 +12,6 @@ use Illuminate\Support\Facades\Log;
 
 class AdController extends Controller
 {
-    protected $adService;
-
-    public function __construct(AdService $adService)
-    {
-        $this->adService = $adService;
-    }
 
     /**
      * Display a listing of the resource.
@@ -55,16 +49,36 @@ class AdController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(AdStoreRequest $request)
+    public function store(Request $request)
     {
-        $ad = $this->adService->createAd($request->validated());
-        Log::info('Ad created', ['ad_id' => $ad->id]);
+        // Xác thực đầu vào
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',  // Kiểm tra file ảnh
+            'url' => 'required|url',
+            'position' => 'required|string|max:255',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',  // Kiểm tra ngày kết thúc
+        ]);
 
-        // Thêm thông báo vào session
-        session()->flash('success', 'Quảng cáo đã được tạo thành công!');
+        // Xử lý ảnh (upload)
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('ads', 'public');
+        }
 
-        // Điều hướng về trang danh sách quảng cáo
-        return redirect()->route('ads.index');
+        // Lưu quảng cáo vào cơ sở dữ liệu
+        $ad = new Ad();
+        $ad->title = $request->title;
+        $ad->image = $imagePath ?? null;  // Gán đường dẫn ảnh nếu có
+        $ad->url = $request->url;
+        $ad->position = $request->position;
+        $ad->start_date = $request->start_date;
+        $ad->end_date = $request->end_date;
+        $ad->status = $request->status ?? 1; // Mặc định kích hoạt nếu không có status
+        $ad->save();
+
+        // Trả về kết quả
+        return redirect()->route('ads.index')->with('success', 'Quảng cáo đã được thêm thành công!');
     }
 
     /**
@@ -94,34 +108,65 @@ class AdController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(AdUpdateRequest $request, Ad $ad)
+    public function update(Request $request, $id)
     {
-        // Cập nhật quảng cáo với dữ liệu hợp lệ từ form
-        $ad = $this->adService->updateAd($ad, $request->validated());
-        Log::info('Ad updated', ['ad_id' => $ad->id]);
-
-        // Thêm thông báo vào session
-        session()->flash('success', 'Quảng cáo đã được cập nhật thành công!');
-
-        return new AdResource($ad);
+        // Xác thực đầu vào
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',  // Kiểm tra file ảnh (nếu có thay đổi)
+            'url' => 'required|url',
+            'position' => 'required|string|max:255',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',  // Kiểm tra ngày kết thúc
+        ]);
+    
+        // Tìm quảng cáo theo ID
+        $ad = Ad::findOrFail($id);
+    
+        // Xử lý ảnh (nếu có thay đổi)
+        if ($request->hasFile('image')) {
+            // Xóa ảnh cũ
+            if ($ad->image && file_exists(storage_path('app/public/' . $ad->image))) {
+                unlink(storage_path('app/public/' . $ad->image));
+            }
+            // Upload ảnh mới
+            $imagePath = $request->file('image')->store('ads', 'public');
+            $ad->image = $imagePath;
+        }
+    
+        // Cập nhật các trường khác
+        $ad->title = $request->title;
+        $ad->url = $request->url;
+        $ad->position = $request->position;
+        $ad->start_date = $request->start_date;
+        $ad->end_date = $request->end_date;
+        $ad->status = $request->status ?? 1; // Mặc định kích hoạt nếu không có status
+    
+        // Lưu thay đổi
+        $ad->save();
+    
+        // Trả về kết quả
+        return redirect()->route('ads.index')->with('success', 'Quảng cáo đã được cập nhật thành công!');
     }
+    
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Ad $ad)
+    public function destroy($id)
     {
-        try {
-            $this->adService->deleteAd($ad);
-            Log::info('Ad deleted', ['ad_id' => $ad->id]);
-
-            // Thêm thông báo vào session
-            session()->flash('success', 'Quảng cáo đã được xóa thành công!');
-
-            return redirect()->route('ads.index');
-        } catch (\Exception $e) {
-            Log::error('Error deleting ad', ['error' => $e->getMessage()]);
-            return redirect()->route('ads.index')->with('error', 'Không thể xóa quảng cáo.');
+        // Tìm quảng cáo theo ID
+        $ad = Ad::findOrFail($id);
+    
+        // Xóa ảnh (nếu có)
+        if ($ad->image && file_exists(storage_path('app/public/' . $ad->image))) {
+            unlink(storage_path('app/public/' . $ad->image));
         }
+    
+        // Xóa quảng cáo khỏi cơ sở dữ liệu
+        $ad->delete();
+    
+        // Trả về kết quả
+        return redirect()->route('ads.index')->with('success', 'Quảng cáo đã được xóa thành công!');
     }
 }

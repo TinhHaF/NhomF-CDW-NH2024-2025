@@ -90,7 +90,7 @@ class UserController extends Controller
         // Lưu ảnh hoặc dùng ảnh mặc định
         $imagePath = $request->file('image')
             ? $request->file('image')->store('avatars', 'public')
-            : '9-anh-dai-dien-trang-inkythuatso-03-15-27-03.jpg';
+            : 'avt.jpg';
 
         // Tạo người dùng mới
         User::create([
@@ -316,7 +316,7 @@ class UserController extends Controller
         if ($user->image) {
             Storage::disk('public')->delete($user->image);
         }
-
+        $user->comments()->delete();
         $user->delete();
 
         // Thông báo chi tiết

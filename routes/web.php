@@ -97,6 +97,9 @@ Route::middleware([AdminMiddleware::class])->group(function () {
         Route::get('/comments/detail/{id}', [CommentController::class, 'detail'])->name('comments_detail');
         Route::delete('/comments/admin/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.admin_delete');
         Route::delete('/comments/user/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.user_delete');
+
+
+        
     });
 });
 
@@ -126,17 +129,6 @@ Route::post('/check-slug', function (Request $request) {
     ]);
 });
 
-// Quảng cáo cho trang web
-Route::middleware([AdminMiddleware::class])->group(function () {
-    Route::prefix('admin')->group(function () {
-        Route::get('/ads', [AdController::class, 'index'])->name('ads.index');
-        Route::get('/ads/create', [AdController::class, 'create'])->name('ads.create');
-        Route::post('/ads', [AdController::class, 'store'])->name('ads.store');
-        Route::get('/ads/{id}/edit', [AdController::class, 'edit'])->name('ads.edit');
-        Route::put('/ads/{id}', [AdController::class, 'update'])->name('ads.update');
-        Route::delete('/ads/{id}', [AdController::class, 'destroy'])->name('ads.destroy');
-    });
-});
 
 // Đăng nhập bằng facebook
 Route::get('login/facebook', [FacebookController::class, 'redirectToFacebook'])->name('login.facebook');
@@ -151,3 +143,11 @@ Route::get('/filemanager', [FileManagerController::class, 'index'])->name('filem
 
 // Để tải ảnh lên
 Route::post('/filemanager/upload', [FileManagerController::class, 'upload'])->name('filemanager.upload');
+
+
+Route::get('/ads', [AdController::class, 'index'])->name('ads.index');
+        Route::get('/ads/create', [AdController::class, 'create'])->name('ads.create');
+        Route::post('/ads', [AdController::class, 'store'])->name('ads.store');
+        Route::get('/ads/{id}/edit', [AdController::class, 'edit'])->name('ads.edit');
+        Route::put('/ads/{id}', [AdController::class, 'update'])->name('ads.update');
+        Route::delete('/ads/{id}', [AdController::class, 'destroy'])->name('ads.destroy');

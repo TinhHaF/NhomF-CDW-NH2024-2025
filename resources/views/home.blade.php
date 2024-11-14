@@ -81,8 +81,7 @@
                                 alt="{{ $slide->title }}">
                             <div class="slider-content">
                                 <div class="container mx-auto">
-                                    <span
-                                        class="bg-red-500 text-white px-4 py-1 rounded-full text-sm mb-4 inline-block">
+                                    <span class="bg-red-500 text-white px-4 py-1 rounded-full text-sm mb-4 inline-block">
                                         Nổi bật
                                     </span>
                                     <h2 class="text-3xl font-bold mb-2">{{ $slide->title }}</h2>
@@ -146,12 +145,15 @@
                                                 <p class="text-gray-600 leading-relaxed mb-4">
                                                     {!! Str::limit(strip_tags($post->content), 200) !!}
                                                 </p>
+
                                                 <div class="flex items-center">
-                                                    <img src="https://via.placeholder.com/40"
+                                                    <img src="{{ $post->user->image ? asset('storage/' . $post->user->image) : 'https://via.placeholder.com/40' }}"
                                                         class="w-10 h-10 rounded-full mr-3" alt="Author">
                                                     <div>
-                                                        <p class="font-medium text-gray-800">Tác giả</p>
-                                                        <p class="text-sm text-gray-500">Quản trị viên</p>
+                                                        <p class="font-medium text-gray-800">{{ $post->user->name }}</p>
+                                                        <p class="text-sm text-gray-500">
+                                                            {{ $post->user->role == 2 ? 'Quản trị viên' : ($post->user->role == 3 ? 'Tác giả' : 'Người dùng') }}
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -173,7 +175,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             var slider = tns({
                 container: '.my-slider',
                 items: 1,

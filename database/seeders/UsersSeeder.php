@@ -19,7 +19,7 @@ class UsersSeeder extends Seeder
                 'username' => 'user1',
                 'email' => 'user1@example.com',
                 'password' => Hash::make('password'),
-                'image' => 'user1.jpg',
+                'image' => 'avt.jpg',
                 'role' => 1, // 1 là user
                 'created_at'=>'2024-11-01 13:10:57',
                 'updated_at'=>'2024-11-01 13:10:57',
@@ -28,7 +28,7 @@ class UsersSeeder extends Seeder
                 'username' => 'admin1',
                 'email' => 'admin1@example.com',
                 'password' => Hash::make('password'),
-                'image' => 'admin1.jpg',
+                'image' => 'avt.jpg',
                 'role' => 2, // 2 là admin
                 'created_at'=>'2024-11-01 13:10:57',
                 'updated_at'=>'2024-11-01 13:10:57',
@@ -37,7 +37,7 @@ class UsersSeeder extends Seeder
                 'username' => 'author1',
                 'email' => 'author1@example.com',
                 'password' => Hash::make('password'),
-                'image' => 'author1.jpg',
+                'image' => 'avt.jpg',
                 'role' => 3, // 3 là author
                 'created_at'=>'2024-11-01 13:10:57',
                 'updated_at'=>'2024-11-01 13:10:57',
