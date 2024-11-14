@@ -404,3 +404,146 @@ function toggleLogoVisibility(checkbox) {
         preview.style.display = "none"; // Hide the image
     }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const dropZone = document.getElementById("dropZone");
+    const fileInput = document.getElementById("file-upload");
+    const currentImage = document.getElementById("currentImage");
+    const currentImageContainer = document.getElementById(
+        "currentImageContainer"
+    );
+
+    // Xử lý drag and drop
+    ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ["dragenter", "dragover"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, highlight, false);
+    });
+
+    ["dragleave", "drop"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight(e) {
+        dropZone.classList.add("border-indigo-600", "bg-indigo-50");
+    }
+
+    function unhighlight(e) {
+        dropZone.classList.remove("border-indigo-600", "bg-indigo-50");
+    }
+
+    // Xử lý khi thả file
+    dropZone.addEventListener("drop", handleDrop, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+    }
+
+    // Xử lý khi chọn file qua input
+    fileInput.addEventListener("change", function (e) {
+        handleFiles(this.files);
+    });
+
+    function handleFiles(files) {
+        if (files.length === 0) return;
+
+        const file = files[0];
+        if (!file.type.startsWith("image/")) {
+            alert("Vui lòng chọn file hình ảnh");
+            return;
+        }
+
+        // Kiểm tra kích thước file (10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            alert("Kích thước file không được vượt quá 10MB");
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            // Thêm animation fade out cho ảnh cũ
+            currentImage.classList.add("opacity-0");
+
+            setTimeout(() => {
+                // Cập nhật ảnh mới và thêm animation fade in
+                currentImage.src = e.target.result;
+                currentImage.classList.remove("opacity-0");
+
+                // Thêm hiệu ứng scale khi hover
+                currentImageContainer.classList.add(
+                    "transform",
+                    "hover:scale-105",
+                    "transition-all",
+                    "duration-300"
+                );
+            }, 300);
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    // Thêm hiệu ứng ripple cho các nút
+    const buttons = document.querySelectorAll("button");
+    buttons.forEach((button) => {
+        button.addEventListener("click", function (e) {
+            const ripple = document.createElement("div");
+            const rect = button.getBoundingClientRect();
+
+            ripple.className = "ripple";
+            ripple.style.left = `${e.clientX - rect.left}px`;
+            ripple.style.top = `${e.clientY - rect.top}px`;
+
+            button.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 1000);
+        });
+    });
+
+    // Animations for form elements on page load
+    function animateFormElements() {
+        const formElements = document.querySelectorAll(
+            "input, select, textarea"
+        );
+        formElements.forEach((element, index) => {
+            element.style.opacity = "0";
+            element.style.transform = "translateY(20px)";
+
+            setTimeout(() => {
+                element.style.transition = "all 0.3s ease-out";
+                element.style.opacity = "1";
+                element.style.transform = "translateY(0)";
+            }, index * 100);
+        });
+    }
+
+    animateFormElements();
+
+    // Validate dates
+    const startDateInput = document.getElementById("start_date");
+    const endDateInput = document.getElementById("end_date");
+
+    function validateDates() {
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+
+        if (endDate < startDate) {
+            alert("Ngày kết thúc phải sau ngày bắt đầu");
+            endDateInput.value = startDateInput.value;
+        }
+    }
+
+    startDateInput.addEventListener("change", validateDates);
+    endDateInput.addEventListener("change", validateDates);
+});

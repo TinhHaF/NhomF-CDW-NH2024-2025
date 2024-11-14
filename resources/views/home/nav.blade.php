@@ -1,4 +1,11 @@
 <div class="navbar bg-white border-b relative z-50">
+    {{-- Header Ad --}}
+    @if ($headerAd = App\Models\Ad::where('position', 'header')->where('status', 1)->whereDate('start_date', '<=', now())->whereDate('end_date', '>=', now())->first())
+        <a href="{{ $headerAd->url }}">
+            <img src="{{ asset('uploads/ads/' . $headerAd->image) }}" alt="{{ $headerAd->title }}">
+        </a>
+    @endif
+
     <!-- Top Bar - Optional -->
     <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-1 px-4 text-sm hidden md:block">
         <div class="container mx-auto flex justify-between items-center">
@@ -25,8 +32,8 @@
             <div class="flex items-center space-x-2">
                 <div
                     class="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-800 rounded-full flex items-center justify-center text-white font-bold shadow-lg transform hover:scale-105 transition-transform duration-200">
-                    <img src="{{ asset($logoPath) }}"
-                        alt="logo" id="logoPreview" class="w-full h-full object-cover rounded-full">
+                    <img src="{{ asset($logoPath) }}" alt="logo" id="logoPreview"
+                        class="w-full h-full object-cover rounded-full">
                 </div>
 
                 <div class="hidden md:block">
@@ -43,9 +50,9 @@
                     <span id="currentDate" class="text-sm"></span>
                 </div>
                 <!-- Search Bar -->
-                <div class="relative flex-1 max-w-xl">
+                <div class="relative flex max-w-xl">
                     <div class="relative">
-                        <form action="{{ route('posts.search') }}" method="GET" class="flex items-center">
+                        {{-- <form action="{{ route('posts.search') }}" method="GET" class="flex items-center">
 
                             <input type="text" name="query" placeholder="Tìm kiếm..."
                                 class="w-full px-4 py-2 pl-10 pr-12 rounded-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 text-gray-600 text-sm">
@@ -55,7 +62,10 @@
                                 class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white p-1.5 rounded-full hover:bg-blue-700 transition-colors duration-200">
                                 <i class="fas fa-arrow-right text-xs"></i>
                             </button>
-                        </form>
+                        </form> --}}
+                        <a href="#">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </a>
                     </div>
                 </div>
             </div>

@@ -257,36 +257,36 @@ class UserController extends Controller
             'username.required' => 'Tên người dùng là bắt buộc.',
             'username.unique' => 'Tên tài khoản hoặc email đã được sử dụng, vui lòng nhập tên khác.',
             'username.regex' => 'Tên đăng nhập phải có 6-20 ký tự và không chứa ký tự đặc biệt.',
-    
+
             'email.required' => 'Email là bắt buộc.',
             'email.email' => 'Email không hợp lệ.',
             'email.unique' => 'Tên tài khoản hoặc email đã được sử dụng, vui lòng nhập email khác.',
             'email.regex' => 'Email phải có đuôi @gmail.com, với tối thiểu 6 ký tự và tối đa 30 ký tự trước đuôi.',
-    
+
             'password.required' => 'Mật khẩu là bắt buộc.',
             'password.min' => 'Mật khẩu phải lớn hơn 6 ký tự.',
             'password.max' => 'Mật khẩu không được vượt quá 20 ký tự.',
             'password.regex' => 'Mật khẩu không được chứa khoảng trắng.',
-    
+
             'avatar.image' => 'Avatar phải là ảnh hợp lệ.',
             'avatar.mimes' => 'Avatar phải có định dạng jpg, jpeg, png, hoặc gif.',
             'avatar.max' => 'Avatar không được vượt quá 2MB.',
-    
+
             'role.required' => 'Vai trò là bắt buộc.',
             'role.max' => 'Vai trò không hợp lệ.',
         ]);
-    
+
         // Kiểm tra vai trò hợp lệ (1 - User, 2 - Admin, 3 - Author)
         $role = $request->input('role');
         if (!in_array($role, [1, 2, 3])) {
             return redirect()->back()->withErrors(['role' => 'Vai trò không hợp lệ.'])->withInput();
         }
-    
+
         // Lưu ảnh hoặc dùng ảnh mặc định
         $imagePath = $request->file('avatar')
             ? $request->file('avatar')->store('avatars', 'public')
             : 'avatars/default.png'; // Ảnh mặc định
-    
+
         // Tạo người dùng mới
         User::create([
             'username' => $request->username,
@@ -295,11 +295,11 @@ class UserController extends Controller
             'role' => $role, // Lưu vai trò người dùng
             'image' => $imagePath, // Lưu đường dẫn ảnh avatar
         ]);
-    
+
         // Chuyển hướng về trang danh sách người dùng kèm thông báo thành công
         return redirect()->route('users.index')->with('success', 'Người dùng mới đã được thêm thành công!');
     }
-    
+
     public function destroy($id)
     {
         $user = User::findOrFail($id);
@@ -347,75 +347,73 @@ class UserController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    // Xác thực dữ liệu đầu vào
-    $request->validate([
-        'username' => [
-            'required',
-            'string',
-            'max:255',
-            'regex:/^[a-zA-Z0-9]{6,20}$/' // Tên đăng nhập phải có 6-20 ký tự và không chứa ký tự đặc biệt
-        ],
-        'email' => [
-            'required',
-            'email',
-            'max:255',
-            'unique:users,email,' . $id, // Đảm bảo email là duy nhất ngoại trừ người dùng hiện tại
-            'regex:/^[a-zA-Z0-9._%+-]{6,30}@gmail\.com$/' // Email phải có đuôi @gmail.com
-        ],
-        'password' => [
-            'nullable',
-            'string',
-            'min:6', // Mật khẩu phải có ít nhất 6 ký tự
-            'max:20',
-            'regex:/^\S{6,20}$/' // Mật khẩu không được chứa khoảng trắng
-        ],
-        'image' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048', // Kiểm tra ảnh đại diện nếu có
-        'role' => 'required|in:1,2,3', // Kiểm tra vai trò hợp lệ
-    ], [
-        'username.required' => 'Tên người dùng là bắt buộc.',
-        'username.regex' => 'Tên đăng nhập phải có 6-20 ký tự và không chứa ký tự đặc biệt.',
+    {
+        // Xác thực dữ liệu đầu vào
+        $request->validate([
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[a-zA-Z0-9]{6,20}$/' // Tên đăng nhập phải có 6-20 ký tự và không chứa ký tự đặc biệt
+            ],
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                'unique:users,email,' . $id, // Đảm bảo email là duy nhất ngoại trừ người dùng hiện tại
+                'regex:/^[a-zA-Z0-9._%+-]{6,30}@gmail\.com$/' // Email phải có đuôi @gmail.com
+            ],
+            'password' => [
+                'nullable',
+                'string',
+                'min:6', // Mật khẩu phải có ít nhất 6 ký tự
+                'max:20',
+                'regex:/^\S{6,20}$/' // Mật khẩu không được chứa khoảng trắng
+            ],
+            'image' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048', // Kiểm tra ảnh đại diện nếu có
+            'role' => 'required|in:1,2,3', // Kiểm tra vai trò hợp lệ
+        ], [
+            'username.required' => 'Tên người dùng là bắt buộc.',
+            'username.regex' => 'Tên đăng nhập phải có 6-20 ký tự và không chứa ký tự đặc biệt.',
 
-        'email.required' => 'Email là bắt buộc.',
-        'email.email' => 'Email không hợp lệ.',
-        'email.unique' => 'Email đã được sử dụng.',
-        'email.regex' => 'Email phải có đuôi @gmail.com, với tối thiểu 6 ký tự và tối đa 30 ký tự trước đuôi.',
+            'email.required' => 'Email là bắt buộc.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.unique' => 'Email đã được sử dụng.',
+            'email.regex' => 'Email phải có đuôi @gmail.com, với tối thiểu 6 ký tự và tối đa 30 ký tự trước đuôi.',
 
-        'password.min' => 'Mật khẩu phải lớn hơn 6 ký tự.',
-        'password.max' => 'Mật khẩu không được vượt quá 20 ký tự.',
-        'password.regex' => 'Mật khẩu không được chứa khoảng trắng.',
+            'password.min' => 'Mật khẩu phải lớn hơn 6 ký tự.',
+            'password.max' => 'Mật khẩu không được vượt quá 20 ký tự.',
+            'password.regex' => 'Mật khẩu không được chứa khoảng trắng.',
 
-        'image.image' => 'Avatar phải là ảnh hợp lệ.',
-        'image.mimes' => 'Avatar phải có định dạng jpg, jpeg, png, hoặc gif.',
-        'image.max' => 'Avatar không được vượt quá 2MB.',
+            'image.image' => 'Avatar phải là ảnh hợp lệ.',
+            'image.mimes' => 'Avatar phải có định dạng jpg, jpeg, png, hoặc gif.',
+            'image.max' => 'Avatar không được vượt quá 2MB.',
 
-        'role.required' => 'Vai trò là bắt buộc.',
-        'role.in' => 'Vai trò không hợp lệ.',
-    ]);
+            'role.required' => 'Vai trò là bắt buộc.',
+            'role.in' => 'Vai trò không hợp lệ.',
+        ]);
 
-    // Cập nhật thông tin người dùng
-    $user = User::findOrFail($id);
-    $user->username = $request->username;
-    $user->email = $request->email;
-    $user->role = $request->role; // Cập nhật vai trò
+        // Cập nhật thông tin người dùng
+        $user = User::findOrFail($id);
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->role = $request->role; // Cập nhật vai trò
 
-    if ($request->filled('password')) {
-        $user->password = Hash::make($request->password); // Mã hóa mật khẩu
-    }
-
-    // Xử lý hình ảnh
-    if ($request->hasFile('image')) {
-        // Xóa hình ảnh cũ nếu có
-        if ($user->image) {
-            Storage::delete('public/' . $user->image);
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password); // Mã hóa mật khẩu
         }
-        $user->image = $request->file('image')->store('avatars', 'public'); // Lưu hình ảnh mới
+
+        // Xử lý hình ảnh
+        if ($request->hasFile('image')) {
+            // Xóa hình ảnh cũ nếu có
+            if ($user->image) {
+                Storage::delete('public/' . $user->image);
+            }
+            $user->image = $request->file('image')->store('avatars', 'public'); // Lưu hình ảnh mới
+        }
+
+        $user->save(); // Lưu thông tin người dùng
+
+        return redirect()->route('users.index')->with('success', 'Cập nhật người dùng thành công.');
     }
-
-    $user->save(); // Lưu thông tin người dùng
-
-    return redirect()->route('users.index')->with('success', 'Cập nhật người dùng thành công.');
-}
-
-    
 }

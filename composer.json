@@ -11,6 +11,7 @@
         "intervention/image": "*",
         "laravel/framework": "^11.9",
         "laravel/scout": "^10.11",
+        "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.5",
         "meilisearch/meilisearch-php": "^1.10"

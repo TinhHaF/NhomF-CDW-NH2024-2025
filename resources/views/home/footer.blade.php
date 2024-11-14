@@ -1,5 +1,12 @@
 <footer class="bg-gradient-to-r from-white-200 to-gray-900 text-black-200 pt-12 pb-8 border-t border-gray-300 shadow-lg">
     <div class="container mx-auto px-4">
+        {{-- Footer Ad --}}
+        @if ($footerAd = App\Models\Ad::where('position', 'footer')->where('status', 1)->whereDate('start_date', '<=', now())->whereDate('end_date', '>=', now())->first())
+            <a href="{{ $footerAd->url }}">
+                <img src="{{ asset('uploads/ads/' . $footerAd->image) }}" alt="{{ $footerAd->title }}">
+            </a>
+        @endif
+
         <!-- Main Footer Content -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
             <!-- About Section -->

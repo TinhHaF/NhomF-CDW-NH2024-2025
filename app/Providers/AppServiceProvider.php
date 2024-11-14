@@ -27,11 +27,5 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useTailwind(); // Nếu bạn muốn sử dụng Bootstrap
-        
-        View::composer('*', function ($view) {
-            $logo = Logo::latest()->first();
-            $logoPath = $logo ? $logo->path : 'images/no-image-available.png';
-            $view->with('logoPath', $logoPath);
-        });
     }
 }

@@ -23,7 +23,8 @@
                 <ol class="flex items-center space-x-2">
                     <li>
                         <div class="flex items-center">
-                            <a href="{{ route('admin.dashboard') }}" class="ml-2 text-sm font-medium text-blue-600 hover:text-blue-700">Bảng điều
+                            <a href="{{ route('admin.dashboard') }}"
+                                class="ml-2 text-sm font-medium text-blue-600 hover:text-blue-700">Bảng điều
                                 khiển</a>
                         </div>
                     </li>
@@ -53,8 +54,8 @@
 
                 <div class="flex items-center border rounded overflow-hidden ml-2">
                     <form action="{{ route('posts.index') }}" method="GET" class="flex items-center">
-                        <input name="search" class="px-4 py-2" placeholder="Tìm kiếm" type="text"
-                            value="{{ request()->get('search') }}" />
+                        <input name="search" class="px-4 py-2" placeholder="Tìm kiếm theo tiêu đề hoặc nội dung"
+                            type="text" value="{{ request()->get('search') }}" />
                         <button type="submit" class="bg-blue-500 text-white px-4 py-2">
                             <i class="fas fa-search"></i>
                         </button>
@@ -92,7 +93,7 @@
                         @foreach ($posts as $post)
                             <tr class="text-center">
                                 <td class="py-2 px-4 border-b">
-                                    <input type="checkbox" name="post_ids[]" value="{{ $post->id }}"
+                                    <input type="checkbox" name="post_ids[]" value="{{ $encodeId($post->id) }}"
                                         form="bulkDeleteForm" class="selectItem" />
                                 </td>
                                 <td class="py-2 px-4 border-b">{{ $loop->iteration }}</td>
@@ -107,24 +108,23 @@
 
                                 <td class="py-2 px-4 border-b text-left">
                                     <a href="javascript:void(0)"
-                                        onclick="openModal('{{ $post->id }}', '{{ $post->title }}', '{{ $post->content }}')">
+                                        onclick="openModal('{{ $encodeId($post->id) }}', '{{ $post->title }}', '{{ $post->content }}', '{{ asset('storage/' . $post->image) }}')">
                                         <div>{{ $post->title }}</div>
                                     </a>
+
                                     <div class="text-sm text-gray-500 mb-2">Ngày tạo:
-                                        {{ $post->created_at->format('d/m/Y') }}
-                                    </div>
+                                        {{ $post->created_at->format('d/m/Y') }}</div>
                                     <div class="flex space-x-2">
                                         <a class="text-blue-500"
                                             href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}"
                                             title="Xem bài viết">
                                             <i class="fas fa-eye"></i> View
                                         </a>
-                                        <a class="text-green-500" href="{{ route('posts.edit', $post->id) }}"
+                                        <a class="text-green-500" href="{{ route('posts.edit', $encodeId($post->id)) }}"
                                             title="Sửa bài viết">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
-                                        <form action="{{ route('posts.destroy', $post->id) }}" method="POST"
-                                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?')">
+                                        <form action="{{ route('posts.destroy', $encodeId($post->id)) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-500" title="Xóa bài viết">
@@ -133,11 +133,10 @@
                                         </form>
                                     </div>
                                 </td>
-                                <form action="{{ route('posts.updateStatus', $post->id) }}" method="POST">
+                                <form action="{{ route('posts.updateStatus', $encodeId($post->id)) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
                                     <input type="hidden" name="title" value="{{ $post->title }}" />
-                                    <!-- Thêm trường này -->
                                     <td class="py-2 px-4 border-b">
                                         <input type="checkbox" name="is_featured" value="1"
                                             {{ $post->is_featured ? 'checked' : '' }} onchange="this.form.submit()"
@@ -154,26 +153,25 @@
                                     <div class="flex items-center space-x-2">
                                         <!-- Sao chép bài viết -->
                                         <i class="fas fa-copy text-green-500 cursor-pointer" title="Sao chép bài viết"
-                                            onclick="document.getElementById('copyPost{{ $post->id }}').submit();"></i>
-                                        <form action="{{ route('posts.copy', $post->id) }}" method="POST"
-                                            id="copyPost{{ $post->id }}" style="display: inline;">
+                                            onclick="document.getElementById('copyPost{{ $encodeId($post->id) }}').submit();"></i>
+                                        <form action="{{ route('posts.copy', $encodeId($post->id)) }}" method="POST"
+                                            id="copyPost{{ $encodeId($post->id) }}" style="display: inline;">
                                             @csrf
                                         </form>
 
                                         <!-- Sửa bài viết -->
-                                        <a class="text-green-500" href="{{ route('posts.edit', $post->id) }}"
+                                        <a class="text-green-500" href="{{ route('posts.edit', $encodeId($post->id)) }}"
                                             title="Sửa bài viết">
                                             <i class="fas fa-edit"></i>
                                         </a>
 
                                         <!-- Xóa bài viết -->
-                                        <form action="{{ route('posts.destroy', $post->id) }}" method="POST"
+                                        <form action="{{ route('posts.destroy', $encodeId($post->id)) }}" method="POST"
                                             onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?')"
                                             style="display: inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-500" title="Xóa bài viết"
-                                                style="background: none; border: none;">
+                                            <button type="submit" class="text-red-500" title="Xóa bài viết">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
@@ -213,22 +211,62 @@
                 </div>
             </div>
 
+
         </div>
         <script>
-            function openModal(postId, title, content, imageUrl) {
-                // Set the modal title and content
+            const bulkDeleteSystem = {
+                confirmDelete: function() {
+                    const selectedItems = document.querySelectorAll('.selectItem:checked');
+                    if (selectedItems.length === 0) {
+                        alert('Vui lòng chọn ít nhất một bài viết để xóa');
+                        return;
+                    }
+
+                    if (confirm('Bạn có chắc chắn muốn xóa các bài viết đã chọn?')) {
+                        document.getElementById('bulkDeleteForm').submit();
+                    }
+                }
+            };
+
+            // Update selected count
+            document.addEventListener('DOMContentLoaded', function() {
+                const selectAll = document.getElementById('selectAll');
+                const selectItems = document.querySelectorAll('.selectItem');
+                const selectedCount = document.getElementById('selectedCount');
+
+                function updateSelectedCount() {
+                    const count = document.querySelectorAll('.selectItem:checked').length;
+                    selectedCount.textContent = count;
+                }
+
+                selectAll.addEventListener('change', function() {
+                    selectItems.forEach(item => item.checked = this.checked);
+                    updateSelectedCount();
+                });
+
+                selectItems.forEach(item => {
+                    item.addEventListener('change', function() {
+                        updateSelectedCount();
+                        selectAll.checked = [...selectItems].every(item => item.checked);
+                    });
+                });
+            });
+
+            function openModal(encodedId, title, content, imageUrl) {
+                // Set the modal content
                 document.getElementById('modalPostTitle').innerText = title;
-                document.getElementById('modalPostContent').innerText = content;
+                document.getElementById('modalPostContent').innerHTML = content; // Use innerHTML to display HTML content
 
-                // Set the modal image
+                // Set the image source
                 const modalImage = document.getElementById('modalPostImage');
-                modalImage.src = imageUrl ? imageUrl : '{{ asset('images/no-image-available.jpg') }}'; // Default image if no image is provided
+                modalImage.src = imageUrl || '/images/no-image-available.jpg'; // Default image if no imageUrl is provided
 
-                // Show the modal
+                // Show the modal by removing the 'hidden' class
                 document.getElementById('postModal').classList.remove('hidden');
             }
 
             function closeModal() {
+                // Hide the modal by adding the 'hidden' class
                 document.getElementById('postModal').classList.add('hidden');
             }
         </script>

@@ -20,6 +20,7 @@
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
@@ -40,24 +41,30 @@
             onclick="window.location.href='{{ route('home') }}'">
             <i class="fas fa-times"></i>
         </button>
-        
+
         <!-- Phần biểu mẫu -->
         <div class="w-1/2 pr-4">
             <h2 class="text-2xl font-bold text-center mb-6 text-gray-700">Đăng Nhập Tài Khoản</h2>
             <div class="flex justify-between mb-8">
-                <button class="text-red-500 border-b-2 border-red-500 flex-1 text-center font-semibold transition duration-300 hover:text-red-700 hover:border-red-700">Đăng Nhập</button>
-                <button class="text-gray-500 flex-1 text-center" onclick="window.location.href='{{ route('user.registerUser') }}'">Đăng Ký</button>
+                <button
+                    class="text-red-500 border-b-2 border-red-500 flex-1 text-center font-semibold transition duration-300 hover:text-red-700 hover:border-red-700">Đăng
+                    Nhập</button>
+                <button class="text-gray-500 flex-1 text-center"
+                    onclick="window.location.href='{{ route('user.registerUser') }}'">Đăng Ký</button>
             </div>
             <form method="post" action="{{ route('user.loginUser') }}">
                 @csrf
                 <div class="mb-4">
-                    <input class="w-full p-3 bg-gray-200 rounded shadow-sm input-focus transition duration-200" placeholder="Tên tài khoản" type="text" name="username" required />
+                    <input class="w-full p-3 bg-gray-200 rounded shadow-sm input-focus transition duration-200"
+                        placeholder="Tên tài khoản" type="text" name="username" required />
                     @if ($errors->has('username'))
                         <span class="text-red-500 text-sm">{{ $errors->first('username') }}</span>
                     @endif
                 </div>
                 <div class="mb-4 relative">
-                    <input id="password" class="w-full p-3 bg-gray-200 rounded shadow-sm input-focus transition duration-200" placeholder="Mật Khẩu" type="password" name="password" required />
+                    <input id="password"
+                        class="w-full p-3 bg-gray-200 rounded shadow-sm input-focus transition duration-200"
+                        placeholder="Mật Khẩu" type="password" name="password" required />
                     <i class="fas fa-eye absolute right-3 top-3 text-gray-500 cursor-pointer" id="togglePassword"></i>
                     @if ($errors->has('password'))
                         <span class="text-red-500 text-sm">{{ $errors->first('password') }}</span>
@@ -70,14 +77,34 @@
                     </div>
                 @endif
 
-                @if ($errors->has('throttle')) <!-- Kiểm tra lỗi throttle -->
+                @if ($errors->has('throttle'))
+                    <!-- Kiểm tra lỗi throttle -->
                     <div class="mb-4 text-red-500">
                         <strong>{{ $errors->first('throttle') }}</strong>
                     </div>
                 @endif
 
                 <div>
-                    <button class="w-full p-3 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300 font-semibold" type="submit">Đăng Nhập</button>
+                    <button
+                        class="w-full p-3 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300 font-semibold"
+                        type="submit">Đăng Nhập</button>
+                </div>
+                <div class="flex items-center my-4">
+                    <hr class="flex-grow border-t border-gray-300">
+                    <span class="mx-4 text-gray-500">HOẶC</span>
+                    <hr class="flex-grow border-t border-gray-300">
+                </div>
+                <div class="flex justify-between">
+                    <button class="flex items-center justify-center w-1/2 bg-blue-600 text-white py-2 rounded mr-2">
+                        <a href="{{ route('login.facebook') }}">
+                            <i class="fab fa-facebook text-lg mr-2"></i> Facebook
+                        </a>
+                    </button>
+                    <button class="flex items-center justify-center w-1/2 bg-red-500 text-white py-2 rounded ml-2">
+                        <a href="{{ route('login.google') }}">
+                            <i class="fab fa-google mr-2"></i> Google
+                        </a>
+                    </button>
                 </div>
             </form>
         </div>
@@ -85,7 +112,9 @@
         <!-- Phần logo và thông điệp -->
         <div class="w-1/2 pl-4 flex flex-col items-center justify-center">
             <div class="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center mb-4 shadow-md">
-                <img alt="Logo" height="128" src="https://storage.googleapis.com/a1aa/image/tkMOcGFkfmyvdq3JhGQHzAhhaTpAVYMnMUGYFRdsJEfj28nTA.jpg" width="128" />
+                <img alt="Logo" height="128"
+                    src="https://storage.googleapis.com/a1aa/image/tkMOcGFkfmyvdq3JhGQHzAhhaTpAVYMnMUGYFRdsJEfj28nTA.jpg"
+                    width="128" />
             </div>
             <p class="text-center italic text-gray-600">
                 Cung Cấp Thông Tin Chuẩn Chính, Uy Tín, Nhanh Chóng Nhất mọi thời đại
@@ -97,7 +126,7 @@
         const passwordInput = document.getElementById('password');
         const togglePassword = document.getElementById('togglePassword');
 
-        togglePassword.addEventListener('click', function () {
+        togglePassword.addEventListener('click', function() {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
             this.classList.toggle('fa-eye');

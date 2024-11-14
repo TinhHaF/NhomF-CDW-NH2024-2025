@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\IdEncoder_2;
+use App\Http\Resources\PostCollection;
 use App\Models\Post;
 use App\Models\Author;
 use App\Models\Category;
@@ -10,11 +12,9 @@ use App\Helpers\IdEncoder;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
-use App\Http\Resources\PostCollection;
 use App\Models\Logo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -27,9 +27,12 @@ class PostController extends Controller
 
     protected $postService;
 
+    protected $idEncoder;
+
     public function __construct(PostService $postService)
     {
         $this->postService = $postService;
+        $this->idEncoder = new IdEncoder_2();
         // Middleware auth yêu cầu xác thực cho tất cả các phương thức ngoại trừ homepage và show
         $this->middleware('auth')->except(['homepage', 'detail', 'search']);
         $this->authorizeResource(Post::class, 'post'); // Phương thức này sẽ hoạt động nếu trait được sử dụng
@@ -117,6 +120,36 @@ class PostController extends Controller
     }
 
 
+    // public function index(Request $request)
+    // {
+    //     try {
+    //         $query = $request->input('search');
+    //         $posts = Post::search($query)
+    //             ->paginate(10)
+    //             ->through(function ($post) {
+    //                 $post->encoded_id = IdEncoder_2::encode($post->id);
+    //                 return $post;
+    //             });
+
+    //         $message = $posts->isEmpty()
+    //             ? 'Không có bài viết nào có thông tin phù hợp với kết quả bạn đang tìm'
+    //             : null;
+
+    //         if ($request->expectsJson()) {
+    //             return response()->json(['posts' => $posts->toArray(), 'message' => $message]);
+    //         }
+
+    //         return view('admin.posts.index', compact('posts', 'message'));
+    //     } catch (\Exception $e) {
+    //         Log::error('Error listing posts', [
+    //             'search' => $query ?? null,
+    //             'error' => $e->getMessage()
+    //         ]);
+    //         return $request->expectsJson()
+    //             ? response()->json(['error' => 'Có lỗi xảy ra.'], 500)
+    //             : back()->with('error', 'Có lỗi xảy ra khi tải danh sách bài viết.');
+    //     }
+    // }
     public function index(Request $request)
     {
         try {
@@ -135,7 +168,7 @@ class PostController extends Controller
             }
 
             $encodeId = function ($id) {
-                return IdEncoder::encode($id);
+                return IdEncoder_2::encode($id);
             };
 
             return view('admin.posts.index', compact('posts', 'encodeId', 'message'));
@@ -150,9 +183,6 @@ class PostController extends Controller
                 : back()->with('error', 'Có lỗi xảy ra khi tải danh sách bài viết.');
         }
     }
-
-
-
     public function create()
     {
         try {
@@ -214,17 +244,28 @@ class PostController extends Controller
         }
     }
 
-    public function edit(Post $post)
+    public function edit($encodedId)
     {
         try {
-            // Lấy danh mục và tác giả từ database thay vì cache
-            $categories = Category::all(); // Lấy tất cả danh mục từ database
-            $authors = Author::all(); // Lấy tất cả tác giả từ database
+            // Validate và giải mã ID
+            if (!IdEncoder_2::isValid($encodedId)) {
+                throw new \InvalidArgumentException('ID không hợp lệ');
+            }
+
+            $id = IdEncoder_2::decode($encodedId);
+            $post = Post::findOrFail($id);
+
+            // Lấy danh mục và tác giả từ database
+            $categories = Category::all();
+            $authors = Author::all();
+
+            // Thêm encoded_id vào post để sử dụng trong form
+            $post->encoded_id = $encodedId;
 
             return view('admin.posts.edit', compact('post', 'categories', 'authors'));
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             Log::error('Error loading edit post form', [
-                'post_id' => $post->id,
+                'encoded_id' => $encodedId,
                 'error' => $e->getMessage()
             ]);
 
@@ -232,28 +273,37 @@ class PostController extends Controller
         }
     }
 
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(UpdatePostRequest $request, $encodedId)
     {
         try {
+            // Validate và giải mã ID
+            if (!IdEncoder_2::isValid($encodedId)) {
+                throw new \InvalidArgumentException('ID không hợp lệ');
+            }
+
+            $id = IdEncoder_2::decode($encodedId);
+            $post = Post::findOrFail($id);
+
             $updatedPost = $this->postService->update(
                 $post,
                 $request->validated(),
                 $request->hasFile('image') ? $request->file('image') : null
             );
 
+            // Thêm encoded_id cho response
+            $updatedPost->encoded_id = $encodedId;
+
             Log::info('Post updated', [
-                'post_id' => $post->id,
+                'encoded_id' => $encodedId,
                 'user_id' => Auth::id()
             ]);
-
-            // Cache::tags(['posts', 'homepage'])->flush();
 
             return $request->expectsJson()
                 ? new PostResource($updatedPost)
                 : redirect()->route('posts.index')->with('success', 'Cập nhật bài viết thành công!');
         } catch (\Exception $e) {
             Log::error('Post update failed', [
-                'post_id' => $post->id,
+                'encoded_id' => $encodedId,
                 'error' => $e->getMessage()
             ]);
             return $request->expectsJson()
@@ -263,26 +313,30 @@ class PostController extends Controller
     }
 
 
-    public function destroy(Post $post)
+    public function destroy($encodedId)
     {
-
         try {
+            // Validate và giải mã ID
+            if (!IdEncoder_2::isValid($encodedId)) {
+                throw new \InvalidArgumentException('ID không hợp lệ');
+            }
+
+            $id = IdEncoder_2::decode($encodedId);
+            $post = Post::findOrFail($id);
+
             $this->postService->delete($post);
 
             Log::info('Post deleted', [
-                'post_id' => $post->id,
+                'encoded_id' => $encodedId,
                 'user_id' => Auth::id()
             ]);
-
-
-            // Cache::tags(['posts', 'homepage'])->flush();
 
             return request()->expectsJson()
                 ? response()->json(['message' => 'Xóa bài viết thành công'])
                 : redirect()->route('posts.index')->with('success', 'Bài viết đã được xóa thành công!');
         } catch (\Exception $e) {
             Log::error('Post deletion failed', [
-                'post_id' => $post->id,
+                'encoded_id' => $encodedId,
                 'error' => $e->getMessage()
             ]);
             return request()->expectsJson()
@@ -293,35 +347,38 @@ class PostController extends Controller
 
 
 
-    public function updateStatus(Request $request, $id)
+    public function updateStatus(Request $request, $encodedId)
     {
         try {
-            $post = Post::findOrFail($id);
+            if (!IdEncoder_2::isValid($encodedId)) {
+                throw new \InvalidArgumentException('ID không hợp lệ');
+            }
 
-            // Cập nhật trạng thái
+            $id = IdEncoder_2::decode($encodedId);
+            $post = Post::findOrFail($id);
+            $this->authorize('update', $post);
+
             $post->updateStatus(
                 $request->has('is_featured'),
                 $request->has('is_published')
             );
 
-            // Log khi cập nhật thành công
             Log::info('Post status updated', [
-                'post_id' => $post->id,
+                'encoded_id' => $encodedId,
                 'user_id' => Auth::id(),
                 'featured' => $request->has('is_featured'),
                 'published' => $request->has('is_published')
             ]);
 
+            $post->encoded_id = $encodedId;
             return request()->expectsJson()
                 ? new PostResource($post)
                 : redirect()->route('posts.index')->with('success', 'Trạng thái bài viết đã cập nhật!');
         } catch (\Exception $e) {
-            // Ghi log lỗi với ID nếu bài viết không tìm thấy
             Log::error('Post status update failed', [
-                'post_id' => $id,
+                'encoded_id' => $encodedId,
                 'error' => $e->getMessage()
             ]);
-
             return request()->expectsJson()
                 ? response()->json(['error' => 'Không thể cập nhật trạng thái.'], 500)
                 : back()->with('error', 'Có lỗi xảy ra khi cập nhật trạng thái.');
@@ -332,31 +389,37 @@ class PostController extends Controller
 
     public function bulkDelete(Request $request)
     {
-        $postIds = []; // Khởi tạo biến $postIds ở đây
-
         try {
-            $postIds = $request->input('post_ids', []);
+            $this->authorize('delete', Post::class);
+            $encodedIds = $request->input('post_ids', []);
 
-            if (empty($postIds)) {
+            if (empty($encodedIds)) {
                 return redirect()->route('posts.index')
                     ->with('error', 'Không có bài viết nào được chọn.');
+            }
+
+            // Giải mã và validate tất cả ID
+            $postIds = [];
+            foreach ($encodedIds as $encodedId) {
+                if (!IdEncoder_2::isValid($encodedId)) {
+                    throw new \InvalidArgumentException('ID không hợp lệ: ' . $encodedId);
+                }
+                $postIds[] = IdEncoder_2::decode($encodedId);
             }
 
             $this->postService->bulkDelete($postIds);
 
             Log::info('Bulk delete completed', [
-                'post_ids' => $postIds,
+                'encoded_ids' => $encodedIds,
                 'user_id' => Auth::id()
             ]);
-
-            // Cache::tags(['posts', 'homepage'])->flush();
 
             return request()->expectsJson()
                 ? response()->json(['message' => 'Xóa các bài viết thành công'])
                 : redirect()->route('posts.index')->with('success', 'Các bài viết đã được xóa thành công.');
         } catch (\Exception $e) {
             Log::error('Bulk deletion failed', [
-                'post_ids' => $postIds,
+                'encoded_ids' => $encodedIds ?? [],
                 'error' => $e->getMessage()
             ]);
             return request()->expectsJson()
@@ -366,25 +429,31 @@ class PostController extends Controller
     }
 
 
-    public function copy(Post $post)
+    public function copy($encodedId)
     {
         try {
+            if (!IdEncoder_2::isValid($encodedId)) {
+                throw new \InvalidArgumentException('ID không hợp lệ');
+            }
+
+            $id = IdEncoder_2::decode($encodedId);
+            $post = Post::findOrFail($id);
+            $this->authorize('create', Post::class);
             $newPost = $this->postService->copy($post);
+            $newPost->encoded_id = IdEncoder_2::encode($newPost->id);
 
             Log::info('Post copied', [
-                'original_id' => $post->id,
-                'new_id' => $newPost->id,
+                'original_encoded_id' => $encodedId,
+                'new_encoded_id' => $newPost->encoded_id,
                 'user_id' => Auth::id()
             ]);
-
-            // Cache::tags(['posts', 'homepage'])->flush();
 
             return request()->expectsJson()
                 ? new PostResource($newPost)
                 : redirect()->route('posts.index')->with('success', 'Bài viết đã được sao chép thành công.');
         } catch (\Exception $e) {
             Log::error('Post copy failed', [
-                'post_id' => $post->id,
+                'encoded_id' => $encodedId,
                 'error' => $e->getMessage()
             ]);
             return request()->expectsJson()

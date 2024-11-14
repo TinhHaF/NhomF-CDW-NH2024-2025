@@ -47,6 +47,67 @@
         .rotate-180 {
             transform: rotate(180deg);
         }
+
+
+
+
+
+
+
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            background-color: rgba(255, 255, 255, 0.7);
+            width: 100px;
+            height: 100px;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.5s ease-out;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
     </style>
 </head>
 
@@ -113,8 +174,19 @@
                     @endif
                     <li class="px-4 py-2 hover:bg-gray-200">
                         <a class="flex items-center hover:text-red-500" href="{{ route('logo.upload') }}">
-                            <i class="fa-solid fa-folder mr-2"></i>
+                            <i class="fa-solid fa-images mr-2"></i>
                             Quản lý ảnh
+                        </a>
+                        {{-- <ul class="ml-6 mt-2">
+                            <li class="px-4 py-2 bg-blue-100">
+                                Logo
+                            </li>
+                        </ul> --}}
+                    </li>
+                    <li class="px-4 py-2 hover:bg-gray-200">
+                        <a class="flex items-center hover:text-red-500" href="{{ route('ads.index') }}">
+                            <i class="fa-solid fa-dumpster-fire mr-2"></i>
+                            Quảng cáo
                         </a>
                         {{-- <ul class="ml-6 mt-2">
                             <li class="px-4 py-2 bg-blue-100">
@@ -160,10 +232,10 @@
             height: 400,
             removeButtons: 'PasteFromWord',
             //Cấu hình thêm cho CKEditor nếu cần
-            filebrowserImageBrowseUrl: '/filemanager?type=Images',
-            filebrowserImageUploadUrl: '/filemanager/upload?type=Images&_token=',
-            filebrowserBrowseUrl: '/filemanager?type=Files',
-            filebrowserUploadUrl: '/filemanager/upload?type=Files&_token=',
+            filebrowserImageUploadUrl: '/filemanager/upload?type=Images&_token={{ csrf_token() }}', // URL tải ảnh lên máy chủ
+            filebrowserImageBrowseUrl: '/filemanager?type=Images', // URL duyệt ảnh từ máy chủ
+            filebrowserBrowseUrl: '/filemanager?type=Files', // URL duyệt các tệp khác
+            filebrowserUploadUrl: '/filemanager/upload?type=Files&_token={{ csrf_token() }}' // URL tải các tệp khác lên máy chủ
         });
         CKEDITOR.on('instanceReady', function(ev) {
             var editor = ev.editor;

@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Helpers\IdEncoder;
+use App\Helpers\IdEncoder_2;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostResource extends JsonResource
@@ -11,7 +11,7 @@ class PostResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'encoded_id' => IdEncoder::encode($this->id),
+            'encoded_id' => $this->encoded_id ?? IdEncoder_2::encode($this->id),
             'title' => $this->title,
             'slug' => $this->slug,
             'content' => $this->content,
