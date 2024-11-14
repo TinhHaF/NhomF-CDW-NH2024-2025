@@ -51,33 +51,6 @@ class CommentController extends Controller
         return view('admin.comments.comments_index', compact('post', 'comments'));
     }
 
-    // public function store(Request $request, Post $post)
-    // {
-    //     // Kiểm tra đăng nhập
-    //     if (!Auth::check()) {
-    //         return redirect()->back()->with('error', 'Bạn cần đăng nhập để bình luận.');
-    //     }
-
-    //    $request->validate([
-    //     'content' => [
-    //         'required',
-    //         'string',
-    //         'max:255',
-    //         'regex:/\S/', // Kiểm tra nội dung không phải là khoảng trắng
-    //     ],
-    // ]);
-
-    //     // Tạo bình luận mới
-    //     Comment::create([
-    //         'content' => $request->input('content'),
-    //         'post_id' => $post->id,
-    //         'user_id' => Auth::id(),
-    //     ]);
-
-    //     // Chuyển hướng về trang bài viết với thông báo thành công
-    //     return redirect()->route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug])
-    //         ->with('success', 'Bình luận đã được thêm thành công!');
-    // }
     public function store(Request $request, Post $post)
     {
         // Kiểm tra đăng nhập

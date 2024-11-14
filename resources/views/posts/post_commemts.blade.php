@@ -41,15 +41,27 @@
     </div>
 
     <script>
-        function toggleReplyForm(commentId) {
-            const form = document.getElementById(`reply-form-${commentId}`);
-            form.classList.toggle('hidden');
+        // Hàm ẩn/hiện form trả lời và tự động thêm @username
+        function toggleReplyForm(commentId, username) {
+            const replyForm = document.getElementById('reply-form-' + commentId);
+            const replyTextarea = document.getElementById('reply-textarea-' + commentId);
+
+            if (replyForm) {
+                replyForm.classList.toggle('hidden');
+
+                // Nếu textarea chưa có nội dung, thêm @username
+                if (replyTextarea && replyTextarea.value.trim() === '') {
+                    replyTextarea.value = `@${username} `;
+                    replyTextarea.focus(); // Đưa con trỏ vào textarea
+                }
+            }
+        }
+        // Hàm tự động mở rộng textarea khi nhập
+        function autoResize(textarea) {
+            textarea.style.height = 'auto'; // Đặt chiều cao về tự động
+            textarea.style.height = textarea.scrollHeight + 'px'; // Cập nhật chiều cao theo nội dung
         }
     </script>
-
-
-
-
     </body>
 
     </html>
