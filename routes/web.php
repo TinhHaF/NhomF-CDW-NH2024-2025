@@ -60,6 +60,7 @@ Route::middleware([AdministrationMiddleware::class])->group(function () {
     Route::prefix('admin')->group(function () {
         // Dashboard
         Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('/dashboard/chart-data', [DashboardController::class, 'getChartData']);
 
         // CRUD Posts với encoded IDs
         Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
@@ -147,11 +148,7 @@ Route::get('/ads', [AdController::class, 'index'])->name('ads.index');
         Route::put('/ads/{id}', [AdController::class, 'update'])->name('ads.update');
         Route::delete('/ads/{id}', [AdController::class, 'destroy'])->name('ads.destroy');
 
-Route::prefix('admin')->middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('admin.dashboard');
-    Route::get('/dashboard/chart-data', [DashboardController::class, 'getChartData']);
-});
+
 
 Route::get('/privacy-policy', function () {
     return view('privacy-policy');

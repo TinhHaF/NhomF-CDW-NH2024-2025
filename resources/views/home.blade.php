@@ -75,7 +75,7 @@
         <div class="slider-container mb-8">
             <div class="my-slider">
                 @if (isset($featuredPosts) && $featuredPosts->count())
-<<<<<<< HEAD
+
                 @foreach ($featuredPosts->take(5) as $slide)
                 <div class="slider-item">
                     <img src="{{ asset('storage/' . $slide->image) }}" class="w-full h-full object-cover"
