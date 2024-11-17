@@ -86,7 +86,7 @@
                                         Nổi bật
                                     </span>
                                     <h2 class="text-3xl font-bold mb-2">{{ $slide->title }}</h2>
-                                    <p class="text-gray-200 mb-4">{{ Str::limit(strip_tags($slide->content), 150) }}</p>
+                                    <p class="text-gray-200 mb-4">{!! Str::limit(strip_tags($slide->content), 150) !!}</p>
                                     <a href="{{ route('posts.post_detail', ['id' => $slide->id, 'slug' => $slide->slug]) }}"
                                         class="bg-white text-gray-900 px-6 py-2 rounded-full inline-block hover:bg-gray-100 transition duration-300">
                                         Đọc thêm

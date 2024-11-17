@@ -75,10 +75,18 @@ class PostController extends Controller
     public function detail($id, $slug)
     {
         try {
-            $post = Post::find($id);
+            $post = Post::where('id', $id)->where('slug', $slug)->firstOrFail();
             if (!$post || $post->slug !== $slug) {
                 return abort(404, 'Bài viết không tồn tại.');
             }
+
+
+            // Lấy các bài viết liên quan theo category_id
+            $relatedPosts = Post::where('category_id', $post->category_id)
+                ->where('id', '!=', $post->id) // Loại trừ bài viết hiện tại
+                ->latest()
+                ->take(3) // Lấy 3 bài liên quan
+                ->get();
 
             // Lấy bình luận và phân trang
             $comments = $post->comments()->orderBy('created_at', 'desc')->paginate(5);
@@ -91,7 +99,7 @@ class PostController extends Controller
 
             $featuredPosts = Post::where('is_featured', true)->latest();
 
-            return view('posts.post_detail', compact('post', 'comments', 'categories', 'logoPath', 'featuredPosts'));
+            return view('posts.post_detail', compact('post', 'comments', 'categories', 'logoPath', 'featuredPosts', 'relatedPosts'));
         } catch (ModelNotFoundException $e) {
             Log::info('Post not found', ['id' => $id]);
             return request()->expectsJson()

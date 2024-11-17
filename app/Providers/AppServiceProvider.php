@@ -5,8 +5,6 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use App\Services\VisitorTrackingService;
-use Illuminate\Support\Facades\View;
-use App\Models\Logo;
 
 class AppServiceProvider extends ServiceProvider
 {

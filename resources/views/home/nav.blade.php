@@ -32,8 +32,10 @@
             <div class="flex items-center space-x-2">
                 <div
                     class="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-800 rounded-full flex items-center justify-center text-white font-bold shadow-lg transform hover:scale-105 transition-transform duration-200">
-                    <img src="{{ asset($logoPath) }}" alt="logo" id="logoPreview"
-                        class="w-full h-full object-cover rounded-full">
+                    <a href="{{ route('home') }}">
+                        <img src="{{ asset($logoPath) }}" alt="logo" id="logoPreview"
+                            class="w-full h-full object-cover rounded-full">
+                    </a>
                 </div>
 
                 <div class="hidden md:block">
@@ -86,7 +88,7 @@
                 <div
                     class="login relative flex items-center font-bold text-gray-800 hover:text-red-500 transition duration-300">
                     <a href="#" id="userMenuToggle" class="flex items-center space-x-2">
-                        <div class="flex flex-col items-start">
+                        <div class="flex flex-col items-end">
                             <span class="text-sm font-medium text-gray-700">{{ $user->username }}</span>
                             <span class="text-xs text-gray-500">{{ $user->email }}</span>
                         </div>
@@ -127,18 +129,57 @@
     <div class="border-t hidden md:block">
         <div class="container mx-auto px-4">
             <nav class="flex space-x-6 py-3">
+                <!-- Link Trang chủ -->
+                <a href="{{ route('home') }}" aria-label="Trang chủ"
+                    class="text-gray-600 hover:text-blue-600 transition-colors duration-200">
+                    <i class="fa-solid fa-house mr-2"></i>
+                    Trang chủ
+                </a>
+
+                <!-- Danh sách danh mục -->
                 @foreach ($categories as $category)
                     <a href="{{ route('category.show', $category->id) }}"
-                        class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">
+                        class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200
+                       {{ request()->is('category/' . $category->id) ? 'text-blue-600 font-semibold' : '' }}">
                         {{ $category->name }}
                     </a>
                 @endforeach
             </nav>
         </div>
     </div>
+
+    <!-- Hiển thị menu trên thiết bị di động -->
+    <div class="md:hidden block">
+        <div class="container mx-auto px-4">
+            <button id="mobile-menu-toggle" class="text-gray-600 hover:text-blue-600">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <nav id="mobile-menu" class="hidden flex-col space-y-3 mt-3">
+                <a href="{{ route('home') }}" aria-label="Trang chủ"
+                    class="text-gray-600 hover:text-blue-600 transition-colors duration-200">
+                    <i class="fa-solid fa-house mr-2"></i>
+                    Trang chủ
+                </a>
+
+                @foreach ($categories as $category)
+                    <a href="{{ route('category.show', $category->id) }}"
+                        class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200
+                       {{ request()->is('category/' . $category->id) ? 'text-blue-600 font-semibold' : '' }}">
+                        {{ $category->name }}
+                    </a>
+                @endforeach
+            </nav>
+        </div>
+    </div>      
 </div>
 
 <script>
+    // Xử lý menu di động
+    document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('hidden');
+    });
+
     document.addEventListener('DOMContentLoaded', function() {
         // Hiển thị ngày hiện tại
         function formatDate() {

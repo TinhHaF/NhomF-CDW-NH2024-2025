@@ -231,8 +231,7 @@
         CKEDITOR.replace('editor', {
             height: 400,
             removeButtons: 'PasteFromWord',
-            //Cấu hình thêm cho CKEditor nếu cần
-            filebrowserImageUploadUrl: '/filemanager/upload?type=Images&_token={{ csrf_token() }}', // URL tải ảnh lên máy chủ
+            filebrowserImageUploadUrl: '/filemanager/upload?_token={{ csrf_token() }}', // URL tải ảnh lên máy chủ
             filebrowserImageBrowseUrl: '/filemanager?type=Images', // URL duyệt ảnh từ máy chủ
             filebrowserBrowseUrl: '/filemanager?type=Files', // URL duyệt các tệp khác
             filebrowserUploadUrl: '/filemanager/upload?type=Files&_token={{ csrf_token() }}' // URL tải các tệp khác lên máy chủ
