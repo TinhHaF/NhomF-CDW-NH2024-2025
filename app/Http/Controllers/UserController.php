@@ -87,11 +87,15 @@ class UserController extends Controller
             'image.max' => 'Avatar không được vượt quá 2MB.',
         ]);
 
-        // Lưu ảnh hoặc dùng ảnh mặc định
-        $imagePath = $request->file('image')
-            ? $request->file('image')->store('avatars', 'public')
-            : 'avt.jpg';
-
+        if ($request->hasFile('image')) {
+            // Lưu tệp ảnh được upload vào thư mục gốc public/
+            $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
+            $request->file('image')->move(public_path(), $imageName);
+            $imagePath = $imageName; // Lưu tên ảnh để sử dụng
+        } else {
+            // Sử dụng ảnh mặc định nằm trong thư mục gốc public/
+            $imagePath = 'avt.jpg'; // Đường dẫn đến ảnh mặc định
+        }
         // Tạo người dùng mới
         User::create([
             'username' => $request->username,
@@ -283,11 +287,15 @@ class UserController extends Controller
             return redirect()->back()->withErrors(['role' => 'Vai trò không hợp lệ.'])->withInput();
         }
 
-        // Lưu ảnh hoặc dùng ảnh mặc định
-        $imagePath = $request->file('avatar')
-            ? $request->file('avatar')->store('avatars', 'public')
-            : 'avatars/default.png'; // Ảnh mặc định
-
+        if ($request->hasFile('image')) {
+            // Lưu tệp ảnh được upload vào thư mục public/avt_user/
+            $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
+            $request->file('image')->move(public_path('avt_user'), $imageName);
+            $imagePath = 'avt_user/' . $imageName; // Lưu đường dẫn để sử dụng
+        } else {
+            // Sử dụng ảnh mặc định nằm trong thư mục public/avt_user/
+            $imagePath = 'avt_user/avt.jpg'; // Đường dẫn ảnh mặc định
+        }        
         // Tạo người dùng mới
         User::create([
             'username' => $request->username,

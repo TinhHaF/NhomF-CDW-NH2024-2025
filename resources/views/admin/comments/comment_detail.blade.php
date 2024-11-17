@@ -20,7 +20,7 @@
         <!-- Thông Tin Bình Luận -->
         <div class="space-y-4">
             <div class="flex items-center space-x-3">
-                <img src="{{ asset('storage/' . $comment->user->image) }}" alt="Avatar" class="w-12 h-12 rounded-full border-2 border-blue-500">
+                <img src="{{ asset('avt_user/' . $comment->user->image) }}" alt="Avatar" class="w-12 h-12 rounded-full border-2 border-blue-500">
                 <div>
                     <p class="text-xl font-semibold text-gray-800">{{ $comment->user->username }}</p>
                     <p class="text-sm text-gray-500">Đã bình luận vào {{ $comment->created_at->format('d/m/Y H:i') }}</p>

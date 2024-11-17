@@ -90,7 +90,7 @@
                             <span class="text-sm font-medium text-gray-700">{{ $user->username }}</span>
                             <span class="text-xs text-gray-500">{{ $user->email }}</span>
                         </div>
-                        <img src="{{ asset('storage/' . $user->image) }}" alt="Avatar"
+                        <img src="{{ asset('avt_user/' . $user->image) }}" alt="Avatar"
                             class="w-10 h-10 rounded-full border-2 border-gray-300">
                         <i class="fas fa-caret-down"></i>
                     </a>
