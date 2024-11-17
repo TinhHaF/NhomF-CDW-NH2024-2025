@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id('comment_id');
             $table->foreignId('post_id')->constrained('posts')->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->unsignedBigInteger('parent_id')->nullable(); // ID của comment cha
             $table->text('content');
             $table->timestamps();
-         
         });
     }
 
