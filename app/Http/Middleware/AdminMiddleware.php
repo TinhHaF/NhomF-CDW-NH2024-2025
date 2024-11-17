@@ -3,9 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
+
 class AdminMiddleware
 {
     public function handle($request, Closure $next)
@@ -18,5 +17,4 @@ class AdminMiddleware
         // Nếu không phải Admin, chuyển hướng hoặc trả về lỗi 403
         return redirect('/');
     }
-   
 }

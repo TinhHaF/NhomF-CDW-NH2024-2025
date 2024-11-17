@@ -8,7 +8,7 @@
         @endif
 
         <!-- Main Footer Content -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8 p-6">
             <!-- About Section -->
             <div class="col-span-1">
                 <h5 class="font-bold text-xl text-black mb-4">Về Chúng Tôi</h5>

@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Helpers\IdEncoder_2;
-use App\Http\Resources\PostCollection;
 use App\Models\Post;
 use App\Models\Author;
 use App\Models\Category;
 use App\Services\PostService;
-use App\Helpers\IdEncoder;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
@@ -18,7 +17,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Routing\Controller;
 
 class PostController extends Controller
@@ -75,10 +73,11 @@ class PostController extends Controller
     public function detail($id, $slug)
     {
         try {
-            $post = Post::find($id);
+            $post = Post::where('id', $id)->where('slug', $slug)->firstOrFail();
             if (!$post || $post->slug !== $slug) {
                 return abort(404, 'Bài viết không tồn tại.');
             }
+
 
             // Lấy bình luận gốc và phân trang
             $comments = $post->comments()
@@ -86,6 +85,18 @@ class PostController extends Controller
                 ->with('replies')         // Lấy tất cả phản hồi lồng vào
                 ->orderBy('created_at', 'desc')
                 ->paginate(5);
+
+
+            // Lấy các bài viết liên quan theo category_id
+            $relatedPosts = Post::where('category_id', $post->category_id)
+                ->where('id', '!=', $post->id) // Loại trừ bài viết hiện tại
+                ->latest()
+                ->take(3) // Lấy 3 bài liên quan
+                ->get();
+
+            // Lấy bình luận và phân trang
+            $comments = $post->comments()->orderBy('created_at', 'desc')->paginate(5);
+
 
             // Lấy tất cả các danh mục
             $categories = Category::all();
@@ -95,7 +106,7 @@ class PostController extends Controller
 
             $featuredPosts = Post::where('is_featured', true)->latest();
 
-            return view('posts.post_detail', compact('post', 'comments', 'categories', 'logoPath', 'featuredPosts'));
+            return view('posts.post_detail', compact('post', 'comments', 'categories', 'logoPath', 'featuredPosts', 'relatedPosts'));
         } catch (ModelNotFoundException $e) {
             Log::info('Post not found', ['id' => $id]);
             return request()->expectsJson()

@@ -27,7 +27,8 @@ class Post extends Model
         'slug',
         'seo_title',
         'seo_description',
-        'seo_keywords'
+        'seo_keywords', 
+        'view'
     ];
     public function category()
     {
