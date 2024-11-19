@@ -58,20 +58,25 @@ class CommentController extends Controller
             return redirect()->back()->with('error', 'Bạn cần đăng nhập để bình luận.');
         }
 
-       $request->validate([
-        'content' => [
-            'required',
-            'string',
-            'max:255',
-            'regex:/\S/', // Kiểm tra nội dung không phải là khoảng trắng
-        ],
-    ]);
+        // Validation cho nội dung bình luận
+        $request->validate([
+            'content' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/\S/', // Kiểm tra nội dung không phải là khoảng trắng
+            ],
+        ]);
+
+        // Kiểm tra nếu có parent_id (bình luận trả lời)
+        $parentId = $request->input('parent_id'); // Nếu không có thì sẽ trả về null
 
         // Tạo bình luận mới
         Comment::create([
             'content' => $request->input('content'),
             'post_id' => $post->id,
             'user_id' => Auth::id(),
+            'parent_id' => $parentId, // Lưu lại id của bình luận mẹ nếu có
         ]);
 
         // Chuyển hướng về trang bài viết với thông báo thành công

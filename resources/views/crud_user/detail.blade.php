@@ -26,8 +26,17 @@
             <!-- Header -->
             <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-8 flex items-center justify-between">
                 <div class="flex items-center">
-                    <img src="{{ asset('storage/' . $user->image) }}" alt="User Avatar"
-                        class="w-24 h-24 rounded-full border-4 border-white shadow-md">
+
+
+                    @if($user->image)
+                        <img src="{{ asset('storage/' . $user->image) }}" alt="User Avatar"
+                            class="w-24 h-24 rounded-full border-4 border-white shadow-md">
+                    @else
+                        <img src="{{ asset('user_avt/avt.jpg') }}" alt="User Avatar"
+                            class="w-24 h-24 rounded-full border-4 border-white shadow-md">
+                    @endif
+
+
                     <div class="ml-6">
                         <h2 class="text-white text-4xl font-bold mb-1">{{ $user->username }}</h2>
                         <p class="text-blue-200">{{ $user->email }}</p>

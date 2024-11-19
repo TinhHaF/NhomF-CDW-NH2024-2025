@@ -65,12 +65,13 @@
                             <td class="px-6 py-4">{{ $user->email }}</td>
                             <td class="px-6 py-4 text-center">
                                 @if($user->image)
-                                    <img src="{{ asset('storage/' . $user->image) }}" alt="Avatar"
+                                    <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->username ?? 'Avatar' }}"
                                         class="w-10 h-10 rounded-full border">
                                 @else
-                                    <img src="{{ asset('path/to/default-avatar.png') }}" alt="Default Avatar"
+                                    <img src="{{ asset('user_avt/avt.jpg') }}" alt="Default Avatar"
                                         class="w-10 h-10 rounded-full border">
                                 @endif
+
                             </td>
                             <td class="px-6 py-4 text-center">{{ $user->created_at->format('d/m/Y') }}</td>
                             <td class="px-6 py-4">

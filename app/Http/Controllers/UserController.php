@@ -88,8 +88,8 @@ class UserController extends Controller
 
         // Lưu ảnh hoặc dùng ảnh mặc định
         $imagePath = $request->file('image')
-            ? $request->file('image')->store('avatars', 'public')
-            : 'avatars/default.png'; // Ảnh mặc định
+        ? $request->file('image')->store('avatars', 'public') // Lưu ảnh vào thư mục 'avatars' trong disk 'public'
+        : null; // Không có ảnh, gán giá trị null
 
         // Tạo người dùng mới
         User::create([
@@ -285,7 +285,7 @@ class UserController extends Controller
         // Lưu ảnh hoặc dùng ảnh mặc định
         $imagePath = $request->file('avatar')
             ? $request->file('avatar')->store('avatars', 'public')
-            : 'avatars/default.png'; // Ảnh mặc định
+            : null; // Ảnh mặc định
 
         // Tạo người dùng mới
         User::create([

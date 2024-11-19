@@ -90,8 +90,13 @@
                             <span class="text-sm font-medium text-gray-700">{{ $user->username }}</span>
                             <span class="text-xs text-gray-500">{{ $user->email }}</span>
                         </div>
-                        <img src="{{ asset('storage/' . $user->image) }}" alt="Avatar"
+                            @if($user->image)
+                            <img src="{{ asset('storage/' . $user->image) }}" alt="Avatar"
                             class="w-10 h-10 rounded-full border-2 border-gray-300">
+                            @else
+                            <img src="{{ asset('user_avt/avt.jpg') }}" alt="Avatar"
+                            class="w-10 h-10 rounded-full border-2 border-gray-300">
+                            @endif
                         <i class="fas fa-caret-down"></i>
                     </a>
 

@@ -35,7 +35,7 @@ class PostController extends Controller
         $this->idEncoder = new IdEncoder_2();
         // Middleware auth yêu cầu xác thực cho tất cả các phương thức ngoại trừ homepage và show
         $this->middleware('auth')->except(['homepage', 'detail', 'search']);
-        $this->authorizeResource(Post::class, 'post'); // Phương thức này sẽ hoạt động nếu trait được sử dụng
+        // $this->authorizeResource(Post::class, 'post'); // Phương thức này sẽ hoạt động nếu trait được sử dụng
     }
 
 
@@ -83,6 +83,12 @@ class PostController extends Controller
             // Lấy bình luận và phân trang
             $comments = $post->comments()->orderBy('created_at', 'desc')->paginate(5);
 
+            // Lấy bình luận gốc và phân trang
+            $comments = $post->comments()
+                ->whereNull('parent_id')  // Chỉ lấy bình luận gốc
+                ->with('replies')         // Lấy tất cả phản hồi lồng vào
+                ->orderBy('created_at', 'desc')
+                ->paginate(5);
             // Lấy tất cả các danh mục
             $categories = Category::all();
 

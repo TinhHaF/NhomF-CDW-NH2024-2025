@@ -29,20 +29,28 @@
 
         <!-- Avatar -->
         <div class="flex flex-col items-center mb-8">
-            <form action="{{ route('user.update_avatar') }}" method="POST" enctype="multipart/form-data" class="w-full max-w-xs">
+            <form action="{{ route('user.update_avatar') }}" method="POST" enctype="multipart/form-data"
+                class="w-full max-w-xs">
                 @csrf
                 <div class="mb-4 text-center">
                     <label class="block font-bold mb-1 text-gray-600">Avatar:</label>
                     <div class="flex justify-center">
                         <div class="relative">
-                            <img src="{{ asset('storage/' . $user->image) }}" alt="Avatar"
-                                class="w-32 h-32 rounded-full border border-gray-300 object-cover mb-2 transition duration-300 transform hover:scale-110 shadow-lg">
+                            @if($user->image)
+                                <img src="{{ asset('storage/' . $user->image) }}" alt="Avatar"
+                                    class="w-32 h-32 rounded-full border border-gray-300 object-cover mb-2 transition duration-300 transform hover:scale-110 shadow-lg">
+                            @else
+                                <img src="{{ asset('user_avt/avt.jpg') }}" alt="Avatar"
+                                    class="w-32 h-32 rounded-full border border-gray-300 object-cover mb-2 transition duration-300 transform hover:scale-110 shadow-lg">
+                            @endif
                             <input type="file" name="image" class="absolute inset-0 opacity-0 cursor-pointer" required>
                         </div>
                     </div>
                     <p class="text-gray-500 text-sm">Nhấn vào ảnh để thay đổi avatar.</p>
                 </div>
-                <button type="submit" class="bg-indigo-500 text-white rounded-lg px-4 py-2 w-full hover:bg-indigo-600 transition duration-300">Cập nhật Avatar</button>
+                <button type="submit"
+                    class="bg-indigo-500 text-white rounded-lg px-4 py-2 w-full hover:bg-indigo-600 transition duration-300">Cập
+                    nhật Avatar</button>
             </form>
         </div>
 
@@ -51,11 +59,13 @@
                 <h2 class="text-3xl font-semibold mb-4 text-gray-700">Thông tin chung</h2>
                 <div class="mb-4">
                     <label class="block font-bold mb-1 text-gray-600">Tên tài khoản:</label>
-                    <div class="bg-gray-200 h-12 rounded-lg flex items-center pl-4 text-gray-700">{{ $user->username }}</div>
+                    <div class="bg-gray-200 h-12 rounded-lg flex items-center pl-4 text-gray-700">{{ $user->username }}
+                    </div>
                 </div>
                 <div class="mb-4">
                     <label class="block font-bold mb-1 text-gray-600">Email đăng ký:</label>
-                    <div class="bg-gray-200 h-12 rounded-lg flex items-center pl-4 text-gray-700">{{ $user->email }}</div>
+                    <div class="bg-gray-200 h-12 rounded-lg flex items-center pl-4 text-gray-700">{{ $user->email }}
+                    </div>
                 </div>
                 <div class="mb-4">
                     <label class="block font-bold mb-1 text-gray-600">Mật khẩu:</label>
@@ -63,7 +73,8 @@
                 </div>
                 <div class="mb-4">
                     <label class="block font-bold mb-1 text-gray-600">Ngày tham gia:</label>
-                    <div class="bg-gray-200 h-12 rounded-lg flex items-center pl-4 text-gray-700">{{ $user->created_at->format('d/m/Y') }}</div>
+                    <div class="bg-gray-200 h-12 rounded-lg flex items-center pl-4 text-gray-700">
+                        {{ $user->created_at->format('d/m/Y') }}</div>
                 </div>
             </div>
 

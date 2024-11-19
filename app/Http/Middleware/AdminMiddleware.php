@@ -3,18 +3,17 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-
+use Illuminate\Support\Facades\Auth;
 class AdminMiddleware
 {
-    public function handle(Request $request, Closure $next): Response
+    public function handle($request, Closure $next)
     {
-        // Kiểm tra nếu người dùng không phải là admin, chuyển hướng
-        if (!$request->user() && (!$request->user()->isAdmin() && !$request->user()->isAuthor())) {
-            return redirect('/'); // Hoặc trang khác tùy vào yêu cầu của bạn
+        // Kiểm tra xem người dùng đã đăng nhập và có role là 2 (Admin)
+        if (Auth::check() && Auth::user()->role == 2) {
+            return $next($request);
         }
 
-        return $next($request);
+        // Nếu không phải Admin, chuyển hướng hoặc trả về lỗi 403
+        return redirect('/');
     }
 }
