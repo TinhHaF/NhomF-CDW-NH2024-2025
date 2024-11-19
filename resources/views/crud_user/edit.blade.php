@@ -1,13 +1,17 @@
 @extends('admin.layout')
 
 @section('content')
+@php
+    use App\Helpers\IdEncoder;
+@endphp
 
 <body>
     <div class="m-4">
         <h1 class="text-2xl font-bold mb-6">Cập Nhật Người Dùng</h1>
 
         <div class="bg-white p-6 rounded-lg shadow">
-            <form action="{{ route('user.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{route('user.update', IdEncoder::encode($user->id))}}" method="POST"
+                enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -35,7 +39,8 @@
 
                 <!-- Mật Khẩu -->
                 <div class="mb-4">
-                    <label for="password" class="block text-lg font-semibold text-gray-700 mb-2">Mật Khẩu Mới (để trống nếu không thay
+                    <label for="password" class="block text-lg font-semibold text-gray-700 mb-2">Mật Khẩu Mới (để trống
+                        nếu không thay
                         đổi):</label>
                     <input type="password" name="password" id="password"
                         class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -46,7 +51,8 @@
 
                 <!-- Xác Nhận Mật Khẩu -->
                 <div class="mb-4">
-                    <label for="password_confirmation" class="block text-lg font-semibold text-gray-700 mb-2">Xác Nhận Mật Khẩu:</label>
+                    <label for="password_confirmation" class="block text-lg font-semibold text-gray-700 mb-2">Xác Nhận
+                        Mật Khẩu:</label>
                     <input type="password" name="password_confirmation" id="password_confirmation"
                         class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
@@ -76,7 +82,8 @@
 
                 <!-- Nút Cập Nhật -->
                 <div class="flex justify-end">
-                    <button type="submit" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transform hover:-translate-y-1 hover:scale-105 transition-all duration-200">
+                    <button type="submit"
+                        class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transform hover:-translate-y-1 hover:scale-105 transition-all duration-200">
                         Cập Nhật
                     </button>
                 </div>

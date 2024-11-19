@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
-
+use App\Helpers\IdEncoder;
 class UserController extends Controller
 {
     //hiện thị trang đăng ký
@@ -88,8 +88,8 @@ class UserController extends Controller
 
         // Lưu ảnh hoặc dùng ảnh mặc định
         $imagePath = $request->file('image')
-        ? $request->file('image')->store('avatars', 'public') // Lưu ảnh vào thư mục 'avatars' trong disk 'public'
-        : null; // Không có ảnh, gán giá trị null
+            ? $request->file('image')->store('avatars', 'public') // Lưu ảnh vào thư mục 'avatars' trong disk 'public'
+            : null; // Không có ảnh, gán giá trị null
 
         // Tạo người dùng mới
         User::create([
@@ -301,20 +301,38 @@ class UserController extends Controller
     }
 
     public function destroy($id)
-    {
-        $user = User::findOrFail($id);
+{
+    // Giải mã ID trước khi tìm kiếm người dùng
+    $decodedId = IdEncoder::decode($id);
 
-        // Xóa ảnh đại diện nếu có
-        if ($user->image) {
-            Storage::disk('public')->delete($user->image);
-        }
-
-        // Xóa người dùng
-        $user->delete();
-
-        // Chuyển hướng với thông báo thành công
-        return redirect()->route('users.index')->with('success', 'Người dùng đã được xóa thành công!');
+    // Kiểm tra nếu ID giải mã không hợp lệ
+    if (!$decodedId) {
+        return redirect()->route('users.index')->with('error', 'ID không hợp lệ!');
     }
+
+    // Tìm người dùng theo ID đã giải mã
+    $user = User::find($decodedId);
+
+    // Kiểm tra nếu không tìm thấy người dùng
+    if (!$user) {
+        return redirect()->route('users.index')->with('error', 'Người dùng không tồn tại!');
+    }
+
+    // Xóa tất cả các bình luận của người dùng
+    $user->comments()->delete();
+
+    // Xóa ảnh đại diện nếu có
+    if ($user->image) {
+        Storage::disk('public')->delete($user->image);
+    }
+
+    // Xóa người dùng
+    $user->delete();
+
+    // Chuyển hướng với thông báo thành công
+    return redirect()->route('users.index')->with('success', 'Người dùng đã được xóa thành công!');
+}
+
 
 
     public function updateAvatar(Request $request)
@@ -340,80 +358,92 @@ class UserController extends Controller
     }
 
 
-    public function edit($id)
-    {
-        $user = User::findOrFail($id);
-        return view('crud_user.edit', compact('user'));
+    public function edit($encodedId)
+{
+    // Giải mã ID
+    $id = IdEncoder::decode($encodedId);
+
+    // Tìm người dùng bằng ID đã giải mã
+    $user = User::findOrFail($id);
+
+    // Trả về view với người dùng
+    return view('crud_user.edit', compact('user'));
+}
+    
+    
+
+public function update(Request $request, $id)
+{
+    // Giải mã ID
+    $decodedId = IdEncoder::decode($id);
+
+    // Xác thực dữ liệu đầu vào
+    $request->validate([
+        'username' => [
+            'required',
+            'string',
+            'max:255',
+            'regex:/^[a-zA-Z0-9]{6,20}$/' // Tên đăng nhập phải có 6-20 ký tự và không chứa ký tự đặc biệt
+        ],
+        'email' => [
+            'required',
+            'email',
+            'max:255',
+            'unique:users,email,' . $decodedId, // Đảm bảo email là duy nhất ngoại trừ người dùng hiện tại
+            'regex:/^[a-zA-Z0-9._%+-]{6,30}@gmail\.com$/' // Email phải có đuôi @gmail.com
+        ],
+        'password' => [
+            'nullable',
+            'string',
+            'min:6', // Mật khẩu phải có ít nhất 6 ký tự
+            'max:20',
+            'regex:/^\S{6,20}$/' // Mật khẩu không được chứa khoảng trắng
+        ],
+        'image' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048', // Kiểm tra ảnh đại diện nếu có
+        'role' => 'required|in:1,2,3', // Kiểm tra vai trò hợp lệ
+    ], [
+        'username.required' => 'Tên người dùng là bắt buộc.',
+        'username.regex' => 'Tên đăng nhập phải có 6-20 ký tự và không chứa ký tự đặc biệt.',
+
+        'email.required' => 'Email là bắt buộc.',
+        'email.email' => 'Email không hợp lệ.',
+        'email.unique' => 'Email đã được sử dụng.',
+        'email.regex' => 'Email phải có đuôi @gmail.com, với tối thiểu 6 ký tự và tối đa 30 ký tự trước đuôi.',
+
+        'password.min' => 'Mật khẩu phải lớn hơn 6 ký tự.',
+        'password.max' => 'Mật khẩu không được vượt quá 20 ký tự.',
+        'password.regex' => 'Mật khẩu không được chứa khoảng trắng.',
+
+        'image.image' => 'Avatar phải là ảnh hợp lệ.',
+        'image.mimes' => 'Avatar phải có định dạng jpg, jpeg, png, hoặc gif.',
+        'image.max' => 'Avatar không được vượt quá 2MB.',
+
+        'role.required' => 'Vai trò là bắt buộc.',
+        'role.in' => 'Vai trò không hợp lệ.',
+    ]);
+
+    // Cập nhật thông tin người dùng
+    $user = User::findOrFail($decodedId);
+    $user->username = $request->username;
+    $user->email = $request->email;
+    $user->role = $request->role; // Cập nhật vai trò
+
+    if ($request->filled('password')) {
+        $user->password = Hash::make($request->password); // Mã hóa mật khẩu
     }
 
-    public function update(Request $request, $id)
-    {
-        // Xác thực dữ liệu đầu vào
-        $request->validate([
-            'username' => [
-                'required',
-                'string',
-                'max:255',
-                'regex:/^[a-zA-Z0-9]{6,20}$/' // Tên đăng nhập phải có 6-20 ký tự và không chứa ký tự đặc biệt
-            ],
-            'email' => [
-                'required',
-                'email',
-                'max:255',
-                'unique:users,email,' . $id, // Đảm bảo email là duy nhất ngoại trừ người dùng hiện tại
-                'regex:/^[a-zA-Z0-9._%+-]{6,30}@gmail\.com$/' // Email phải có đuôi @gmail.com
-            ],
-            'password' => [
-                'nullable',
-                'string',
-                'min:6', // Mật khẩu phải có ít nhất 6 ký tự
-                'max:20',
-                'regex:/^\S{6,20}$/' // Mật khẩu không được chứa khoảng trắng
-            ],
-            'image' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048', // Kiểm tra ảnh đại diện nếu có
-            'role' => 'required|in:1,2,3', // Kiểm tra vai trò hợp lệ
-        ], [
-            'username.required' => 'Tên người dùng là bắt buộc.',
-            'username.regex' => 'Tên đăng nhập phải có 6-20 ký tự và không chứa ký tự đặc biệt.',
-
-            'email.required' => 'Email là bắt buộc.',
-            'email.email' => 'Email không hợp lệ.',
-            'email.unique' => 'Email đã được sử dụng.',
-            'email.regex' => 'Email phải có đuôi @gmail.com, với tối thiểu 6 ký tự và tối đa 30 ký tự trước đuôi.',
-
-            'password.min' => 'Mật khẩu phải lớn hơn 6 ký tự.',
-            'password.max' => 'Mật khẩu không được vượt quá 20 ký tự.',
-            'password.regex' => 'Mật khẩu không được chứa khoảng trắng.',
-
-            'image.image' => 'Avatar phải là ảnh hợp lệ.',
-            'image.mimes' => 'Avatar phải có định dạng jpg, jpeg, png, hoặc gif.',
-            'image.max' => 'Avatar không được vượt quá 2MB.',
-
-            'role.required' => 'Vai trò là bắt buộc.',
-            'role.in' => 'Vai trò không hợp lệ.',
-        ]);
-
-        // Cập nhật thông tin người dùng
-        $user = User::findOrFail($id);
-        $user->username = $request->username;
-        $user->email = $request->email;
-        $user->role = $request->role; // Cập nhật vai trò
-
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password); // Mã hóa mật khẩu
+    // Xử lý hình ảnh
+    if ($request->hasFile('image')) {
+        // Xóa hình ảnh cũ nếu có
+        if ($user->image) {
+            Storage::delete('public/' . $user->image);
         }
-
-        // Xử lý hình ảnh
-        if ($request->hasFile('image')) {
-            // Xóa hình ảnh cũ nếu có
-            if ($user->image) {
-                Storage::delete('public/' . $user->image);
-            }
-            $user->image = $request->file('image')->store('avatars', 'public'); // Lưu hình ảnh mới
-        }
-
-        $user->save(); // Lưu thông tin người dùng
-
-        return redirect()->route('users.index')->with('success', 'Cập nhật người dùng thành công.');
+        $user->image = $request->file('image')->store('avatars', 'public'); // Lưu hình ảnh mới
     }
+
+    $user->save(); // Lưu thông tin người dùng
+
+    return redirect()->route('users.index')->with('success', 'Cập nhật người dùng thành công.');
+}
+
 }
