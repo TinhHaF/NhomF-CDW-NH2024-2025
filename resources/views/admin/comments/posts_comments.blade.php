@@ -1,4 +1,7 @@
 @extends('admin.layout')
+@php
+    use App\Helpers\IdEncoder;
+@endphp
 @section('content')
 
 <body>
@@ -40,7 +43,7 @@
                 <tbody>
                     @foreach($posts as $index => $post)
                     <tr class="border-b hover:bg-gray-100 transition duration-200 cursor-pointer"
-                        onclick="window.location='{{ route('comments_index', ['id' => $post->id]) }}'">
+                        onclick="window.location='{{ route('comments_index',IdEncoder::encode($post->id)) }}'">
                         <td class="px-6 py-4 text-center">{{ $index + 1 }}</td>
                         <td class="px-6 py-4 text-center">
                             @if($post->image)

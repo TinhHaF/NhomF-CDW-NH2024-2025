@@ -41,8 +41,10 @@ class CommentController extends Controller
 
     public function Comments($id)
     {
+        // Giải mã comment_id
+        $comment_id = IdEncoder::decode($id);
         // Lấy bài viết và tất cả các bình luận kèm theo thông tin người dùng
-        $post = Post::findOrFail($id);
+        $post = Post::findOrFail($comment_id);
 
         // Lấy tất cả các bình luận kèm theo thông tin người dùng
         $comments = $post->comments()->with('user')->paginate(5);
@@ -83,17 +85,6 @@ class CommentController extends Controller
         return redirect()->route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug])
             ->with('success', 'Bình luận đã được thêm thành công!');
     }
-    // public function delete($comment_id)
-    // {
-    //     // Tìm bình luận cần xóa theo comment_id
-    //     $comment = Comment::findOrFail($comment_id);
-
-    //     // Xóa bình luận
-    //     $comment->delete();
-
-    //     // Chuyển hướng về trang danh sách bình luận mà không cần `id`
-    //     return redirect()->back()->with('success', 'Bình luận đã được xóa thành công!');
-    // }
     public function delete($comment_id)
     {
         // Giải mã comment_id
@@ -111,8 +102,10 @@ class CommentController extends Controller
     }
     public function detail($id)
     {
+        // Giải mã comment_id
+        $comment_id = IdEncoder::decode($id);
         // Lấy thông tin bình luận theo ID, cùng với thông tin người dùng
-        $comment = Comment::with('user')->findOrFail($id);
+        $comment = Comment::with('user')->findOrFail($comment_id);
 
         // Trả về view chi tiết bình luận, truyền dữ liệu bình luận vào view
         return view('admin.comments.comment_detail', compact('comment'));

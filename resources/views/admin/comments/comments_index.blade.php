@@ -1,5 +1,7 @@
 @extends('admin.layout')
-
+@php
+    use App\Helpers\IdEncoder;
+@endphp
 @section('content')
 
 <body>
@@ -53,7 +55,7 @@
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center space-x-4">
                                 <!-- View Action -->
-                                <a href="{{route('comments_detail', ['id' => $comment->comment_id])}}" title="Xem bình luận"
+                                <a href="{{route('comments_detail',IdEncoder::encode($comment->comment_id))}}" title="Xem bình luận"
                                     class="text-blue-500 hover:text-blue-600">
                                     <i class="fas fa-eye"></i>
                                 </a>
@@ -68,7 +70,7 @@
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form> -->
-                                <form action="{{ route('comments.admin_delete', $comment->encoded_comment_id) }}" method="POST"
+                                <form action="{{ route('comments.admin_delete', IdEncoder::encode($comment->comment_id)) }}" method="POST"
                                     onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?')" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
