@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\AdministrationMiddleware;
 
+use App\Http\Controllers\NotificationController;
 // Route trang chủ
 Route::get('/', [PostController::class, 'homepage'])->name('home');
 
@@ -154,3 +155,8 @@ Route::get('/filemanager', [FileManagerController::class, 'index'])->name('filem
 
 // Để tải ảnh lên
 Route::post('/filemanager/upload', [FileManagerController::class, 'upload'])->name('filemanager.upload');
+
+
+
+
+Route::get('/notifications', [NotificationController::class, 'index']);

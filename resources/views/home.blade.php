@@ -1,70 +1,3 @@
-<!DOCTYPE html>
-<html lang="vi">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Trang Chủ</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/min/tiny-slider.js"></script>
-    <style>
-        .hover-scale {
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .hover-scale:hover {
-            transform: scale(1.02);
-        }
-
-        .custom-shadow {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        .slider-container {
-            position: relative;
-            height: 500px;
-        }
-
-        .slider-item {
-            position: relative;
-            height: 500px;
-        }
-
-        .slider-content {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-            padding: 2rem;
-            color: white;
-        }
-
-        .tns-nav {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-        }
-
-        .tns-nav button {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            margin: 0 4px;
-            border: none;
-        }
-
-        .tns-nav button.tns-nav-active {
-            background: white;
-        }
-    </style>
-</head>
-
 <body class="bg-gray-100">
     <div class="min-h-screen flex flex-col">
         @include('home.nav')
@@ -81,8 +14,7 @@
                                 alt="{{ $slide->title }}">
                             <div class="slider-content">
                                 <div class="container mx-auto">
-                                    <span
-                                        class="bg-red-500 text-white px-4 py-1 rounded-full text-sm mb-4 inline-block">
+                                    <span class="bg-red-500 text-white px-4 py-1 rounded-full text-sm mb-4 inline-block">
                                         Nổi bật
                                     </span>
                                     <h2 class="text-3xl font-bold mb-2">{{ $slide->title }}</h2>
@@ -171,28 +103,4 @@
 
         @include('home.footer')
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var slider = tns({
-                container: '.my-slider',
-                items: 1,
-                slideBy: 'page',
-                autoplay: true,
-                autoplayButtonOutput: false,
-                controls: false,
-                nav: true,
-                autoplayTimeout: 5000,
-                speed: 400,
-            });
-        });
-
-        if (window.location.hash === '#_=_') {
-            history.replaceState ?
-                history.replaceState(null, null, window.location.href.split('#')[0]) :
-                window.location.hash = '';
-        }
-    </script>
 </body>
-
-</html>
