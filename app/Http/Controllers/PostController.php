@@ -95,7 +95,13 @@ class PostController extends Controller
             $logo = Logo::latest()->first();
             $logoPath = $logo ? $logo->path : 'images/no-image-available';
 
-            $featuredPosts = Post::where('is_featured', true)->latest();
+            $featuredPosts = Post::where('is_featured', true)
+                ->whereNotNull('image') // Chỉ lấy bài viết nổi bật có ảnh
+                ->where('image', '!=', '') // Kiểm tra thêm nếu image là chuỗi rỗng
+                ->latest()
+                ->take(6) // Lấy đúng 6 bài nổi bật
+                ->get(); // Không phân trang, chỉ lấy các bài viết cần thiết
+
 
             return view('posts.post_detail', compact('post', 'comments', 'categories', 'logoPath', 'featuredPosts'));
         } catch (ModelNotFoundException $e) {
@@ -106,6 +112,29 @@ class PostController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Có lỗi xảy ra. Vui lòng thử lại sau.');
         }
+    }
+
+    public function searchHomePage(Request $request)
+    {
+        $featuredPosts = Post::where('is_featured', true)
+            ->whereNotNull('image') // Chỉ lấy bài viết nổi bật có ảnh
+            ->where('image', '!=', '') // Kiểm tra thêm nếu image là chuỗi rỗng
+            ->latest()
+            ->take(6) // Lấy đúng 6 bài nổi bật
+            ->get(); // Không phân trang, chỉ lấy các bài viết cần thiết
+
+        $logo = Logo::latest()->first();
+        $logoPath = $logo ? $logo->path : 'images/no-image-available';
+        $categories = Category::all();
+
+        $query = $request->input('query');
+        // Tìm kiếm bài viết
+        $posts = Post::where('title', 'LIKE', "%{$query}%")
+            ->orWhere('content', 'LIKE', "%{$query}%")
+            ->get();
+
+        // Trả về view riêng cho kết quả tìm kiếm
+        return view('posts.posts_search', compact('posts', 'query', 'logoPath', 'categories', 'featuredPosts'));
     }
 
 

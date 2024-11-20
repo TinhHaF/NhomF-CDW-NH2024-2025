@@ -39,6 +39,8 @@ Route::get('/change_pw', [UserController::class, 'change_user_password'])->name(
 // Routes công khai cho bài viết
 Route::get('/homepage/posts/{id}-{slug}', [PostController::class, 'detail'])->name('posts.post_detail');
 Route::get('/search', [PostController::class, 'search'])->name('posts.search');
+Route::get('/searchHomepage', [PostController::class, 'searchHomepage'])->name('posts.searchHomepage');
+
 
 // Routes bình luận
 Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments_store');

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
@@ -7,48 +7,179 @@
     <title>Trang Chủ</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-</head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/min/tiny-slider.js"></script>
+    <style>
+        .hover-scale {
+            transition: transform 0.3s ease-in-out;
+        }
 
-<body>
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+
+        .custom-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .slider-container {
+            position: relative;
+            height: 500px;
+        }
+
+        .slider-item {
+            position: relative;
+            height: 500px;
+        }
+
+        .slider-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            padding: 2rem;
+            color: white;
+        }
+
+        .tns-nav {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .tns-nav button {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            margin: 0 4px;
+            border: none;
+        }
+
+        .tns-nav button.tns-nav-active {
+            background: white;
+        }
+    </style>
+</head>
+@include('home.nav')
+
+<body class="bg-gray-100">
     <div class="min-h-screen flex flex-col">
-        @include('home.nav')
-        <!-- Tin Nổi Bật -->
-        <div class="flex-grow">
-            <div class="container mx-auto px-4">
-                <h2 class="text-2xl font-bold mb-6">Bài Viết</h2>
-                @if (isset($posts) && $posts->count())
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    @foreach ($posts as $post)
-                    <div class="bg-white rounded-lg shadow-md">
-                        <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}" class="block">
-                            <h5 class="text-lg font-semibold p-4 hover:underline">
-                                {{ Str::limit($post->title, 40) }}
-                            </h5>
-                            <div class="flex">
-                                @if ($post->image)
-                                <img src="{{ asset('storage/' . $post->image) }}"
-                                    class="w-1/2 h-48 object-cover rounded-l-lg ml-1 mb-1"
-                                    alt="{{ $post->title }}">
-                                @endif
-                                <div class="p-4 w-1/2">
-                                    <p class="text-gray-600">{!! Str::limit($post->content, 100) !!}</p>
-                                </div>
-                            </div>
-                        </a>
+
+
+        <div class="slider-container mb-8">
+            <div class="my-slider">
+                @if (isset($featuredPosts) && $featuredPosts->count())
+                @foreach ($featuredPosts->take(5) as $slide)
+                <div class="slider-item">
+                    <img src="{{ asset('storage/' . $slide->image) }}" class="w-full h-full object-cover"
+                        alt="{{ $slide->title }}">
+                    <div class="slider-content">
+                        <div class="container mx-auto">
+                            <span
+                                class="bg-red-500 text-white px-4 py-1 rounded-full text-sm mb-4 inline-block">
+                                Nổi bật
+                            </span>
+                            <h2 class="text-3xl font-bold mb-2">{{ $slide->title }}</h2>
+                            <p class="text-gray-200 mb-4">{{ Str::limit(strip_tags($slide->content), 150) }}</p>
+                            <a href="{{ route('posts.post_detail', ['id' => $slide->id, 'slug' => $slide->slug]) }}"
+                                class="bg-white text-gray-900 px-6 py-2 rounded-full inline-block hover:bg-gray-100 transition duration-300">
+                                Đọc thêm
+                            </a>
+                        </div>
                     </div>
-                    @endforeach
                 </div>
-                <div class="mt-4">
-                    {{ $posts->links() }}
-                </div>
-                @else
-                <p class="text-gray-500">Không có bài viết</p>
+                @endforeach
                 @endif
             </div>
         </div>
 
-        @include('home.footer')
+
+
+        <!-- Main Content -->
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Left Content -->
+                <div class="lg:w-2/3">
+                    <div class="mb-12">
+                        <div class="flex items-center mb-8">
+                            <div class="w-1 h-8 bg-blue-500 mr-3"></div>
+                            <h2 class="text-3xl font-bold text-gray-800">Kết Quả Tìm Kiếm Cho: ""</h2>
+                        </div>
+
+                        @if ($posts->count())
+                        @foreach ($posts as $post)
+                        <div class="bg-white rounded-xl custom-shadow hover-scale mb-6">
+                            <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}" class="block">
+                                <div class="flex flex-col md:flex-row">
+                                    @if ($post->image)
+                                    <div class="md:w-2/5">
+                                        <img src="{{ asset('storage/' . $post->image) }}"
+                                            class="w-full h-64 md:h-full object-cover rounded-t-xl md:rounded-l-xl md:rounded-t-none"
+                                            alt="{{ $post->title }}">
+                                    </div>
+                                    @endif
+                                    <div class="md:w-3/5 p-6">
+                                        <div class="flex items-center mb-3 text-sm text-gray-500">
+                                            <i class="far fa-calendar-alt mr-2"></i>
+                                            <span>{{ $post->created_at->format('d/m/Y') }}</span>
+                                            <span class="mx-2">•</span>
+                                            <i class="far fa-clock mr-2"></i>
+                                            <span>5 phút đọc</span>
+                                        </div>
+                                        <h3 class="text-2xl font-semibold mb-3 text-gray-800 hover:text-blue-600 transition duration-300">
+                                            {{ $post->title }}
+                                        </h3>
+                                        <p class="text-gray-600 leading-relaxed mb-4">
+                                            {!! Str::limit(strip_tags($post->content), 200) !!}
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        @endforeach
+                        @else
+                        <!-- Nếu không có kết quả -->
+                        <p class="text-gray-500">Không tìm thấy kết quả phù hợp.</p>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Right Sidebar -->
+                @include('home.sidebar')
+            </div>
+        </div>
+
+
     </div>
+    @include('home.footer')
+</body>
+
+</html>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var slider = tns({
+            container: '.my-slider',
+            items: 1,
+            slideBy: 'page',
+            autoplay: true,
+            autoplayButtonOutput: false,
+            controls: false,
+            nav: true,
+            autoplayTimeout: 5000,
+            speed: 400,
+        });
+    });
+
+    if (window.location.hash === '#_=_') {
+        history.replaceState ?
+            history.replaceState(null, null, window.location.href.split('#')[0]) :
+            window.location.hash = '';
+    }
+</script>
 </body>
 
 </html>
