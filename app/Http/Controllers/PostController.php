@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\IdEncoder_2;
-use App\Http\Resources\PostCollection;
+use App\Models\Subscriber;
 use App\Models\Post;
 use App\Models\Author;
 use App\Models\Category;
 use App\Services\PostService;
-use App\Helpers\IdEncoder;
+use App\Notifications\NewPostNotification;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
@@ -109,7 +109,7 @@ class PostController extends Controller
                 ->get(); // Không phân trang, chỉ lấy các bài viết cần thiết
 
 
-            return view('posts.post_detail', compact('post', 'comments', 'categories',  'relatedPosts','logoPath', 'featuredPosts'));
+            return view('posts.post_detail', compact('post', 'comments', 'categories',  'relatedPosts', 'logoPath', 'featuredPosts'));
         } catch (ModelNotFoundException $e) {
             Log::info('Post not found', ['id' => $id]);
             return request()->expectsJson()
@@ -282,7 +282,16 @@ class PostController extends Controller
         }
     }
 
+    private function sendNewPostNotification($post)
+    {
+        // Lấy tất cả các subscriber từ database
+        $subscribers = Subscriber::all();
 
+        // Gửi notification cho tất cả subscriber
+        foreach ($subscribers as $subscriber) {
+            $subscriber->notify(new NewPostNotification($post));
+        }
+    }
     public function store(StorePostRequest $request)
     {
         try {
@@ -303,6 +312,11 @@ class PostController extends Controller
                 $request->validated(),
                 $imageUrl
             );
+
+
+            // Gửi thông báo qua email cho tất cả các subscriber
+            $this->sendNewPostNotification($post);
+
 
             // Log thông tin tạo bài viết thành công
             Log::info('Post created successfully', [

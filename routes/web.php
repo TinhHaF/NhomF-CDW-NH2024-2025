@@ -19,7 +19,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\AdministrationMiddleware;
-
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
 
@@ -166,3 +166,6 @@ Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->n
 // Route cho việc nhập mật khẩu mới
 Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
 Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.update');
+//đăng kí nhận tin 
+Route::post('/subscribe', [SubscriptionController::class, 'subscribe'])->name('subscribe');
+
