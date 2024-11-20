@@ -91,6 +91,12 @@ class PostController extends Controller
                 ->paginate(5);
             // Lấy tất cả các danh mục
             $categories = Category::all();
+            // Lấy bài viết liên quan cùng danh mục
+            $relatedPosts = Post::where('category_id', $post->category_id)
+                ->where('id', '!=', $post->id) // Loại bỏ bài viết hiện tại
+                ->latest()
+                ->take(5) // Giới hạn số lượng bài viết liên quan
+                ->get();
 
             $logo = Logo::latest()->first();
             $logoPath = $logo ? $logo->path : 'images/no-image-available';
@@ -103,7 +109,7 @@ class PostController extends Controller
                 ->get(); // Không phân trang, chỉ lấy các bài viết cần thiết
 
 
-            return view('posts.post_detail', compact('post', 'comments', 'categories', 'logoPath', 'featuredPosts'));
+            return view('posts.post_detail', compact('post', 'comments', 'categories',  'relatedPosts','logoPath', 'featuredPosts'));
         } catch (ModelNotFoundException $e) {
             Log::info('Post not found', ['id' => $id]);
             return request()->expectsJson()

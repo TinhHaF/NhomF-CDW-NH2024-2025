@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <div class="max-w-[800px] mx-auto mt-10 bg-white p-6 rounded-lg shadow-md mb-10">
+    <div class="max-w-[720px] mx-auto mt-10 bg-white p-6 rounded-lg shadow-md mb-10">
         <h2 class="text-xl font-semibold mb-4">
             Bình Luận ({{ $comments->total() }})
         </h2>

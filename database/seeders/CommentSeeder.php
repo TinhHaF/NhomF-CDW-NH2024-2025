@@ -28,7 +28,7 @@ class CommentSeeder extends Seeder
         }
 
         // Tạo 10 bình luận ngẫu nhiên
-        foreach (range(1, 50) as $index) {
+        foreach (range(1, 100) as $index) {
             Comment::create([
                 'post_id' => $posts->random()->id, // Lấy ngẫu nhiên bài viết (sử dụng 'id' thay vì 'post_id')
                 'user_id' => $users->random()->id, // Lấy ngẫu nhiên người dùng (sử dụng 'id' thay vì 'user_id')

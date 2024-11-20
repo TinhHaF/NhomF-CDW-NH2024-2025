@@ -1,10 +1,11 @@
 <?php
 
 namespace Database\Seeders;
-use Illuminate\Support\Facades\DB; 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Faker\Factory as Faker;
 
 class PostSeeder extends Seeder
 {
@@ -13,167 +14,33 @@ class PostSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('posts')->insert([
-            [
-                'author_id' => 1,
-                'title' => 'Giới thiệu về Laravel',
-                'slug' => 'gioi-thieu-ve-laravel',
-                'content' => 'Đây là hướng dẫn toàn diện về cách bắt đầu với Laravel...',
-                'view' => 100,
-                'image' => 'nro1.jpg',
-                'is_featured' => 1,
-                'is_published' => 1,
-                'seo_title' => 'Học Laravel từ cơ bản',
-                'seo_description' => 'Tìm hiểu các khái niệm cơ bản của framework Laravel...',
-                'seo_keywords' => 'Laravel, PHP, Phát triển web',
-                'category_id' => 2,
+        $faker = Faker::create();
+        $posts = [];
+
+        // Vòng lặp để tạo 10 bài ngẫu nhiên
+        for ($i = 0; $i < 100; $i++) {
+            $posts[] = [
+                'author_id' => $faker->numberBetween(1, 3), // Giả sử có 3 tác giả
+                'title' => $faker->sentence(6), // Tạo tiêu đề ngẫu nhiên
+                'slug' => $faker->slug, // Tạo slug từ tiêu đề
+                'content' => $faker->paragraphs(3, true), // Tạo nội dung ngẫu nhiên
+                'view' => $faker->numberBetween(50, 500), // Số lượt xem ngẫu nhiên
+                'image' => 'nro' . $faker->numberBetween(1, 3) . '.jpg', // Chọn ngẫu nhiên từ 3 hình ảnh
+                'is_featured' => $faker->boolean(30), // 30% bài được đánh dấu nổi bật
+                'is_published' => 1, // Mặc định xuất bản
+                'seo_title' => $faker->sentence(4), // Tạo tiêu đề SEO ngẫu nhiên
+                'seo_description' => $faker->sentence(10), // Mô tả SEO
+                'seo_keywords' => implode(', ', $faker->words(5)), // Từ khóa SEO
+                'category_id' => $faker->numberBetween(1, 5), // Giả sử có 5 danh mục
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ],
-            [
-                'author_id' => 2,
-                'title' => 'Hiểu biết cơ bản về PHP',
-                'slug' => 'hieu-biet-co-ban-ve-php',
-                'content' => 'PHP là một ngôn ngữ kịch bản phổ biến. Bài viết này giới thiệu các nền tảng cơ bản của PHP...',
-                'view' => 150,
-                'image' => 'nro2.jpg',
-                'is_featured' => 0,
-                'is_published' => 1,
-                'seo_title' => 'Cơ bản về PHP',
-                'seo_description' => 'Những nền tảng cơ bản của lập trình PHP dành cho người mới bắt đầu...',
-                'seo_keywords' => 'PHP, Lập trình',
-                'category_id' => 3,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'author_id' => 1,
-                'title' => 'Kỹ thuật nâng cao trong Laravel',
-                'slug' => 'ky-thuat-nang-cao-trong-laravel',
-                'content' => 'Khám phá các kỹ thuật nâng cao trong Laravel dành cho các lập trình viên giàu kinh nghiệm...',
-                'view' => 200,
-                'image' => 'nro3.jpg',
-                'is_featured' => 1,
-                'is_published' => 1,
-                'seo_title' => 'Laravel nâng cao',
-                'seo_description' => 'Các khái niệm nâng cao trong framework Laravel...',
-                'seo_keywords' => 'Laravel, Kỹ thuật nâng cao',
-                'category_id' => 2,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'author_id' => 3,
-                'title' => 'Xu hướng thiết kế web 2024',
-                'slug' => 'xu-huong-thiet-ke-web-2024',
-                'content' => 'Một cái nhìn tổng quan về các xu hướng thiết kế web mới nhất mà bạn nên biết...',
-                'view' => 300,
-                'image' => 'nro1.jpg',
-                'is_featured' => 0,
-                'is_published' => 1,
-                'seo_title' => 'Xu hướng thiết kế web',
-                'seo_description' => 'Cập nhật các xu hướng thiết kế web trong năm 2024...',
-                'seo_keywords' => 'Thiết kế web, Xu hướng, 2024',
-                'category_id' => 4,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'author_id' => 2,
-                'title' => 'Mẹo SEO cho người mới bắt đầu',
-                'slug' => 'meo-seo-cho-nguoi-moi-bat-dau',
-                'content' => 'Học các mẹo SEO hiệu quả để giúp cải thiện khả năng hiển thị của website...',
-                'view' => 180,
-                'image' => 'nro2.jpg',
-                'is_featured' => 0,
-                'is_published' => 1,
-                'seo_title' => 'Mẹo SEO cơ bản',
-                'seo_description' => 'Những mẹo và chiến lược SEO cho webmaster mới...',
-                'seo_keywords' => 'SEO, Tối ưu công cụ tìm kiếm',
-                'category_id' => 5,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'author_id' => 1,
-                'title' => 'Lập trình hướng đối tượng trong PHP',
-                'slug' => 'lap-trinh-huong-doi-tuong-trong-php',
-                'content' => 'Khám phá lập trình hướng đối tượng trong PHP và cách áp dụng nó vào dự án của bạn...',
-                'view' => 220,
-                'image' => 'nro3.jpg',
-                'is_featured' => 1,
-                'is_published' => 1,
-                'seo_title' => 'Lập trình hướng đối tượng',
-                'seo_description' => 'Tìm hiểu về các nguyên tắc lập trình hướng đối tượng trong PHP...',
-                'seo_keywords' => 'PHP, Lập trình hướng đối tượng',
-                'category_id' => 3,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'author_id' => 2,
-                'title' => 'Framework PHP nào tốt nhất?',
-                'slug' => 'framework-php-nao-tot-nhat',
-                'content' => 'Một cái nhìn so sánh về các framework PHP phổ biến nhất hiện nay...',
-                'view' => 90,
-                'image' => 'nro1.jpg',
-                'is_featured' => 0,
-                'is_published' => 1,
-                'seo_title' => 'So sánh các framework PHP',
-                'seo_description' => 'Phân tích các framework PHP như Laravel, CodeIgniter và Symfony...',
-                'seo_keywords' => 'PHP, Framework, Laravel, CodeIgniter',
-                'category_id' => 2,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'author_id' => 3,
-                'title' => 'Hướng dẫn tối ưu hóa tốc độ website',
-                'slug' => 'huong-dan-toi-uu-hoa-toc-do-website',
-                'content' => 'Các bước và mẹo để tối ưu hóa tốc độ tải trang web của bạn...',
-                'view' => 400,
-                'image' => 'nro3.jpg',
-                'is_featured' => 1,
-                'is_published' => 1,
-                'seo_title' => 'Tối ưu hóa tốc độ website',
-                'seo_description' => 'Tìm hiểu cách cải thiện tốc độ tải trang web để nâng cao trải nghiệm người dùng...',
-                'seo_keywords' => 'Tối ưu hóa tốc độ, Website, Tải trang',
-                'category_id' => 5,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'author_id' => 2,
-                'title' => 'Bảo mật trong lập trình web',
-                'slug' => 'bao-mat-trong-lap-trinh-web',
-                'content' => 'Các phương pháp bảo mật cần thiết khi phát triển ứng dụng web...',
-                'view' => 110,
-                'image' => 'nro3.jpg',
-                'is_featured' => 0,
-                'is_published' => 1,
-                'seo_title' => 'Bảo mật ứng dụng web',
-                'seo_description' => 'Tìm hiểu về các lỗ hổng bảo mật phổ biến và cách khắc phục...',
-                'seo_keywords' => 'Bảo mật, Ứng dụng web, Lập trình',
-                'category_id' => 4,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'author_id' => 3,
-                'title' => 'Tương lai của lập trình web',
-                'slug' => 'tuong-lai-cua-lap-trinh-web',
-                'content' => 'Những xu hướng và công nghệ sẽ định hình tương lai của lập trình web...',
-                'view' => 250,
-                'image' => 'nro1.jpg',
-                'is_featured' => 1,
-                'is_published' => 1,
-                'seo_title' => 'Tương lai lập trình web',
-                'seo_description' => 'Khám phá những công nghệ mới và xu hướng trong lập trình web...',
-                'seo_keywords' => 'Tương lai, Lập trình web, Công nghệ mới',
-                'category_id' => 5,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-        ]);
+            ];
+        }
+
+        // Chèn dữ liệu vào bảng posts
+        DB::table('posts')->insert($posts);
+
+        // Hiển thị thông báo khi chạy lệnh db:seed
+        $this->command->info('Đã tạo 100 bài viết ngẫu nhiên thành công!');
     }
 }
