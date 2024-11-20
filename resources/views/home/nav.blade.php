@@ -117,16 +117,7 @@
 
         <!-- Optional Navigation Menu -->
         <div class="border-t hidden md:block">
-            <div class="container mx-auto px-4">
-                <nav class="flex space-x-6 py-3">
-                    @foreach ($categories as $category)
-                    <a href="{{ route('category.show', $category->id) }}"
-                        class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">
-                        {{ $category->name }}
-                    </a>
-                    @endforeach
-                </nav>
-            </div>
+            @include('home.categories')
         </div>
 </div>
 

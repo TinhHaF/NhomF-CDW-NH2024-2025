@@ -100,12 +100,6 @@
                 <!-- Left Content -->
                 <div class="lg:w-2/3">
                     <div class="mb-12">
-                        <div class="flex items-center mb-8">
-                            <div class="w-1 h-8 bg-blue-500 mr-3"></div>
-                            <h2 class="text-3xl font-bold text-gray-800">Kết Quả Tìm Kiếm Cho: "{{$query}}"</h2>
-                        </div>
-
-                        @if ($posts->count())
                         @foreach ($posts as $post)
                         <div class="bg-white rounded-xl custom-shadow hover-scale mb-6">
                             <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}" class="block">
@@ -141,10 +135,6 @@
                         <div class="pagination mt-6">
                             {{ $posts->links() }}
                         </div>
-                        @else
-                        <!-- Nếu không có kết quả -->
-                        <p class="text-gray-500">Không tìm thấy kết quả phù hợp.</p>
-                        @endif
                     </div>
                 </div>
                 <!-- Right Sidebar -->

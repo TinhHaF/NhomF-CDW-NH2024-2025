@@ -114,28 +114,69 @@ class PostController extends Controller
         }
     }
 
-    public function searchHomePage(Request $request)
+    public function showPostsCate($id)
     {
+        // Tìm danh mục theo ID
+        $category = Category::findOrFail($id);
+        // Lấy các bài viết nổi bật có ảnh
         $featuredPosts = Post::where('is_featured', true)
-            ->whereNotNull('image') // Chỉ lấy bài viết nổi bật có ảnh
-            ->where('image', '!=', '') // Kiểm tra thêm nếu image là chuỗi rỗng
+            ->whereNotNull('image') // Chỉ lấy bài viết có ảnh
+            ->where('image', '!=', '') // Loại trừ chuỗi rỗng
             ->latest()
-            ->take(6) // Lấy đúng 6 bài nổi bật
-            ->get(); // Không phân trang, chỉ lấy các bài viết cần thiết
-
-        $logo = Logo::latest()->first();
-        $logoPath = $logo ? $logo->path : 'images/no-image-available';
-        $categories = Category::all();
-
-        $query = $request->input('query');
-        // Tìm kiếm bài viết
-        $posts = Post::where('title', 'LIKE', "%{$query}%")
-            ->orWhere('content', 'LIKE', "%{$query}%")
+            ->take(6) // Giới hạn 6 bài viết
             ->get();
 
-        // Trả về view riêng cho kết quả tìm kiếm
-        return view('posts.posts_search', compact('posts', 'query', 'logoPath', 'categories', 'featuredPosts'));
+        // Lấy logo mới nhất hoặc gán giá trị mặc định
+        $logo = Logo::latest()->first();
+        $logoPath = $logo ? $logo->path : 'images/no-image-available';
+
+        // Lấy tất cả danh mục
+        $categories = Category::all();
+        // Lấy các bài viết thuộc danh mục đó
+        $posts = $category->posts()->latest()->paginate(10);
+
+        // Trả về view và truyền dữ liệu
+        return view('posts.post_categories', compact('category', 'posts', 'logoPath', 'categories', 'featuredPosts'));
     }
+
+    public function searchHomePage(Request $request)
+    {
+        try {
+            // Lấy các bài viết nổi bật có ảnh
+            $featuredPosts = Post::where('is_featured', true)
+                ->whereNotNull('image') // Chỉ lấy bài viết có ảnh
+                ->where('image', '!=', '') // Loại trừ chuỗi rỗng
+                ->latest()
+                ->take(6) // Giới hạn 6 bài viết
+                ->get();
+
+            // Lấy logo mới nhất hoặc gán giá trị mặc định
+            $logo = Logo::latest()->first();
+            $logoPath = $logo ? $logo->path : 'images/no-image-available';
+
+            // Lấy tất cả danh mục
+            $categories = Category::all();
+
+            // Lấy từ khóa tìm kiếm
+            $query = $request->input('query');
+
+            // Tìm kiếm bài viết theo tiêu đề hoặc nội dung, phân trang 5 bài mỗi trang
+            $posts = Post::where('title', 'LIKE', "%{$query}%")
+                ->orWhere('content', 'LIKE', "%{$query}%")
+                ->paginate(3); // Số bài viết mỗi trang là 5
+
+            // Trả về view kết quả tìm kiếm
+            return view('posts.posts_search', compact('posts', 'query', 'logoPath', 'categories', 'featuredPosts'));
+        } catch (\Exception $e) {
+            // Log lỗi để tiện debug
+            \Log::error("Error during search: " . $e->getMessage());
+
+            // Trả về trang lỗi với thông báo
+            return redirect()->back()->with('error', 'Đã xảy ra lỗi trong quá trình tìm kiếm. Vui lòng thử lại sau.');
+        }
+    }
+
+
 
 
     public function search(Request $request)
