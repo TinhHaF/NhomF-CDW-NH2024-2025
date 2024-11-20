@@ -58,7 +58,7 @@
                     <input class="w-full p-3 bg-gray-200 rounded shadow-sm input-focus transition duration-200"
                         placeholder="Tên tài khoản" type="text" name="username" required />
                     @if ($errors->has('username'))
-                        <span class="text-red-500 text-sm">{{ $errors->first('username') }}</span>
+                    <span class="text-red-500 text-sm">{{ $errors->first('username') }}</span>
                     @endif
                 </div>
                 <div class="mb-4 relative">
@@ -67,27 +67,33 @@
                         placeholder="Mật Khẩu" type="password" name="password" required />
                     <i class="fas fa-eye absolute right-3 top-3 text-gray-500 cursor-pointer" id="togglePassword"></i>
                     @if ($errors->has('password'))
-                        <span class="text-red-500 text-sm">{{ $errors->first('password') }}</span>
+                    <span class="text-red-500 text-sm">{{ $errors->first('password') }}</span>
                     @endif
                 </div>
 
                 @if ($errors->has('credentials'))
-                    <div class="mb-4 text-red-500">
-                        <strong>{{ $errors->first('credentials') }}</strong>
-                    </div>
+                <div class="mb-4 text-red-500">
+                    <strong>{{ $errors->first('credentials') }}</strong>
+                </div>
                 @endif
 
                 @if ($errors->has('throttle'))
-                    <!-- Kiểm tra lỗi throttle -->
-                    <div class="mb-4 text-red-500">
-                        <strong>{{ $errors->first('throttle') }}</strong>
-                    </div>
+                <!-- Kiểm tra lỗi throttle -->
+                <div class="mb-4 text-red-500">
+                    <strong>{{ $errors->first('throttle') }}</strong>
+                </div>
                 @endif
 
                 <div>
                     <button
                         class="w-full p-3 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300 font-semibold"
                         type="submit">Đăng Nhập</button>
+                </div>
+                <!-- Thêm phần quên mật khẩu -->
+                <div class="text-center mt-4">
+                    <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-800">
+                        Quên mật khẩu?
+                    </a>
                 </div>
                 <div class="flex items-center my-4">
                     <hr class="flex-grow border-t border-gray-300">
