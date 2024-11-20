@@ -20,6 +20,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\AdministrationMiddleware;
 
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\NewPasswordController;
+
 // Route trang chủ
 Route::get('/', [PostController::class, 'homepage'])->name('home');
 
@@ -154,3 +157,12 @@ Route::get('/filemanager', [FileManagerController::class, 'index'])->name('filem
 
 // Để tải ảnh lên
 Route::post('/filemanager/upload', [FileManagerController::class, 'upload'])->name('filemanager.upload');
+//quên mật khẩu
+// Hiển thị form quên mật khẩu
+// Route cho việc gửi email đặt lại mật khẩu
+Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
+Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
+
+// Route cho việc nhập mật khẩu mới
+Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.update');
