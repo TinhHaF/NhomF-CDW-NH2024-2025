@@ -67,7 +67,7 @@ class PostPolicy
      * @param  \App\Models\Post  $post
      * @return mixed
      */
-    public function delete(User $user, Post $post)
+    public function delete(User $user)
     {
         return $user->role === '2'; // Chỉ admin mới có thể xóa bài viết
     }
