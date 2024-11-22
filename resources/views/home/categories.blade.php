@@ -1,3 +1,6 @@
+@php
+use App\Helpers\IdEncoder;
+@endphp
 <div class="container mx-auto px-4">
     <nav class="flex space-x-6 py-3">
         <!-- Link Trang chủ -->
@@ -9,7 +12,7 @@
 
         <!-- Danh sách danh mục -->
         @foreach ($categories as $category)
-        <a href="{{ route('posts.showCate', $category->id) }}"
+        <a href="{{ route('posts.showCate', IdEncoder::encode($category->id)) }}"
             class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">
             {{ $category->name }}
         </a>
