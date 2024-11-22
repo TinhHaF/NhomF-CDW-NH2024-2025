@@ -21,6 +21,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Routing\Controller;
 use App\Models\Notification;
+
 class PostController extends Controller
 {
     use AuthorizesRequests;

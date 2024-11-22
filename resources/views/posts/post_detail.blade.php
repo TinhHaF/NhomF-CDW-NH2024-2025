@@ -1,3 +1,6 @@
+@php
+
+@endphp
 <body class="bg-gray-100">
     @include('home.nav')
     @include('components.notifications')
