@@ -54,6 +54,7 @@ class GoogleController extends Controller
             return redirect()->intended('/');
         } catch (\Exception $e) {
             Log::error('Google callback error: ' . $e->getMessage());
+            return redirect()->route('login')->withErrors('Google login failed. Please try again.');
         }
     }
 }

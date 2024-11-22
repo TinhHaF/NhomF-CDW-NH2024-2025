@@ -161,7 +161,7 @@
                                 <label class="block font-semibold mb-2">Danh Mục</label>
                                 <select name="category_id" id="category_id" required
                                     class="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="">Chọn danh mục</option>
+                                    <!-- <option value="">Chọn danh mục</option>     -->
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}"
                                             {{ old('category_id') == $category->id ? 'selected' : '' }}>
@@ -174,7 +174,7 @@
                                 <label class="block font-semibold mb-2">Tác Giả</label>
                                 <select name="author_id" class="bg-white border border-gray-300 rounded px-3 h-10 w-full"
                                     required>
-                                    <option value="">Chọn tác giả</option>
+                                    <!-- <option value="">Chọn tác giả</option> -->
                                     @foreach ($authors as $author)
                                         <option value="{{ $author->id }}"
                                             {{ old('author_id') == $author->id ? 'selected' : '' }}>

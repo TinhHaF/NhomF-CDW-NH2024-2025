@@ -177,3 +177,12 @@ Route::get('/authors/show/{authorId}', [AuthorController::class, 'show'])->name(
 Route::get('/privacy-policy', function () {
     return view('privacy-policy');
 });
+
+
+Route::get('/register-author-show', [UserController::class, 'showRegisterForm'])->name('show_rq')->middleware('auth');
+Route::post('/register-author', [UserController::class, 'submitRegisterForm'])->name('update_auth')->middleware('auth');
+
+
+    Route::get('/admin/author-requests', [UserController::class, 'viewRequests'])->name('author-requests');
+    Route::post('/admin/author-requests/{id}/approve', [UserController::class, 'approveRequest']);
+    Route::post('/admin/author-requests/{id}/reject', [UserController::class, 'rejectRequest']);

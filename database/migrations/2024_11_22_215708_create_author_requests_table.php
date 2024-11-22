@@ -3,8 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
-
 
 return new class extends Migration
 {
@@ -13,16 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('authors', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create('author_requests', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('pen_name', 100)->nullable();
-            $table->text('biography')->nullable();
-            $table->string('image')->nullable(); // Thêm cột image
-            $table->date('published_date')->nullable();
+            $table->string('pen_name', 100);
+            $table->text('biography');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
         });
-        DB::statement('ALTER TABLE authors ENGINE = InnoDB');
+        
     }
 
     /**
@@ -30,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('authors');
+        Schema::dropIfExists('author_requests');
     }
 };

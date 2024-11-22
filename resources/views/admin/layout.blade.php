@@ -171,6 +171,12 @@
                                 Quản lý Bình Luận
                             </a>
                         </li>
+                        <li class="px-4 py-2 hover:bg-gray-200">
+                            <a class="flex items-center hover:text-red-500" href="{{ route('author-requests') }}">
+                                <i class="fa-solid fa-comments mr-2"></i>
+                                Cấp Quyền Tác Gỉa
+                            </a>
+                        </li>
                     @endif
                     <li class="px-4 py-2 hover:bg-gray-200">
                         <a class="flex items-center hover:text-red-500" href="{{ route('logo.upload') }}">

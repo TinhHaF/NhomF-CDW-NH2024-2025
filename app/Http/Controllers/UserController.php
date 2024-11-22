@@ -5,6 +5,8 @@ use App\Helpers\IdEncoder;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\AuthorRequest;
+use App\Models\Author;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -445,5 +447,83 @@ public function update(Request $request, $id)
 
     return redirect()->route('users.index')->with('success', 'Cập nhật người dùng thành công.');
 }
+public function requestAuthor(Request $request)
+{
+    // Xác thực dữ liệu
+    $request->validate([
+        'pen_name' => 'required|string|max:100',
+        'biography' => 'required|string|max:500',
+    ]);
 
+    // Lưu yêu cầu làm tác giả
+    AuthorRequest::create([
+        'user_id' => Auth::id(),
+        'pen_name' => $request->input('pen_name'),
+        'biography' => $request->input('biography'),
+        'status' => 'pending', // Mặc định trạng thái là đang chờ xử lý
+    ]);
+
+    // Thông báo thành công
+    return redirect()->back()->with('success', 'Your request has been submitted successfully!');
+}
+
+
+public function viewRequests()
+{
+    $requests = AuthorRequest::where('status', 'pending')->with('user')->get();
+    return view('crud_user.admin_requet', compact('requests'));
+}
+
+public function approveRequest($id)
+{
+    $request = AuthorRequest::findOrFail($id);
+
+    // Tạo thông tin trong bảng authors
+    Author::create([
+        'user_id' => $request->user_id,
+        'pen_name' => $request->pen_name,
+        'biography' => $request->biography,
+    ]);
+
+    // Cập nhật role của user
+    $user = User::find($request->user_id);
+    $user->update(['role' => 3]);
+
+    // Cập nhật trạng thái yêu cầu
+    $request->update(['status' => 'approved']);
+
+    return redirect()->back()->with('message', 'Request approved successfully.');
+}
+
+public function rejectRequest($id)
+{
+    $request = AuthorRequest::findOrFail($id);
+    $request->update(['status' => 'rejected']);
+
+    return redirect()->back()->with('message', 'Request rejected.');
+}
+public function showRegisterForm()
+{
+    // Trả về view đăng ký
+    return view('crud_user.author_register'); // Thay 'register' bằng tên file view thực tế.
+}
+
+public function submitRegisterForm(Request $request)
+{
+    // Validate dữ liệu người dùng
+    $validated = $request->validate([
+        'pen_name' => 'required|string|max:100',
+        'biography' => 'required|string',
+    ]);
+
+    // Lưu yêu cầu đăng ký làm tác giả vào bảng author_requests
+    AuthorRequest::create([
+        'user_id' => auth()->id(),
+        'pen_name' => $validated['pen_name'],
+        'biography' => $validated['biography'],
+        'status' => 'pending',
+    ]);
+
+    return redirect()->back()->with('message', 'Your request has been submitted for approval.');
+}
 }

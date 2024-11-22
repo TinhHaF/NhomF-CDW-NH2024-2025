@@ -74,7 +74,8 @@
                 <div class="mb-4">
                     <label class="block font-bold mb-1 text-gray-600">Ngày tham gia:</label>
                     <div class="bg-gray-200 h-12 rounded-lg flex items-center pl-4 text-gray-700">
-                        {{ $user->created_at->format('d/m/Y') }}</div>
+                        {{ $user->created_at->format('d/m/Y') }}
+                    </div>
                 </div>
             </div>
 
@@ -88,6 +89,13 @@
                             Thay đổi mật khẩu
                         </button>
                     </div>
+                    <div class="mb-4">
+                        <button onclick="window.location.href='{{ asset('/register-author-show') }}'"
+                            class="bg-gradient-to-r from-indigo-500 to-indigo-700 text-white w-full py-3 rounded-lg hover:shadow-lg transition duration-300 text-center block font-semibold">
+                            Đăng Ký Tác giả
+                        </button>
+                    </div>
+
                 </div>
 
                 <div id="change-password-form" class="hidden bg-white p-6 rounded-lg shadow-lg mt-4">

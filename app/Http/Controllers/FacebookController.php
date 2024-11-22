@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
-
+use Illuminate\Support\Facades\Log;
 class FacebookController extends Controller
 {
     public function redirectToFacebook()
@@ -19,26 +19,29 @@ class FacebookController extends Controller
     {
         try {
             $user = Socialite::driver('facebook')->user();
+
             $finduser = User::where('facebook_id', $user->id)->first();
 
             if ($finduser) {
                 Auth::login($finduser);
-                // return redirect()->intended('dashboard');
             } else {
                 $newUser = User::create([
-                    'username' => $user->name,
-                    'email' => $user->email,
+                    'username' => User::where('username', $user->name)->exists()
+                        ? $user->name . '_' . uniqid()
+                        : $user->name,
+                    'email' => $user->email ?? $user->id . '@facebook.com',
                     'facebook_id' => $user->id,
                     'password' => Hash::make('123456dummy'),
-                    'role' => '1'
+                    'role' => '1', // Kiểm tra logic role nếu cần
                 ]);
 
                 Auth::login($newUser);
             }
-            // Chuyển hướng ngay lập tức để tránh tái sử dụng callback
+
             return redirect()->intended('/');
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            Log::error('Error during Facebook login', ['error' => $e->getMessage()]);
+            return redirect('/login')->with('error', 'Có lỗi xảy ra trong quá trình đăng nhập bằng Facebook.');
         }
     }
 }
