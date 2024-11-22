@@ -2,7 +2,7 @@
 use App\Helpers\IdEncoder;
 @endphp
 
-<div class="container mx-auto px-4">
+<div class="container mx-auto ml-230 px-4">
     <nav class="flex space-x-6 py-3">
         <!-- Link Trang chủ -->
         <a href="{{ route('home') }}" aria-label="Trang chủ"
@@ -13,7 +13,7 @@ use App\Helpers\IdEncoder;
 
         <!-- Danh sách danh mục -->
         <div class="flex flex-wrap space-x-6">
-            @foreach ($categories->take(12) as $category)
+            @foreach ($categories->take(15) as $category)
                 <a href="{{ route('posts.showCate', IdEncoder::encode($category->id)) }}"
                     class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">
                     {{ $category->name }}
@@ -21,7 +21,7 @@ use App\Helpers\IdEncoder;
             @endforeach
 
             <!-- Nếu có nhiều hơn 8 danh mục, hiển thị nút "3 gạch" -->
-            @if ($categories->count() > 12)
+            @if ($categories->count() > 15)
                 <button id="moreCategoriesButton" class="text-gray-600 hover:text-blue-600 transition-colors duration-200">
                 ☰
                 </button>
@@ -32,7 +32,7 @@ use App\Helpers\IdEncoder;
     <!-- Dropdown chứa các danh mục còn lại -->
     <div id="moreCategoriesDropdown" class="hidden absolute mt-2 bg-white shadow-lg rounded-lg w-auto z-10">
         <ul class="flex flex-wrap  space-x-6 px-4 py-2">
-            @foreach ($categories->skip(12) as $category)
+            @foreach ($categories->skip(15) as $category)
                 <li>
                     <a href="{{ route('posts.showCate', IdEncoder::encode($category->id)) }}"
                         class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">
