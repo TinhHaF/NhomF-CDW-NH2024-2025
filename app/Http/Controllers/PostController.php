@@ -123,7 +123,7 @@ class PostController extends Controller
                 ->take(6) // Lấy đúng 6 bài nổi bật
                 ->get(); // Không phân trang, chỉ lấy các bài viết cần thiết
             Notification::where('post_id', $id)->where('user_id', Auth::id())->update(['read' => true]);
-            return view('posts.post_detail', compact('post', 'comments', 'categories', 'logoPath', 'featuredPosts', 'notifications'));
+            return view('posts.post_detail', compact('post', 'comments', 'categories', 'logoPath', 'featuredPosts', 'notifications','relatedPosts'));
         } catch (ModelNotFoundException $e) {
             Log::info('Post not found', ['id' => $id]);
             return request()->expectsJson()
