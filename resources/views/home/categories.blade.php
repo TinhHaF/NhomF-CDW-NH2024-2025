@@ -9,10 +9,10 @@
 
         <!-- Danh sách danh mục -->
         @foreach ($categories as $category)
-            <a href="{{ route('category.show', $category->id) }}" class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200
-                                   {{ request()->is('category/' . $category->id) ? 'text-blue-600 font-semibold' : '' }}">
-                {{ $category->name }}
-            </a>
+        <a href="{{ route('posts.showCate', $category->id) }}"
+            class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">
+            {{ $category->name }}
+        </a>
         @endforeach
     </nav>
 </div>
@@ -32,17 +32,17 @@
             </a>
 
             @foreach ($categories as $category)
-                <a href="{{ route('category.show', $category->id) }}" class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200
-                               {{ request()->is('category/' . $category->id) ? 'text-blue-600 font-semibold' : '' }}">
-                    {{ $category->name }}
-                </a>
+            <a href="{{ route('posts.showCate', $category->id) }}"
+                class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">
+                {{ $category->name }}
+            </a>
             @endforeach
         </nav>
     </div>
 </div>
 <script>
     // Xử lý menu di động
-    document.getElementById('mobile-menu-toggle').addEventListener('click', function () {
+    document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
         const menu = document.getElementById('mobile-menu');
         menu.classList.toggle('hidden');
     });

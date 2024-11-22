@@ -1,4 +1,6 @@
+@include('components.notifications')
 <footer
+
     class="bg-gradient-to-r from-white-200 to-gray-900 text-black-200 pt-12 pb-8 border-t border-gray-300 shadow-lg">
     <div class="container mx-auto px-4">
         {{-- Footer Ad --}}
@@ -47,13 +49,13 @@
                 <h5 class="font-bold text-xl text-black mb-4">Danh Mục</h5>
                 <ul class="space-y-3">
                     @foreach ($categories as $category)
-                        <li>
-                            <a href="{{ route('category.show', $category->id) }}"
-                                class="text-gray-400 hover:text-black hover:pl-2 transition-all duration-200 flex items-center">
-                                <i class="fas fa-chevron-right mr-2 text-sm"></i>
-                                {{ $category->name }}
-                            </a>
-                        </li>
+                    <li>
+                        <a href="{{ route('category.show', $category->id) }}"
+                            class="text-gray-400 hover:text-black hover:pl-2 transition-all duration-200 flex items-center">
+                            <i class="fas fa-chevron-right mr-2 text-sm"></i>
+                            {{ $category->name }}
+                        </a>
+                    </li>
                     @endforeach
                 </ul>
             </div>
@@ -64,13 +66,13 @@
                 <ul class="space-y-4">
                     <ul>
                         @foreach ($featuredPosts as $post)
-                            <li>
-                                <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}"
-                                    class="text-gray-400 hover:text-black hover:pl-2 transition-all duration-200 flex items-center">
-                                    <i class="fas fa-chevron-right mr-2 text-sm"></i>
-                                    {{ $post->title }}
-                                </a>
-                            </li>
+                        <li>
+                            <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}"
+                                class="text-gray-400 hover:text-black hover:pl-2 transition-all duration-200 flex items-center">
+                                <i class="fas fa-chevron-right mr-2 text-sm"></i>
+                                {{ $post->title }}
+                            </a>
+                        </li>
                         @endforeach
                     </ul>
                 </ul>
@@ -94,9 +96,9 @@
                     </li>
                 </ul>
 
-                <!-- Newsletter Subscription -->
                 <div class="mt-6">
-                    <h6 class="text-black font-semibold mb-3">Đăng ký nhận tin</h6>
+                    <h6 class="font-bold text-xl text-black mb-4">Đăng ký nhận tin</h6>
+                    @auth
                     <form action="{{ route('subscribe') }}" method="POST" class="flex">
                         @csrf
                         <input type="email" name="email" placeholder="Email của bạn"
@@ -107,20 +109,10 @@
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </form>
+                    @else
+                    @endauth
 
-                    <!-- Hiển thị thông báo thành công nếu có -->
-                    @if(session('success'))
-                        <div class="mt-2 text-green-600">{{ session('success') }}</div>
-                    @endif
-
-                    <!-- Hiển thị thông báo lỗi nếu có -->
-                    @if($errors->any())
-                        <div class="mt-2 text-red-600">
-                            @foreach ($errors->all() as $error)
-                                <p>{{ $error }}</p>
-                            @endforeach
-                        </div>
-                    @endif
+                   
                 </div>
 
             </div>

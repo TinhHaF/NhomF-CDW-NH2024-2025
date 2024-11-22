@@ -7,6 +7,12 @@ use App\Models\Subscriber;
 
 class SubscriptionController extends Controller
 {
+    // Áp dụng middleware auth để kiểm tra đăng nhập
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function subscribe(Request $request)
     {
         // Xác thực email

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Helpers\IdEncoder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
-
+use App\Models\Notification;
 class CommentController extends Controller
 {
     // Phương thức xử lý lỗi chung
@@ -109,7 +109,22 @@ class CommentController extends Controller
                 'user_id' => Auth::id(),
                 'parent_id' => $parentId, // Lưu lại id của bình luận mẹ nếu có
             ]);
-
+            if ($parentId) {
+                $parentComment = Comment::find($parentId); // Lấy thông tin bình luận mẹ
+                if ($parentComment) {
+                    $parentUser = $parentComment->user; // Lấy thông tin người dùng của bình luận mẹ
+                    if ($parentUser && $parentUser->id !== Auth::id()) { // Đảm bảo không thông báo cho chính người trả lời
+                        Notification::create([
+                            'type' => 'comment_reply', // Loại thông báo: trả lời bình luận
+                            'title' => 'Bạn có một câu trả lời cho bình luận của mình!',
+                            'read' => false, // Trạng thái chưa đọc
+                            'user_id' => $parentUser->id, // Gửi thông báo đến người dùng của bình luận mẹ
+                            'post_id' => $post->id, // ID bài viết
+                        ]);
+                    }
+                }
+            }
+    
             // Chuyển hướng về trang bài viết với thông báo thành công
             return redirect()->route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug])
                 ->with('success', 'Bình luận đã được thêm thành công!');
