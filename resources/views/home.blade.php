@@ -2,7 +2,8 @@
 <html lang="vi">
 
 <head>
-    {{-- <meta property="og:url" content="{{ url()->current() }}" />
+    {{--
+    <meta property="og:url" content="{{ url()->current() }}" />
     <meta property="og:title" content="{{ $post->title }}" />
     <meta property="og:description" content="{{ Str::limit(strip_tags($post->content), 150) }}" />
     <meta property="og:image" content="{{ asset('storage/' . $post->image) }}" />
@@ -106,7 +107,7 @@
 </head>
 
 <body class="bg-gray-100">
-    <div class="min-h-screen flex flex-col">
+    <div class="flex flex-col">
         @include('home.nav')
         <!-- Slider Section -->
         <div class="slider-container mb-8">
@@ -187,7 +188,8 @@
                                                             class="w-10 h-10 rounded-full mr-3" alt="Author">
                                                         <div>
                                                             <p class="font-medium text-gray-800">
-                                                                {{ $post->user->name }}</p>
+                                                                {{ $post->user->name }}
+                                                            </p>
                                                             <p class="text-sm text-gray-500">
                                                                 {{ $post->user->role == 2 ? 'Quản trị viên' : ($post->user->role == 3 ? 'Tác giả' : 'Người dùng') }}
                                                             </p>
@@ -218,7 +220,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             var slider = tns({
                 container: '.my-slider',
                 items: 1,
@@ -238,11 +240,11 @@
                 window.location.hash = '';
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const backToTopButton = document.getElementById('backToTop');
 
             // Hiển thị nút khi cuộn trang xuống dưới 300px
-            window.addEventListener('scroll', function() {
+            window.addEventListener('scroll', function () {
                 if (window.scrollY > 300) {
                     backToTopButton.classList.remove('hidden');
                     backToTopButton.classList.add('show');
@@ -253,7 +255,7 @@
             });
 
             // Cuộn lên đầu trang khi nhấn nút
-            backToTopButton.addEventListener('click', function() {
+            backToTopButton.addEventListener('click', function () {
                 window.scrollTo({
                     top: 0,
                     behavior: 'smooth'
@@ -265,6 +267,4 @@
         class="hidden fixed bottom-6 right-6 p-2 rounded shadow-lg transition-transform transform hover:scale-110 focus:outline-none">
         <i class="fas fa-arrow-up text-white text-lg"></i>
     </button>
-
-
 </body>

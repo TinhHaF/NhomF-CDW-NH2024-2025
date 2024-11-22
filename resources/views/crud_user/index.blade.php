@@ -23,13 +23,6 @@
                 class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md mr-4 shadow">
                 <i class="fas fa-plus mr-2"></i>Thêm mới
             </a>
-            <form action="" method="POST" id="bulkDeleteForm" class="inline">
-                @csrf
-                <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-md shadow"
-                    onclick="bulkDeleteSystem.confirmDelete()">
-                    <i class="fas fa-trash mr-2"></i>Xóa tất cả (<span id="selectedCount">0</span>)
-                </button>
-            </form>
             <form action="{{ route('users.index') }}" method="GET" class="flex items-center ml-auto">
                 <input name="search" type="text" placeholder="Tìm kiếm" value="{{ request()->get('search') }}"
                     class="px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" />

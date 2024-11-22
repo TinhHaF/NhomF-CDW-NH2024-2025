@@ -1,10 +1,6 @@
 <div class="navbar bg-white border-b relative z-50">
     {{-- Header Ad --}}
-    @if ($headerAd = App\Models\Ad::where('position', 'header')->where('status', 1)->whereDate('start_date', '<=', now())->whereDate('end_date', '>=', now())->first())
-        <a href="{{ $headerAd->url }}">
-            <img src="{{ asset('uploads/ads/' . $headerAd->image) }}" alt="{{ $headerAd->title }}">
-        </a>
-    @endif
+    <x-ad-banner position="header" class="ad-banner-effect" />
 
     <!-- Top Bar - Optional -->
     <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-1 px-4 text-sm hidden md:block">
@@ -96,6 +92,8 @@
         }
         formatDate();
     });
+
+    
     const userMenuToggle = document.getElementById('userMenuToggle');
     const userMenu = document.getElementById('userMenu');
 
@@ -119,4 +117,5 @@
             userMenu.classList.add('hidden', 'opacity-0', 'scale-95');
         }
     });
+    
 </script>

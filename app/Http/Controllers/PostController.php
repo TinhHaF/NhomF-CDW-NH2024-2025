@@ -61,14 +61,18 @@ class PostController extends Controller
 
             // Lấy tất cả các danh mục
             $categories = Category::all();
+
+            // thông báo
             $notifications = Notification::all();
+
+            // Loho
             $logo = Logo::latest()->first();
             $logoPath = $logo ? $logo->path : 'images/logo.jpg';
 
             // Lấy tag
             $tags = Tag::all();
 
-            return view('home', compact('posts', 'featuredPosts', 'categories', 'logoPath', 'tags'));
+            return view('home', compact('posts', 'featuredPosts', 'categories', 'logoPath', 'tags', 'notifications'));
         } catch (\Exception $e) {
             Log::error('Homepage loading failed', [
                 'error' => $e->getMessage(),
@@ -86,8 +90,6 @@ class PostController extends Controller
                 return abort(404, 'Bài viết không tồn tại.');
             }
 
-
-
             // Tăng lượt xem
             $post->increment('view');
 
@@ -100,7 +102,10 @@ class PostController extends Controller
 
             // Lấy tất cả các danh mục
             $categories = Category::all();
+
+            // Thông báo
             $notifications = Notification::all();
+
             // Lấy bài viết liên quan cùng danh mục
             $relatedPosts = Post::where('category_id', $post->category_id)
                 ->where('id', '!=', $post->id) // Loại bỏ bài viết hiện tại
@@ -118,7 +123,7 @@ class PostController extends Controller
                 ->take(6) // Lấy đúng 6 bài nổi bật
                 ->get(); // Không phân trang, chỉ lấy các bài viết cần thiết
             Notification::where('post_id', $id)->where('user_id', Auth::id())->update(['read' => true]);
-            return view('posts.post_detail', compact('post', 'comments', 'categories', 'logoPath', 'featuredPosts'));
+            return view('posts.post_detail', compact('post', 'comments', 'categories', 'logoPath', 'featuredPosts', 'notifications'));
         } catch (ModelNotFoundException $e) {
             Log::info('Post not found', ['id' => $id]);
             return request()->expectsJson()
@@ -133,6 +138,7 @@ class PostController extends Controller
     {
         // Tìm danh mục theo ID
         $category = Category::findOrFail($id);
+
         // Lấy các bài viết nổi bật có ảnh
         $featuredPosts = Post::where('is_featured', true)
             ->whereNotNull('image') // Chỉ lấy bài viết có ảnh
@@ -145,13 +151,20 @@ class PostController extends Controller
         $logo = Logo::latest()->first();
         $logoPath = $logo ? $logo->path : 'images/no-image-available';
 
+        // Thông báo
+        $notifications = Notification::all();
+
         // Lấy tất cả danh mục
         $categories = Category::all();
+
         // Lấy các bài viết thuộc danh mục đó
         $posts = $category->posts()->latest()->paginate(10);
 
+        // Lấy tag
+        $tags = Tag::all();
+
         // Trả về view và truyền dữ liệu
-        return view('posts.post_categories', compact('category', 'posts', 'logoPath', 'categories', 'featuredPosts'));
+        return view('posts.post_categories', compact('category', 'posts', 'logoPath', 'categories', 'featuredPosts', 'notifications', 'tags'));
     }
 
     public function searchHomePage(Request $request)
@@ -175,14 +188,19 @@ class PostController extends Controller
             // Lấy từ khóa tìm kiếm
             $query = $request->input('query');
 
+            // Thông báo
             $notifications = Notification::all();
+
             // Tìm kiếm bài viết theo tiêu đề hoặc nội dung, phân trang 5 bài mỗi trang
             $posts = Post::where('title', 'LIKE', "%{$query}%")
                 ->orWhere('content', 'LIKE', "%{$query}%")
                 ->paginate(3); // Số bài viết mỗi trang là 5
 
+            // Lấy tag
+            $tags = Tag::all();
+
             // Trả về view kết quả tìm kiếm
-            return view('posts.posts_search', compact('posts', 'query', 'logoPath', 'categories', 'featuredPosts', 'notifications'));
+            return view('posts.posts_search', compact('posts', 'query', 'logoPath', 'categories', 'featuredPosts', 'notifications', 'tags'));
         } catch (\Exception $e) {
             // Log lỗi để tiện debug
             \Log::error("Error during search: " . $e->getMessage());
@@ -591,11 +609,13 @@ class PostController extends Controller
 
         // Lấy tất cả các danh mục
         $categories = Category::all();
+        // thông báo
+        $notifications = Notification::all();
 
         $logo = Logo::latest()->first();
         $logoPath = $logo ? $logo->path : 'images/logo.jpg';
 
-        return view('posts.by_tag', compact('tag', 'posts', 'featuredPosts', 'categories', 'logoPath'));
+        return view('posts.by_tag', compact('tag', 'posts', 'featuredPosts', 'categories', 'logoPath','notifications'));
     }
 
 

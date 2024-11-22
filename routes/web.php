@@ -59,7 +59,7 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/authors', [AuthorController::class, 'index']);
 Route::get('/category/{id}', [CategoryController::class, 'show'])->name('category.show');
 Route::get('/homepage/nav', [CategoryController::class, 'showCategory'])->name('posts.showCategory');
-Route::get('/posts/{post}', [PostController::class, 'showPostsSimilar'])->name('posts.show');
+// Route::get('/posts/{post}', [PostController::class, 'showPostsSimilar'])->name('posts.show');
 
 Route::get('/tags/{id}', [PostController::class, 'postsByTag'])->name('posts.by_tag');
 

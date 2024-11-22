@@ -45,11 +45,7 @@
                         {!! $post->content !!}
                     </div>
                 </div>
-            </div>
-            <p class="text-base mb-2">
-                {!! $post->content !!}
-            </p>
-            <!-- Share Buttons -->
+                 <!-- Share Buttons -->
             <div class="mt-6">
                 <span class="text-gray-700 font-semibold">Chia sẻ bài viết:</span>
                 <div class="flex items-center space-x-4 mt-3">
@@ -73,6 +69,8 @@
                     </a>
                 </div>
             </div>
+            </div>
+           
         </div>
     </div>
     @include('posts.post_commemts')
