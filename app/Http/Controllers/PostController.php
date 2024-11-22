@@ -98,21 +98,6 @@ class PostController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->paginate(5);
 
-
-            // Lấy các bài viết liên quan theo category_id
-            $relatedPosts = Post::where('category_id', $post->category_id)
-                ->where('id', '!=', $post->id) // Loại trừ bài viết hiện tại
-                ->latest()
-                ->take(3) // Lấy 3 bài liên quan
-                ->get();
-
-            // Lấy bình luận và phân trang
-            $comments = $post->comments()->orderBy('created_at', 'desc')->paginate(5);
-            $comments = $post->comments()
-                ->whereNull('parent_id')  // Chỉ lấy bình luận gốc
-                ->with('replies')         // Lấy tất cả phản hồi lồng vào
-                ->orderBy('created_at', 'desc')
-                ->paginate(5);
             // Lấy tất cả các danh mục
             $categories = Category::all();
             $notifications = Notification::all();
@@ -227,36 +212,6 @@ class PostController extends Controller
     }
 
 
-    // public function index(Request $request)
-    // {
-    //     try {
-    //         $query = $request->input('search');
-    //         $posts = Post::search($query)
-    //             ->paginate(10)
-    //             ->through(function ($post) {
-    //                 $post->encoded_id = IdEncoder_2::encode($post->id);
-    //                 return $post;
-    //             });
-
-    //         $message = $posts->isEmpty()
-    //             ? 'Không có bài viết nào có thông tin phù hợp với kết quả bạn đang tìm'
-    //             : null;
-
-    //         if ($request->expectsJson()) {
-    //             return response()->json(['posts' => $posts->toArray(), 'message' => $message]);
-    //         }
-
-    //         return view('admin.posts.index', compact('posts', 'message'));
-    //     } catch (\Exception $e) {
-    //         Log::error('Error listing posts', [
-    //             'search' => $query ?? null,
-    //             'error' => $e->getMessage()
-    //         ]);
-    //         return $request->expectsJson()
-    //             ? response()->json(['error' => 'Có lỗi xảy ra.'], 500)
-    //             : back()->with('error', 'Có lỗi xảy ra khi tải danh sách bài viết.');
-    //     }
-    // }
     public function index(Request $request)
     {
         try {
@@ -542,8 +497,6 @@ class PostController extends Controller
                 : back()->with('error', 'Có lỗi xảy ra khi cập nhật trạng thái.');
         }
     }
-
-
 
     public function bulkDelete(Request $request)
     {

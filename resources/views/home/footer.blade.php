@@ -16,37 +16,37 @@
                             class="w-full h-full object-cover rounded-full">
                     </div>
 
-                        <p class="text-gray-400 leading-relaxed mb-4">
-                            Chúng tôi cung cấp những thông tin hữu ích và đáng tin cậy nhất về công nghệ,
-                            giúp bạn luôn cập nhật với xu hướng mới nhất.
-                        </p>
-                    </div>
-                    <!-- Social Media Icons -->
-                    <div class="flex space-x-4">
-                        <a href="#" class="hover:-translate-y-1 transition-transform duration-200">
-                            <i
-                                class="fab fa-facebook-f bg-blue-600 text-white p-2 rounded-full w-8 h-8 flex items-center justify-center"></i>
-                        </a>
-                        <a href="#" class="hover:-translate-y-1 transition-transform duration-200">
-                            <i
-                                class="fab fa-twitter bg-blue-400 text-white p-2 rounded-full w-8 h-8 flex items-center justify-center"></i>
-                        </a>
-                        <a href="#" class="hover:-translate-y-1 transition-transform duration-200">
-                            <i
-                                class="fab fa-tiktok bg-black text-white p-2 rounded-full w-8 h-8 flex items-center justify-center"></i>
-                        </a>
-                        <a href="#" class="hover:-translate-y-1 transition-transform duration-200">
-                            <i
-                                class="fab fa-youtube bg-red-600 text-white p-2 rounded-full w-8 h-8 flex items-center justify-center"></i>
-                        </a>
-                    </div>
+                    <p class="text-gray-400 leading-relaxed mb-4">
+                        Chúng tôi cung cấp những thông tin hữu ích và đáng tin cậy nhất về công nghệ,
+                        giúp bạn luôn cập nhật với xu hướng mới nhất.
+                    </p>
                 </div>
+                <!-- Social Media Icons -->
+                <div class="flex space-x-4">
+                    <a href="#" class="hover:-translate-y-1 transition-transform duration-200">
+                        <i
+                            class="fab fa-facebook-f bg-blue-600 text-white p-2 rounded-full w-8 h-8 flex items-center justify-center"></i>
+                    </a>
+                    <a href="#" class="hover:-translate-y-1 transition-transform duration-200">
+                        <i
+                            class="fab fa-twitter bg-blue-400 text-white p-2 rounded-full w-8 h-8 flex items-center justify-center"></i>
+                    </a>
+                    <a href="#" class="hover:-translate-y-1 transition-transform duration-200">
+                        <i
+                            class="fab fa-tiktok bg-black text-white p-2 rounded-full w-8 h-8 flex items-center justify-center"></i>
+                    </a>
+                    <a href="#" class="hover:-translate-y-1 transition-transform duration-200">
+                        <i
+                            class="fab fa-youtube bg-red-600 text-white p-2 rounded-full w-8 h-8 flex items-center justify-center"></i>
+                    </a>
+                </div>
+            </div>
 
-                <!-- Categories Section -->
-                <div class="col-span-1">
-                    <h5 class="font-bold text-xl text-black mb-4">Danh Mục</h5>
-                    <ul class="space-y-3">
-                        @foreach ($categories as $category)
+            <!-- Categories Section -->
+            <div class="col-span-1">
+                <h5 class="font-bold text-xl text-black mb-4">Danh Mục</h5>
+                <ul class="space-y-3">
+                    @foreach ($categories as $category)
                         <li>
                             <a href="{{ route('category.show', $category->id) }}"
                                 class="text-gray-400 hover:text-black hover:pl-2 transition-all duration-200 flex items-center">
@@ -54,16 +54,16 @@
                                 {{ $category->name }}
                             </a>
                         </li>
-                        @endforeach
-                    </ul>
-                </div>
+                    @endforeach
+                </ul>
+            </div>
 
-                <!-- Featured Posts Section -->
-                <div class="col-span-1">
-                    <h5 class="font-bold text-xl text-black mb-4">Tin Nổi Bật</h5>
-                    <ul class="space-y-4">
-                        <ul>
-                            @foreach ($featuredPosts as $post)
+            <!-- Featured Posts Section -->
+            <div class="col-span-1">
+                <h5 class="font-bold text-xl text-black mb-4">Tin Nổi Bật</h5>
+                <ul class="space-y-4">
+                    <ul>
+                        @foreach ($featuredPosts as $post)
                             <li>
                                 <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}"
                                     class="text-gray-400 hover:text-black hover:pl-2 transition-all duration-200 flex items-center">
@@ -71,60 +71,60 @@
                                     {{ $post->title }}
                                 </a>
                             </li>
-                            @endforeach
-                        </ul>
+                        @endforeach
                     </ul>
-                </div>
+                </ul>
+            </div>
 
-                <!-- Contact Info Section -->
-                <div class="col-span-1">
-                    <h5 class="font-bold text-xl text-black mb-4">Liên Hệ</h5>
-                    <ul class="space-y-3 text-gray-400">
-                        <li class="flex items-center">
-                            <i class="fas fa-map-marker-alt w-6 text-blue-500"></i>
-                            <span>123 Đường ABC, Quận XYZ, TP.HCM</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-phone-alt w-6 text-blue-500"></i>
-                            <span>+84 123 456 789</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-envelope w-6 text-blue-500"></i>
-                            <span>contact@example.com</span>
-                        </li>
-                    </ul>
+            <!-- Contact Info Section -->
+            <div class="col-span-1">
+                <h5 class="font-bold text-xl text-black mb-4">Liên Hệ</h5>
+                <ul class="space-y-3 text-gray-400">
+                    <li class="flex items-center">
+                        <i class="fas fa-map-marker-alt w-6 text-blue-500"></i>
+                        <span>123 Đường ABC, Quận XYZ, TP.HCM</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-phone-alt w-6 text-blue-500"></i>
+                        <span>+84 123 456 789</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-envelope w-6 text-blue-500"></i>
+                        <span>contact@example.com</span>
+                    </li>
+                </ul>
 
-                    <!-- Newsletter Subscription -->
-                    <div class="mt-6">
-                        <h6 class="text-black font-semibold mb-3">Đăng ký nhận tin</h6>
-                        <form action="{{ route('subscribe') }}" method="POST" class="flex">
-                            @csrf
-                            <input type="email" name="email" placeholder="Email của bạn"
+                <!-- Newsletter Subscription -->
+                <div class="mt-6">
+                    <h6 class="text-black font-semibold mb-3">Đăng ký nhận tin</h6>
+                    <form action="{{ route('subscribe') }}" method="POST" class="flex">
+                        @csrf
+                        <input type="email" name="email" placeholder="Email của bạn"
                             class="bg-gray-700 text-gray-300 px-4 py-2 rounded-l focus:outline-none focus:ring-2 focus:ring-blue-500 flex-grow"
                             required>
-                            <button type="submit"
-                                class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-r transition-colors duration-200">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </form>
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-r transition-colors duration-200">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
 
-                        <!-- Hiển thị thông báo thành công nếu có -->
-                        @if(session('success'))
+                    <!-- Hiển thị thông báo thành công nếu có -->
+                    @if(session('success'))
                         <div class="mt-2 text-green-600">{{ session('success') }}</div>
-                        @endif
+                    @endif
 
-                        <!-- Hiển thị thông báo lỗi nếu có -->
-                        @if($errors->any())
+                    <!-- Hiển thị thông báo lỗi nếu có -->
+                    @if($errors->any())
                         <div class="mt-2 text-red-600">
                             @foreach ($errors->all() as $error)
-                            <p>{{ $error }}</p>
+                                <p>{{ $error }}</p>
                             @endforeach
                         </div>
-                        @endif
-                    </div>
-
+                    @endif
                 </div>
+
             </div>
+        </div>
 
         <!-- Bottom Footer -->
         <div class="border-t border-gray-200 pt-8">

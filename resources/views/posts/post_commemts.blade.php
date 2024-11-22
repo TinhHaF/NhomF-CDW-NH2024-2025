@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -21,7 +22,7 @@
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg mb-6">Gửi bình luận</button>
         </form>
 
-        <div class="border-b mb-4">
+        <div class="border-b mb-4"> 
             <ul class="flex space-x-4 text-red-600">
                 <li class="border-b-2 border-red-600 pb-2">Mới nhất</li>
             </ul>
