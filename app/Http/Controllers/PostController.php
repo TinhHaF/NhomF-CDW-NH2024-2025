@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controller;
 use App\Models\Notification;
-
+use App\Models\User;
 class PostController extends Controller
 {
     use AuthorizesRequests;
@@ -343,13 +343,16 @@ class PostController extends Controller
             ]);
 
             // Tạo thông báo cho người dùng khi bài viết được thêm
+            $users = User::all();
+        foreach ($users as $user) {
             Notification::create([
                 'type' => 'post_created', // Loại thông báo
                 'title' => 'Bài viết mới !!!"' . $post->title, // Tiêu đề thông báo
                 'read' => false, // Chưa đọc
-                'user_id' => Auth::id(),
+                'user_id' => $user->id, // Sửa lỗi dấu phẩy dư
                 'post_id' => $post->id,
             ]);
+        }
 
             // Xử lý trả về kết quả tùy vào yêu cầu JSON hoặc redirect
             return $request->expectsJson()
