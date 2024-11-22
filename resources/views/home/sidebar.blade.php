@@ -36,7 +36,7 @@
             @foreach ($categories as $category)
                 <a href="#" class="flex items-center justify-between hover:text-blue-600 transition duration-300">
                     <span> {{ $category->name }}</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded text-sm">{{ $category->count() }}</span>
+                    <span class="bg-gray-100 px-2 py-1 rounded text-sm">{{ $category->posts_count }}</span>
                 </a>
             @endforeach
         </div>

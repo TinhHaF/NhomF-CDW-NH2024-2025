@@ -61,7 +61,7 @@ class PostController extends Controller
                 ->get(); // Không phân trang, chỉ lấy các bài viết cần thiết
 
             // Lấy tất cả các danh mục
-            $categories = Category::all();
+            // $categories = Category::all();
 
             // thông báo
             $notifications = Notification::all();
@@ -69,6 +69,7 @@ class PostController extends Controller
             // Loho
             $logo = Logo::latest()->first();
             $logoPath = $logo ? $logo->path : 'images/logo.jpg';
+            $categories = Category::withCount('posts')->get();
 
             // Lấy tag
             $tags = Tag::all();
