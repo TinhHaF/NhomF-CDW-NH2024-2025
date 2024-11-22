@@ -116,7 +116,7 @@
                     <span id="currentDate" class="text-sm"></span>
                 </div>
                 <!-- Search Bar -->
-                <div class="relative flex max-w-xl">
+                <div class="relative flex max-w-xl mt-4">
                     <div class="relative">
                         @include('home.search')
                     </div>
@@ -127,7 +127,10 @@
             @php
                 $user = Auth::user();
             @endphp
+            <div class="mr-4">
             @include('home.notification')
+            </div>
+          
             @include('home.setting')
         </div>
     </div>
@@ -177,19 +180,7 @@
         }
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
-        var slider = tns({
-            container: '.my-slider',
-            items: 1,
-            slideBy: 'page',
-            autoplay: true,
-            autoplayButtonOutput: false,
-            controls: false,
-            nav: true,
-            autoplayTimeout: 5000,
-            speed: 400,
-        });
-    });
+    
 
     if (window.location.hash === '#_=_') {
         history.replaceState ?

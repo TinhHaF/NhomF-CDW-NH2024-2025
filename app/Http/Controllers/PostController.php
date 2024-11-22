@@ -34,7 +34,7 @@ class PostController extends Controller
         $this->postService = $postService;
         $this->idEncoder = new IdEncoder_2();
         // Middleware auth yêu cầu xác thực cho tất cả các phương thức ngoại trừ homepage và show
-        $this->middleware('auth')->except(['homepage', 'detail', 'search']);
+        $this->middleware('auth')->except(['homepage', 'detail', 'search','searchHomepage']);
         // $this->authorizeResource(Post::class, 'post'); // Phương thức này sẽ hoạt động nếu trait được sử dụng
     }
 
@@ -168,14 +168,14 @@ class PostController extends Controller
             // Lấy từ khóa tìm kiếm
             $query = $request->input('query');
 
-            
+            $notifications = Notification::all();
             // Tìm kiếm bài viết theo tiêu đề hoặc nội dung, phân trang 5 bài mỗi trang
             $posts = Post::where('title', 'LIKE', "%{$query}%")
                 ->orWhere('content', 'LIKE', "%{$query}%")
                 ->paginate(3); // Số bài viết mỗi trang là 5
 
             // Trả về view kết quả tìm kiếm
-            return view('posts.posts_search', compact('posts', 'query', 'logoPath', 'categories', 'featuredPosts'));
+            return view('posts.posts_search', compact('posts', 'query', 'logoPath', 'categories', 'featuredPosts','notifications'));
         } catch (\Exception $e) {
             // Log lỗi để tiện debug
             \Log::error("Error during search: " . $e->getMessage());

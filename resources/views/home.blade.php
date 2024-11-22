@@ -1,9 +1,6 @@
 <body class="bg-gray-100">
     <div class="min-h-screen flex flex-col">
         @include('home.nav')
-
-
-
         <!-- Slider Section -->
         <div class="slider-container mb-8">
             <div class="my-slider">
@@ -102,5 +99,20 @@
         </div>
 
         @include('home.footer')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var slider = tns({
+                    container: '.my-slider',
+                    items: 1,
+                    slideBy: 'page',
+                    autoplay: true,
+                    autoplayButtonOutput: false,
+                    controls: false,
+                    nav: true,
+                    autoplayTimeout: 5000,
+                    speed: 400,
+                });
+            });
+        </script>
     </div>
 </body>
