@@ -78,7 +78,7 @@ class User extends Authenticatable
         return $this->role === '1';
     }
 
-    
+
     protected $appends = ['avatar_url'];
 
     public function posts()
@@ -94,23 +94,26 @@ class User extends Authenticatable
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name);
     }
     public function follow(Author $author)
-{
-    return $this->authorFollowers()->attach($author);
-}
+    {
+        return $this->authorFollowers()->attach($author);
+    }
 
-public function unfollow(Author $author)
-{
-    return $this->authorFollowers()->detach($author);
-}
+    public function unfollow(Author $author)
+    {
+        return $this->authorFollowers()->detach($author);
+    }
 
-public function authorFollowers()
-{
-    return $this->belongsToMany(Author::class, 'author_followers');
-}
+    public function authorFollowers()
+    {
+        return $this->belongsToMany(Author::class, 'author_followers');
+    }
 
-public function isFollowing(Author $author)
-{
-    return $this->authorFollowers()->where('author_id', $author->id)->exists();
-}
-
+    public function isFollowing(Author $author)
+    {
+        return $this->authorFollowers()->where('author_id', $author->id)->exists();
+    }
+    public function savedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'saved_posts')->withTimestamps();
+    }
 }

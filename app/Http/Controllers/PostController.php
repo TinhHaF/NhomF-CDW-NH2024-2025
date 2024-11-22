@@ -37,7 +37,7 @@ class PostController extends Controller
         $this->postService = $postService;
         $this->idEncoder = new IdEncoder_2();
         // Middleware auth yêu cầu xác thực cho tất cả các phương thức ngoại trừ homepage và show
-        $this->middleware('auth')->except(['homepage', 'detail', 'search', 'searchHomepage']);
+        $this->middleware('auth')->except(['homepage', 'detail', 'search', 'searchHomepage','showPostsCate']);
         // $this->authorizeResource(Post::class, 'post'); // Phương thức này sẽ hoạt động nếu trait được sử dụng
     }
 
@@ -631,4 +631,23 @@ class PostController extends Controller
         $post = Post::findOrFail($id); // Tìm bài viết theo ID
         return view('posts.show', compact('post')); // Trả về view với dữ liệu bài viết
     }
+    public function savePost(Request $request, Post $post)
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Bạn cần đăng nhập để lưu bài viết.');
+        }
+
+        // Kiểm tra xem đã lưu chưa
+        if ($user->savedPosts()->where('post_id', $post->id)->exists()) {
+            return back()->with('info', 'Bạn đã lưu bài viết này.');
+        }
+
+        // Lưu bài viết
+        $user->savedPosts()->attach($post->id);
+
+        return back()->with('success', 'Đã lưu bài viết thành công.');
+    }
+    
 }

@@ -69,9 +69,17 @@
                         </a>
                     </div>
                 </div>
+                <div class="mt-4">
+                    <form id="savePostForm" action="{{ route('posts.save', $post->id) }}" method="POST">
+                        @csrf
+                        <button type="submit"
+                            class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-200">
+                            <i class="fas fa-bookmark mr-2"></i> Lưu bài viết
+                        </button>
+                    </form>
+                </div>
             </div>
-    @include('posts.post_commemts')
-
+            @include('posts.post_commemts')
         </div>
         <div class="lg:w-2/5 w-full">
             @include('posts.sidebar_postscate')

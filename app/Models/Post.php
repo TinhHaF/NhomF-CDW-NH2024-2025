@@ -160,4 +160,8 @@ class Post extends Model
     // {
     //     return IdEncoder::encode($this->id);
     // }
+    public function savedPosts()
+    {
+        return $this->belongsToMany(Post::class, 'saved_posts')->withTimestamps();
+    }
 }

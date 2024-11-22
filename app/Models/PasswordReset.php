@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PasswordReset extends Model
 {
     // Đặt tên bảng mà Laravel sử dụng
-    protected $table = 'password_resets';
+    protected $table = 'password_reset_tokens';
     // Tắt timestamp nếu không có trường created_at, updated_at
     public $timestamps = false;
 

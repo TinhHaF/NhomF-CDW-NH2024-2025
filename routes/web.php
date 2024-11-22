@@ -114,7 +114,6 @@ Route::middleware([AdminMiddleware::class])->group(function () {
         Route::get('/comments/{id}', [CommentController::class, 'Comments'])->name('comments_index');
         Route::get('/comments/detail/{id}', [CommentController::class, 'detail'])->name('comments_detail');
         Route::delete('/comments/admin/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.admin_delete');
-      
     });
 });
 Route::delete('/comments/user/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.user_delete');
@@ -183,6 +182,7 @@ Route::get('/register-author-show', [UserController::class, 'showRegisterForm'])
 Route::post('/register-author', [UserController::class, 'submitRegisterForm'])->name('update_auth')->middleware('auth');
 
 
-    Route::get('/admin/author-requests', [UserController::class, 'viewRequests'])->name('author-requests');
-    Route::post('/admin/author-requests/{id}/approve', [UserController::class, 'approveRequest']);
-    Route::post('/admin/author-requests/{id}/reject', [UserController::class, 'rejectRequest']);
+Route::get('/admin/author-requests', [UserController::class, 'viewRequests'])->name('author-requests');
+Route::post('/admin/author-requests/{id}/approve', [UserController::class, 'approveRequest']);
+Route::post('/admin/author-requests/{id}/reject', [UserController::class, 'rejectRequest']);
+Route::post('/posts/{post}/save', [PostController::class, 'savePost'])->name('posts.save');
