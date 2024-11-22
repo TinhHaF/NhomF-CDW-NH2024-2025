@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Helpers\IdEncoder;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
-use App\Helpers\IdEncoder;
+
 class UserController extends Controller
 {
     //hiện thị trang đăng ký

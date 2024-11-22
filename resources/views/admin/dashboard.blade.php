@@ -106,6 +106,33 @@
                 {{-- Lịch sử truy cập --}}
                 <div id="visitChart" style="height: 300px; width: 100%;"></div>
             </div>
+            {{-- Most Viewed Post --}}
+
+            <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500 mt-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Bài viết nổi bật</p>
+                        <p class="text-lg font-bold text-gray-900">
+                            {{ $mostViewedPost->title ?? 'Chưa có dữ liệu' }}
+                        </p>
+                    </div>
+                    <div class="p-3 bg-purple-100 rounded-full">
+                        <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m4-4H7a2 2 0 00-2 2v8a2 2 0 002 2h10a2 2 0 002-2v-8a2 2 0 00-2-2z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <p class="text-sm text-gray-600">Lượt xem: <span
+                            class="font-bold">{{ $mostViewedPost->view ?? 0 }}</span></p>
+                    <p class="text-sm text-gray-600">Ngày đăng:
+                        <span
+                            class="font-bold">{{ $mostViewedPost->created_at->format('d/m/Y') ?? 'Không xác định' }}</span>
+                    </p>
+                </div>
+            </div>
 
             {{-- Browser & Device Stats --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
@@ -139,48 +166,129 @@
                 // Biểu đồ truy cập
                 Highcharts.chart('visitChart', {
                     chart: {
-                        type: 'line'
+                        type: 'line',
+                        height: 300
                     },
                     title: {
-                        text: 'Lượt truy cập trong 30 ngày'
+                        text: `Thống kê truy cập tháng: ${@json($statistics['currentMonth'])} - ${@json($statistics['currentYear'])}`,
+                        align: 'center',
+                        style: {
+                            fontSize: '16px',
+                            fontWeight: 'bold'
+                        }
                     },
                     xAxis: {
-                        categories: @json($statistics['dates']) // Truy cập vào 'dates' trong mảng statistics
+                        categories: @json($statistics['dates']), // Lấy mảng ngày từ statistics
+                        tickInterval: 1,
+                        gridLineWidth: 1,
+                        gridLineColor: '#F0F0F0',
+                        labels: {
+                            style: {
+                                fontSize: '11px'
+                            }
+                        }
                     },
                     yAxis: {
                         title: {
-                            text: 'Lượt truy cập'
+                            text: 'Số người truy cập',
+                            style: {
+                                fontSize: '12px'
+                            }
+                        },
+                        min: 0,
+                        max: 60,
+                        tickInterval: 10,
+                        gridLineColor: '#F0F0F0',
+                        labels: {
+                            style: {
+                                fontSize: '11px'
+                            }
                         }
+                    },
+                    tooltip: {
+                        shared: true,
+                        useHTML: true,
+                        headerFormat: '<span style="font-size: 12px">{point.key}</span><br/>',
+                        pointFormat: 'Tổng : <b>{point.y}</b> Lượt truy cập',
+                        backgroundColor: '#FFFFFF',
+                        borderWidth: 1,
+                        borderColor: '#DCDBDB',
+                        shadow: true,
+                        style: {
+                            padding: '10px'
+                        }
+                    },
+                    plotOptions: {
+                        line: {
+                            color: '#3B82F6',
+                            lineWidth: 2,
+                            marker: {
+                                enabled: true,
+                                radius: 4,
+                                symbol: 'circle',
+                                fillColor: '#3B82F6',
+                                lineWidth: 2,
+                                lineColor: '#3B82F6'
+                            },
+                            states: {
+                                hover: {
+                                    lineWidth: 2
+                                }
+                            },
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function() {
+                                    return this.y === 0 ? '' : this.y.toFixed(1);
+                                },
+                                style: {
+                                    fontSize: '10px'
+                                }
+                            }
+                        }
+                    },
+                    legend: {
+                        enabled: false
                     },
                     series: [{
                         name: 'Lượt truy cập',
-                        data: @json($statistics['visitCounts']) // Truy cập vào 'visitCounts' trong mảng statistics
+                        data: @json($statistics['visitCounts']) // Lấy mảng số liệu từ statistics
                     }],
                     credits: {
                         enabled: false
                     }
                 });
 
-                // Xử lý thay đổi khoảng thời gian
+                // Xử lý sự kiện thay đổi period
                 document.getElementById('chartPeriod').addEventListener('change', function(e) {
                     const period = e.target.value;
-                    fetch(`/admin/analytics/chart-data?period=${period}`)
-                        .then(response => {
-                            if (!response.ok) throw new Error('Network response was not ok');
-                            return response.json();
-                        })
+                    fetch(`/admin/dashboard/chart-data?period=${period}`)
+                        .then(response => response.json())
                         .then(data => {
-                            visitChart.update({
+                            chart.update({
                                 xAxis: {
-                                    categories: data.dates
+                                    categories: range(1, period)
                                 },
                                 series: [{
-                                    data: data.visitCounts
-                                }]
-                            }, true);
+                                    data: data.visits
+                                }],
+                                title: {
+                                    text: `Thống kê truy cập ${period === '24' ? '24 giờ' : period === '7' ? 'tuần' : 'tháng'}: ${@json($statistics['currentMonth'])}-${@json($statistics['currentYear'])}`,
+                                    align: 'center',
+                                    style: {
+                                        fontSize: '16px',
+                                        fontWeight: 'bold'
+                                    }
+                                }
+                            });
                         })
-                        .catch(error => console.error('Fetch error:', error));
+                        .catch(error => console.error('Error:', error));
                 });
+                // Hàm trợ giúp để tạo phạm vi
+                function range(start, end) {
+                    return Array.from({
+                        length: (end - start + 1)
+                    }, (_, i) => start + i);
+                }
 
                 // Biểu đồ trình duyệt
                 Highcharts.chart('browserChart', {
@@ -237,6 +345,16 @@
                 });
 
             });
+
+
+            // window.addEventListener('beforeunload', function(event) {
+            //     // Gửi yêu cầu AJAX tới server để ghi nhận lượt thoát
+            //     navigator.sendBeacon('/api/track-exit', {
+            //         session_id: localStorage.getItem('session_id') || '',
+            //         ip_address: userIpAddress, // Bạn cần lấy IP từ backend hoặc một API
+            //         user_agent: navigator.userAgent,
+            //     });
+            // });
         </script>
     @endpush
 @endsection

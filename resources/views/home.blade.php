@@ -1,3 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    {{-- <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:title" content="{{ $post->title }}" />
+    <meta property="og:description" content="{{ Str::limit(strip_tags($post->content), 150) }}" />
+    <meta property="og:image" content="{{ asset('storage/' . $post->image) }}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="My Blog" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{ $post->title }}" />
+    <meta name="twitter:description" content="{{ Str::limit(strip_tags($post->content), 150) }}" />
+    <meta name="twitter:image" content="{{ asset('storage/' . $post->image) }}" />
+    <meta name="twitter:site" content="@YourTwitterHandle" /> --}}
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Trang Chủ</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/min/tiny-slider.js"></script>
+    <style>
+        .hover-scale {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+
+        .custom-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .slider-container {
+            position: relative;
+            height: 500px;
+        }
+
+        .slider-item {
+            position: relative;
+            height: 500px;
+        }
+
+        .slider-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            padding: 2rem;
+            color: white;
+        }
+
+        .tns-nav {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .tns-nav button {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            margin: 0 4px;
+            border: none;
+        }
+
+        .tns-nav button.tns-nav-active {
+            background: white;
+        }
+
+        /* Back to top */
+        #backToTop {
+            background: linear-gradient(45deg, #82da85, #81c784);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 50;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        #backToTop.show {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        #backToTop.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+        }
+
+        #backToTop:hover {
+            background: linear-gradient(45deg, #388e3c, #66bb6a);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
 <body class="bg-gray-100">
     <div class="min-h-screen flex flex-col">
         @include('home.nav')
@@ -5,6 +112,7 @@
         <div class="slider-container mb-8">
             <div class="my-slider">
                 @if (isset($featuredPosts) && $featuredPosts->count())
+
                     @foreach ($featuredPosts->take(5) as $slide)
                         <div class="slider-item">
                             <img src="{{ asset('storage/' . $slide->image) }}" class="w-full h-full object-cover"
@@ -15,7 +123,8 @@
                                         Nổi bật
                                     </span>
                                     <h2 class="text-3xl font-bold mb-2">{{ $slide->title }}</h2>
-                                    <p class="text-gray-200 mb-4">{{ Str::limit(strip_tags($slide->content), 150) }}</p>
+                                    <p class="text-gray-200 mb-4">{{ Str::limit(strip_tags($slide->content), 150) }}
+                                    </p>
                                     <a href="{{ route('posts.post_detail', ['id' => $slide->id, 'slug' => $slide->slug]) }}"
                                         class="bg-white text-gray-900 px-6 py-2 rounded-full inline-block hover:bg-gray-100 transition duration-300">
                                         Đọc thêm
@@ -34,11 +143,7 @@
                 <!-- Left Content -->
                 <div class="lg:w-2/3">
                     {{-- Content Ad --}}
-                    @if ($contentAd = App\Models\Ad::where('position', 'content')->where('status', 1)->whereDate('start_date', '<=', now())->whereDate('end_date', '>=', now())->first())
-                        <a href="{{ $contentAd->url }}">
-                            <img src="{{ asset('uploads/ads/' . $contentAd->image) }}" alt="{{ $contentAd->title }}">
-                        </a>
-                    @endif
+                    <x-ad-banner position="content" />
 
                     <!-- Tin Mới Nhất -->
                     <div class="mb-12">
@@ -75,14 +180,25 @@
                                                 <p class="text-gray-600 leading-relaxed mb-4">
                                                     {!! Str::limit(strip_tags($post->content), 200) !!}
                                                 </p>
+
                                                 <div class="flex items-center">
-                                                    <img src="https://via.placeholder.com/40"
-                                                        class="w-10 h-10 rounded-full mr-3" alt="Author">
-                                                    <div>
-                                                        <p class="font-medium text-gray-800">Tác giả</p>
-                                                        <p class="text-sm text-gray-500">Quản trị viên</p>
-                                                    </div>
+                                                    @if ($post->user)
+                                                        <img src="{{ $post->user->image ? asset('storage/' . $post->user->image) : 'https://via.placeholder.com/40' }}"
+                                                            class="w-10 h-10 rounded-full mr-3" alt="Author">
+                                                        <div>
+                                                            <p class="font-medium text-gray-800">
+                                                                {{ $post->user->name }}</p>
+                                                            <p class="text-sm text-gray-500">
+                                                                {{ $post->user->role == 2 ? 'Quản trị viên' : ($post->user->role == 3 ? 'Tác giả' : 'Người dùng') }}
+                                                            </p>
+                                                        </div>
+                                                    @else
+                                                        <div>
+                                                            <p class="text-gray-500 italic">Không có tác giả</p>
+                                                        </div>
+                                                    @endif
                                                 </div>
+
                                             </div>
                                         </div>
                                     </a>
@@ -99,20 +215,56 @@
         </div>
 
         @include('home.footer')
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                var slider = tns({
-                    container: '.my-slider',
-                    items: 1,
-                    slideBy: 'page',
-                    autoplay: true,
-                    autoplayButtonOutput: false,
-                    controls: false,
-                    nav: true,
-                    autoplayTimeout: 5000,
-                    speed: 400,
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var slider = tns({
+                container: '.my-slider',
+                items: 1,
+                slideBy: 'page',
+                autoplay: true,
+                autoplayButtonOutput: false,
+                controls: false,
+                nav: true,
+                autoplayTimeout: 5000,
+                speed: 400,
+            });
+        });
+
+        if (window.location.hash === '#_=_') {
+            history.replaceState ?
+                history.replaceState(null, null, window.location.href.split('#')[0]) :
+                window.location.hash = '';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const backToTopButton = document.getElementById('backToTop');
+
+            // Hiển thị nút khi cuộn trang xuống dưới 300px
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    backToTopButton.classList.remove('hidden');
+                    backToTopButton.classList.add('show');
+                } else {
+                    backToTopButton.classList.remove('show');
+                    backToTopButton.classList.add('hidden');
+                }
+            });
+
+            // Cuộn lên đầu trang khi nhấn nút
+            backToTopButton.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
                 });
             });
-        </script>
-    </div>
+        });
+    </script>
+    <button id="backToTop"
+        class="hidden fixed bottom-6 right-6 p-2 rounded shadow-lg transition-transform transform hover:scale-110 focus:outline-none">
+        <i class="fas fa-arrow-up text-white text-lg"></i>
+    </button>
+
+
 </body>

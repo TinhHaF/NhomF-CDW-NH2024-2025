@@ -61,13 +61,12 @@ class CommentController extends Controller
             return $this->handleException($e);
         }
     }
-
     public function Comments($id)
     {
         try {
             // Giải mã comment_id
             $comment_id = IdEncoder::decode($id);
-            
+
             // Lấy bài viết và tất cả các bình luận kèm theo thông tin người dùng
             $post = Post::findOrFail($comment_id);
 
@@ -119,7 +118,6 @@ class CommentController extends Controller
             return $this->handleException($e);
         }
     }
-
     public function delete($comment_id)
     {
         try {

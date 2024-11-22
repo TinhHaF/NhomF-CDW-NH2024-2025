@@ -108,8 +108,13 @@
 
                                 <td class="py-2 px-4 border-b text-left">
                                     <a href="javascript:void(0)"
-                                        onclick="openModal('{{ $encodeId($post->id) }}', '{{ $post->title }}', '{{ $post->content }}', '{{ asset('storage/' . $post->image) }}')">
-                                        <div>{{ $post->title }}</div>
+                                        onclick="openModal('{{ $encodeId($post->id) }}', 
+                                        '{{ $post->title }}', 
+                                        `{{ $post->content }}`, 
+                                        `{{ isset($post->image) && file_exists(public_path('storage/' . $post->image)) ? asset('storage/' . $post->image) : asset('images/no-image-available.jpg') }}`)">
+                                        <div class="text-blue-600 hover:text-blue-800 font-semibold">
+                                            {{ $post->title }}
+                                        </div>
                                     </a>
 
                                     <div class="text-sm text-gray-500 mb-2">Ngày tạo:
@@ -124,13 +129,16 @@
                                             title="Sửa bài viết">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
-                                        <form action="{{ route('posts.destroy', $encodeId($post->id)) }}" method="POST">
+                                        <form action="{{ route('posts.destroy', $encodeId($post->id)) }}" method="POST"
+                                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?')"
+                                            style="display: inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-500" title="Xóa bài viết">
                                                 <i class="fas fa-trash"></i> Delete
                                             </button>
                                         </form>
+
                                     </div>
                                 </td>
                                 <form action="{{ route('posts.updateStatus', $encodeId($post->id)) }}" method="POST">
@@ -188,30 +196,30 @@
                 </div>
 
             </div>
-            <!-- Modal -->
+            <!-- Modal Overlay -->
             <div id="postModal"
-                class="fixed inset-0 hidden bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-                <div class="bg-white rounded-lg shadow-lg w-full md:w-1/3 max-w-lg">
+                class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden z-50 flex items-center justify-center">
+                <!-- Modal Container -->
+                <div class="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3">
                     <!-- Modal Header -->
-                    <div class="flex justify-between items-center p-4 border-b">
-                        <h3 id="modalPostTitle" class="text-xl font-bold text-gray-800 truncate"></h3>
+                    <div class="flex justify-between items-center border-b p-4">
+                        <h2 id="modalPostTitle" class="text-xl font-semibold text-gray-800"></h2>
                         <button onclick="closeModal()" class="text-gray-500 hover:text-gray-800 text-lg">&times;</button>
                     </div>
-
                     <!-- Modal Body -->
                     <div class="p-4">
-                        <!-- Post Image -->
-                        <div class="mb-4">
-                            <img id="modalPostImage" class="w-full h-48 object-cover rounded-lg" alt="Post Image" />
-                        </div>
-
-                        <!-- Post Content -->
-                        <p id="modalPostContent" class="text-gray-700 text-sm leading-relaxed"></p>
+                        <img id="modalPostImage" class="w-full rounded-md mb-4" src="" alt="Post Image">
+                        <div id="modalPostContent" class="text-gray-700"></div>
+                    </div>
+                    <!-- Modal Footer -->
+                    <div class="flex justify-end p-4 border-t">
+                        <button onclick="closeModal()"
+                            class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">
+                            Close
+                        </button>
                     </div>
                 </div>
             </div>
-
-
         </div>
         <script>
             const bulkDeleteSystem = {
@@ -252,23 +260,7 @@
                 });
             });
 
-            function openModal(encodedId, title, content, imageUrl) {
-                // Set the modal content
-                document.getElementById('modalPostTitle').innerText = title;
-                document.getElementById('modalPostContent').innerHTML = content; // Use innerHTML to display HTML content
-
-                // Set the image source
-                const modalImage = document.getElementById('modalPostImage');
-                modalImage.src = imageUrl || '/images/no-image-available.jpg'; // Default image if no imageUrl is provided
-
-                // Show the modal by removing the 'hidden' class
-                document.getElementById('postModal').classList.remove('hidden');
-            }
-
-            function closeModal() {
-                // Hide the modal by adding the 'hidden' class
-                document.getElementById('postModal').classList.add('hidden');
-            }
+            
         </script>
     </body>
 @endsection

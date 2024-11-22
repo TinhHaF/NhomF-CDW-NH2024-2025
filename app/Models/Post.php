@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Spatie\Tags\HasTags;
 
 // use Laravel\Scout\Searchable;
 
@@ -15,7 +16,7 @@ class Post extends Model
 {
 
     // use Searchable;
-    use HasFactory;
+    use HasFactory, HasTags;
     protected $fillable = [
         'title',
         'content',
@@ -27,13 +28,17 @@ class Post extends Model
         'slug',
         'seo_title',
         'seo_description',
-        'seo_keywords'
+        'seo_keywords', 
+        'view'
     ];
     public function category()
     {
         return $this->belongsTo(Category::class, 'id');
     }
-
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'post_tags');
+    }
 
     /**
      * Thiết lập quan hệ với model Comment.

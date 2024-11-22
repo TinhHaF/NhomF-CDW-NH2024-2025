@@ -75,6 +75,7 @@
                                         class="w-10 h-10 rounded-full border">
                                 @endif
 
+
                             </td>
                             <td class="px-6 py-4 text-center">{{ $user->created_at->format('d/m/Y') }}</td>
                             <td class="px-6 py-4">

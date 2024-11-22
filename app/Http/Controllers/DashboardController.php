@@ -3,85 +3,107 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Logo;
-use App\Services\VisitorTrackingService;
-use Illuminate\Http\JsonResponse;
+use App\Models\Post;
+use App\Models\Visit;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    protected $visitorService;
-
-    public function __construct(VisitorTrackingService $visitorService)
+    public function index(Request $request)
     {
-        $this->visitorService = $visitorService;
-    }
+        // Lấy ngày hiện tại
+        $currentDate = now();
+        $startDate = $currentDate->copy()->startOfMonth();
+        $endDate = $currentDate->copy()->endOfMonth();
 
-    public function index()
-    {
-        $statistics = $this->visitorService->getStatistics();
+        // Lấy dữ liệu visits trong tháng hiện tại
+        $visits = Visit::whereBetween('visited_at', [$startDate, $endDate])
+            ->selectRaw('DATE(visited_at) as date, COUNT(*) as count')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
 
-        // Thêm browser stats
-        $statistics['browserStats'] = [
-            ['name' => 'Chrome', 'y' => 45],
-            ['name' => 'Firefox', 'y' => 25],
-            ['name' => 'Safari', 'y' => 20],
-            ['name' => 'Others', 'y' => 10]
+        // Tạo mảng dates và visitCounts
+        $dates = [];
+        $visitCounts = [];
+        $period = new \DatePeriod($startDate, new \DateInterval('P1D'), $endDate);
+
+        foreach ($period as $date) {
+            $dateStr = $date->format('d/m');
+            $count = $visits->where('date', $date->format('Y-m-d'))->first()?->count ?? 0;
+            $dates[] = $dateStr;
+            $visitCounts[] = $count;
+        }
+
+        $statistics = [
+            'onlineUsers' => Visit::online()->count(),
+            'weeklyVisits' => Visit::thisWeek()->count(),
+            'monthlyVisits' => Visit::thisMonth()->count(),
+            'totalVisits' => Visit::count(),
+            'dates' => $dates,
+            'visitCounts' => $visitCounts,
+            'browserStats' => $this->formatForHighcharts(Visit::getBrowserStats()),
+            'deviceStats' => $this->formatForHighcharts(Visit::getDeviceStats()),
+            'currentMonth' => $currentDate->format('m'),
+            'currentYear' => $currentDate->format('Y')
         ];
+        // Lấy bài viết có lượt xem cao nhất
+        $mostViewedPost = Post::orderBy('view', 'desc')->first();
 
-        // Thêm device stats
-        $statistics['deviceStats'] = [
-            ['name' => 'Desktop', 'y' => 60],
-            ['name' => 'Mobile', 'y' => 35],
-            ['name' => 'Tablet', 'y' => 5]
-        ];
-
-        // Lấy dữ liệu lượt truy cập trong 30 ngày
-        $data = $this->visitorService->getVisitsByPeriod(30);
-        $statistics['dates'] = $data->pluck('date')->toArray();
-        $statistics['visitCounts'] = $data->pluck('count')->toArray();
-
-        // Logo
-        $logo = Logo::latest()->first();
-        $logoPath = $logo ? $logo->path : 'images/no-image-available';
-        
-        // Truyền dữ liệu vào view
-        return view('admin.dashboard.dashboard', compact('statistics', 'logoPath'));
+        // Gọi trackOnlineStatus để cập nhật trạng thái online của người dùng
+        Visit::trackOnlineStatus($request);
+        return view('admin.dashboard', compact('statistics', 'mostViewedPost'));
     }
-
 
     public function getChartData(Request $request)
     {
-        $period = $request->get('period', 30);
-        $data = $this->visitorService->getVisitsByPeriod($period);
+        $period = $request->input('period');
+        $currentDate = now();
+
+        if ($period == '24') {
+            // Lấy dữ liệu 24 giờ
+            $startDate = $currentDate->copy()->subHours(24);
+            $endDate = $currentDate;
+            $groupBy = 'HOUR(visited_at)';
+        } elseif ($period == '7') {
+            // Lấy dữ liệu 7 ngày
+            $startDate = $currentDate->copy()->subDays(7);
+            $endDate = $currentDate;
+            $groupBy = 'DATE(visited_at)';
+        } else {
+            // Lấy dữ liệu tháng hiện tại
+            $startDate = $currentDate->copy()->startOfMonth();
+            $endDate = $currentDate->copy()->endOfMonth();
+            $groupBy = 'DATE(visited_at)';
+        }
+
+        $visits = Visit::whereBetween('visited_at', [$startDate, $endDate])
+            ->selectRaw("$groupBy as date, COUNT(*) as count")
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
 
         return response()->json([
-            'dates' => $data->pluck('date'),
-            'visitCounts' => $data->pluck('count')
+            'visits' => $visits->pluck('count'),
+            'dates' => $visits->pluck('date')
         ]);
     }
 
-    // public function getOnlineUsers(): JsonResponse
-    // {
-    //     $onlineUsers = $this->visitorService->getOnlineUsers();
-    //     return response()->json(['count' => $onlineUsers]);
-    // }
+    private function getLastNDaysDates(int $days): array
+    {
+        return collect(range($days - 1, 0))
+            ->map(fn($day) => now()->subDays($day)->format('d/m'))
+            ->toArray();
+    }
 
-    // public function getWeeklyVisits(): JsonResponse
-    // {
-    //     $weeklyVisits = $this->visitorService->getWeeklyVisits();
-    //     return response()->json(['count' => $weeklyVisits]);
-    // }
-
-    // public function getMonthlyVisits(): JsonResponse
-    // {
-    //     $monthlyVisits = $this->visitorService->getMonthlyVisits();
-    //     return response()->json(['count' => $monthlyVisits]);
-    // }
-
-    // public function getTotalVisits(): JsonResponse
-    // {
-    //     $totalVisits = $this->visitorService->getTotalVisits();
-    //     return response()->json(['count' => $totalVisits]);
-    // }
+    private function formatForHighcharts(array $data): array
+    {
+        return collect($data)
+            ->map(fn($value, $key) => [
+                'name' => ucfirst($key),
+                'y' => $value
+            ])
+            ->values()
+            ->toArray();
+    }
 }

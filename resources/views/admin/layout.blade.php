@@ -231,8 +231,7 @@
         CKEDITOR.replace('editor', {
             height: 400,
             removeButtons: 'PasteFromWord',
-            //Cấu hình thêm cho CKEditor nếu cần
-            filebrowserImageUploadUrl: '/filemanager/upload?type=Images&_token={{ csrf_token() }}', // URL tải ảnh lên máy chủ
+            filebrowserImageUploadUrl: '/filemanager/upload?_token={{ csrf_token() }}', // URL tải ảnh lên máy chủ
             filebrowserImageBrowseUrl: '/filemanager?type=Images', // URL duyệt ảnh từ máy chủ
             filebrowserBrowseUrl: '/filemanager?type=Files', // URL duyệt các tệp khác
             filebrowserUploadUrl: '/filemanager/upload?type=Files&_token={{ csrf_token() }}' // URL tải các tệp khác lên máy chủ
@@ -276,7 +275,8 @@
     </script>
 
 
-
+    <link href = "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel = "stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{ asset('js/custom.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>

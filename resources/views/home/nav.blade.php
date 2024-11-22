@@ -1,69 +1,3 @@
-<!DOCTYPE html>
-<html lang="vi">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Trang Chủ</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/min/tiny-slider.js"></script>
-    <style>
-        .hover-scale {
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .hover-scale:hover {
-            transform: scale(1.02);
-        }
-
-        .custom-shadow {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        .slider-container {
-            position: relative;
-            height: 500px;
-        }
-
-        .slider-item {
-            position: relative;
-            height: 500px;
-        }
-
-        .slider-content {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-            padding: 2rem;
-            color: white;
-        }
-
-        .tns-nav {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-        }
-
-        .tns-nav button {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            margin: 0 4px;
-            border: none;
-        }
-
-        .tns-nav button.tns-nav-active {
-            background: white;
-        }
-    </style>
-</head>
 <div class="navbar bg-white border-b relative z-50">
     {{-- Header Ad --}}
     @if ($headerAd = App\Models\Ad::where('position', 'header')->where('status', 1)->whereDate('start_date', '<=', now())->whereDate('end_date', '>=', now())->first())
@@ -86,7 +20,7 @@
             <div class="flex items-center space-x-4">
                 <a href="#" class="hover:text-blue-200 transition-colors"><i class="fab fa-facebook-f"></i></a>
                 <a href="#" class="hover:text-blue-200 transition-colors"><i class="fab fa-twitter"></i></a>
-                <a href="" class="hover:text-blue-200 transition-colors"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" class="hover:text-blue-200 transition-colors"><i class="fab fa-linkedin-in"></i></a>
             </div>
         </div>
     </div>
@@ -116,7 +50,7 @@
                     <span id="currentDate" class="text-sm"></span>
                 </div>
                 <!-- Search Bar -->
-                <div class="relative flex max-w-xl mt-4">
+                <div class="relative flex max-w-xl">
                     <div class="relative">
                         @include('home.search')
                     </div>
@@ -128,20 +62,26 @@
                 $user = Auth::user();
             @endphp
             <div class="mr-4">
-            @include('home.notification')
+                @include('home.notification')
             </div>
-          
+
             @include('home.setting')
         </div>
     </div>
+</div>
 
-    <!-- Optional Navigation Menu -->
-    <div class="border-t hidden md:block">
-        @include('home.categories')
-    </div>
+<!-- Optional Navigation Menu -->
+<div class="border-t hidden md:block">
+    @include('home.categories')
+</div>
 </div>
 
 <script>
+    // Xử lý menu di động
+    document.getElementById('mobile-menu-toggle').addEventListener('click', function () {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('hidden');
+    });
     document.addEventListener('DOMContentLoaded', function () {
         // Hiển thị ngày hiện tại
         function formatDate() {
@@ -179,14 +119,4 @@
             userMenu.classList.add('hidden', 'opacity-0', 'scale-95');
         }
     });
-
-    
-
-    if (window.location.hash === '#_=_') {
-        history.replaceState ?
-            history.replaceState(null, null, window.location.href.split('#')[0]) :
-            window.location.hash = '';
-    }
 </script>
-
-</html>

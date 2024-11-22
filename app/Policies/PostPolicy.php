@@ -69,6 +69,6 @@ class PostPolicy
      */
     public function delete(User $user)
     {
-        return $user->role === '2'; // Chỉ admin mới có thể xóa bài viết
+        return $user->role === '2' ; // Chỉ admin mới có thể xóa bài viết
     }
 }

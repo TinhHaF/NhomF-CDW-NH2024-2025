@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('url'); // Liên kết khi click vào quảng cáo
             $table->string('position'); // Vị trí quảng cáo
             $table->boolean('status')->default(1); // Trạng thái (1: kích hoạt, 0: vô hiệu)
-            $table->date('start_date')->nullable(); // Ngày bắt đầu
-            $table->date('end_date')->nullable(); // Ngày kết thúc
+            $table->datetime('start_date')->nullable(); // Ngày bắt đầu
+            $table->datetime('end_date')->nullable(); // Ngày kết thúc
             $table->timestamps();
         });
     }

@@ -1,8 +1,30 @@
 @extends('admin.layout')
 
 @section('content')
-    <div class="min-h-screen bg-gradient-to-b from-gray-200 to-white py-8">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row m-4">
+        <div class="w-full md:w-5/5">
+            <nav class="flex mb-4" aria-label="Breadcrumb">
+                <ol class="flex items-center space-x-2">
+                    <li>
+                        <div class="flex items-center">
+                            <a href="{{ route('admin.dashboard') }}"
+                                class="text-sm font-medium text-blue-600 hover:text-blue-700">Bảng điều khiển</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium">/</span>
+                            <span class="ml-2 text-sm font-medium text-gray-700">Quảng cáo</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium">/</span>
+                            <span class="ml-2 text-sm font-medium text-gray-700">Thêm mới quảng cáo</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
             <!-- Header Section -->
             <div class="flex items-center justify-between mb-8">
                 <div>
@@ -35,16 +57,8 @@
                                         </label>
                                         <div class="mt-1 relative rounded-md shadow-sm">
                                             <input type="text" name="title" id="title"
-                                                class="block w-full pr-10 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                class="block w-full pr-10 border-2 p-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700 placeholder-gray-500"
                                                 placeholder="Nhập tiêu đề quảng cáo">
-                                            <div
-                                                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                                </svg>
-                                            </div>
                                         </div>
                                     </div>
 
@@ -52,7 +66,7 @@
                                     <div class="sm:col-span-2">
                                         <label class="block text-sm font-medium text-gray-700">Hình ảnh quảng cáo</label>
                                         <div
-                                            class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-indigo-500 transition-colors duration-200">
+                                            class="mt-1 flex justify-center px-6 py-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-indigo-500 transition-colors duration-200">
                                             <div class="space-y-1 text-center">
                                                 <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor"
                                                     fill="none" viewBox="0 0 48 48">
@@ -75,7 +89,6 @@
                                                     <p class="pl-1">hoặc kéo thả</p>
                                                 </div>
                                                 <p class="text-xs text-gray-500">PNG, JPG, GIF tối đa 10MB</p>
-
                                             </div>
                                         </div>
                                     </div>
@@ -95,7 +108,7 @@
                                                 </svg>
                                             </div>
                                             <input type="url" name="url" id="url"
-                                                class="block w-full pl-10 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                class="block w-full pl-10 border-2 p-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700 placeholder-gray-500"
                                                 placeholder="https://example.com">
                                         </div>
                                     </div>
@@ -106,7 +119,7 @@
                                             Vị trí hiển thị
                                         </label>
                                         <select id="position" name="position"
-                                            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-lg">
+                                            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-700">
                                             <option value="header">Header</option>
                                             <option value="sidebar">Sidebar</option>
                                             <option value="footer">Footer</option>
@@ -119,55 +132,42 @@
                                         <label for="status" class="block text-sm font-medium text-gray-700">
                                             Trạng thái
                                         </label>
-                                        <div class="mt-1">
-                                            <div class="relative inline-block w-full">
-                                                <select id="status" name="status"
-                                                    class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-lg">
-                                                    <option value="1">Kích hoạt</option>
-                                                    <option value="0">Vô hiệu</option>
-                                                </select>
-                                            </div>
+                                        <div class="relative inline-block w-full">
+                                            <select id="status" name="status"
+                                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-700">
+                                                <option value="1">Kích hoạt</option>
+                                                <option value="0">Vô hiệu</option>
+                                            </select>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Schedule Section -->
-                            <div class="pt-6">
-                                <h3 class="text-lg font-medium text-gray-900 mb-4">Lịch trình hiển thị</h3>
-                                <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                            <!-- Date Selection Section -->
+                            <div class="space-y-8 mt-6">
+                                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                                     <div>
                                         <label for="start_date" class="block text-sm font-medium text-gray-700">
                                             Ngày bắt đầu
                                         </label>
-                                        <div class="mt-1 relative rounded-md shadow-sm">
-                                            <input type="date" name="start_date" id="start_date"
-                                                class="block w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                                        </div>
+                                        <input type="date" id="start_date" name="start_date"
+                                            class="mt-1 block w-full border-2 p-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                     </div>
-
                                     <div>
                                         <label for="end_date" class="block text-sm font-medium text-gray-700">
                                             Ngày kết thúc
                                         </label>
-                                        <div class="mt-1 relative rounded-md shadow-sm">
-                                            <input type="date" name="end_date" id="end_date"
-                                                class="block w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                                        </div>
+                                        <input type="date" id="end_date" name="end_date"
+                                            class="mt-1 block w-full border-2 p-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Form Actions -->
-                        <div class="pt-8 border-t border-gray-200 mt-8">
-                            <div class="flex justify-end space-x-3">
-                                <button type="button" onclick="window.history.back()"
-                                    class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                    Hủy bỏ
-                                </button>
+                            <!-- Submit Button -->
+                            <div class="mt-8 flex justify-end">
                                 <button type="submit"
-                                    class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
                                     Lưu quảng cáo
                                 </button>
                             </div>
@@ -177,19 +177,28 @@
             </div>
         </div>
     </div>
-    <!-- JavaScript to preview the image -->
-    <script>
-        function previewImage(event) {
-            const fileInput = event.target;
-            const preview = document.getElementById('image-preview');
 
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.classList.remove('hidden'); // Show the preview image
-                };
-                reader.readAsDataURL(fileInput.files[0]);
+    <script>
+        // Cập nhật giá trị min cho trường ngày bắt đầu và kết thúc để không cho chọn ngày trong quá khứ
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('start_date').setAttribute('min', today);
+            document.getElementById('end_date').setAttribute('min', today);
+        });
+
+        // Hàm hiển thị ảnh khi tải lên
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function() {
+                const preview = document.getElementById('image-preview');
+                preview.src = reader.result;
+                preview.classList.remove('hidden');
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
             }
         }
     </script>

@@ -2,77 +2,140 @@
 
 namespace App\Helpers;
 
+use Exception;
+use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
+
 class IdEncoder_2
 {
-    // Khóa mã hóa - nên lưu trong config hoặc .env
-    private static string $key = 'your-secret-key-here';
+    private static string $secretKey;
+    private static string $encryptionKey;
+    const CIPHER_METHOD = 'aes-256-cbc';
 
-    // Salt để tăng độ phức tạp - nên lưu trong config hoặc .env  
-    private static string $salt = 'random-salt-string';
-
-    // Độ dài chuỗi hash tối thiểu
-    private static int $minHashLength = 12;
-
-    /**
-     * Mã hóa ID thành chuỗi hash không đoán được
-     */
-    public static function encode(int $id): string
+    public static function configure(string $secretKey, string $encryptionKey)
     {
-        // Thêm salt và timestamp để tránh các hash giống nhau
-        $timestamp = time();
-        $data = $id . self::$salt . $timestamp;
-
-        // Tạo HMAC để đảm bảo tính toàn vẹn
-        $hmac = hash_hmac('sha256', $data, self::$key);
-
-        // Kết hợp các thành phần và mã hóa base64
-        $combined = $id . '|' . $timestamp . '|' . $hmac;
-        $encoded = base64_encode($combined);
-
-        // Thay thế các ký tự đặc biệt để sử dụng an toàn trên URL
-        return strtr($encoded, '+/', '-_');
+        self::$secretKey = $secretKey;
+        self::$encryptionKey = $encryptionKey;
     }
 
-    /**
-     * Giải mã chuỗi hash để lấy ID gốc
-     * @throws \InvalidArgumentException
-     */
-    public static function decode(string $hash): int
+    public static function encode(int $id): string
     {
         try {
-            // Khôi phục các ký tự đặc biệt từ URL safe
-            $hash = strtr($hash, '-_', '+/');
+            // Tăng tính ngẫu nhiên
+            $nonce = bin2hex(random_bytes(4));
+            $timestamp = time();
 
-            // Giải mã base64
-            $decoded = base64_decode($hash);
+            // Kết hợp thông tin
+            $payload = json_encode([
+                'id' => $id,
+                'nonce' => $nonce,
+                'timestamp' => $timestamp
+            ]);
 
-            // Tách các thành phần
-            [$id, $timestamp, $hmac] = explode('|', $decoded);
+            // Mã hóa payload
+            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+            $encrypted = openssl_encrypt(
+                $payload,
+                'aes-256-cbc',
+                self::$encryptionKey,
+                0,
+                $iv
+            );
 
-            // Xác thực HMAC
-            $data = $id . self::$salt . $timestamp;
-            $expectedHmac = hash_hmac('sha256', $data, self::$key);
+            // Tạo chữ ký
+            $signature = hash_hmac('sha256', $encrypted, self::$secretKey);
 
-            if (!hash_equals($expectedHmac, $hmac)) {
-                throw new \InvalidArgumentException('Invalid hash');
-            }
+            // Kết hợp các thành phần
+            $encodedData = base64_encode($iv . $encrypted . $signature);
 
-            return (int) $id;
-        } catch (\Exception $e) {
-            throw new \InvalidArgumentException('Invalid hash format');
+            // Làm an toàn cho URL
+            return strtr($encodedData, '+/', '-_');
+        } catch (Exception $e) {
+            throw new InvalidArgumentException('Mã hóa ID thất bại');
         }
     }
 
-    /**
-     * Kiểm tra tính hợp lệ của hash
-     */
-    public static function isValid(string $hash): bool
+    public static function decode(string $encodedId, int $expirationTime = 3600): int
+    {
+        if (empty($encodedId)) {
+            throw new InvalidArgumentException('Encoded ID không được để trống');
+        }
+
+        try {
+            Log::info('Bắt đầu giải mã ID', ['encoded_id' => $encodedId]);
+
+            // Giải mã Base64 và kiểm tra độ dài dữ liệu
+            $decodedData = base64_decode(strtr($encodedId, '-_', '+/'));
+            if ($decodedData === false || strlen($decodedData) < 64) {
+                throw new InvalidArgumentException('Encoded ID không hợp lệ');
+            }
+
+            // Tách các thành phần từ dữ liệu
+            $ivLength = openssl_cipher_iv_length(self::CIPHER_METHOD);
+            $iv = substr($decodedData, 0, $ivLength);
+            $encryptedData = substr($decodedData, $ivLength, -64);
+            $signature = substr($decodedData, -64);
+
+            // Xác minh chữ ký
+            $computedSignature = hash_hmac('sha256', $encryptedData, self::$secretKey);
+            if (!hash_equals($signature, $computedSignature)) {
+                throw new InvalidArgumentException('Chữ ký không hợp lệ');
+            }
+
+            // Giải mã dữ liệu
+            $decrypted = openssl_decrypt(
+                $encryptedData,
+                self::CIPHER_METHOD,
+                self::$encryptionKey,
+                0,
+                $iv
+            );
+            if ($decrypted === false) {
+                throw new InvalidArgumentException('Giải mã dữ liệu thất bại');
+            }
+
+            // Phân tích payload
+            $payload = json_decode($decrypted, true);
+            if (!is_array($payload) || !isset($payload['id'], $payload['timestamp'])) {
+                throw new InvalidArgumentException('Cấu trúc payload không hợp lệ');
+            }
+
+            // Kiểm tra thời gian hết hạn
+            if (time() - $payload['timestamp'] > $expirationTime) {
+                throw new InvalidArgumentException('ID đã hết hạn');
+            }
+
+            // Ghi log thành công
+            Log::info('Giải mã ID thành công', [
+                'decoded_id' => $payload['id'],
+                'timestamp' => $payload['timestamp']
+            ]);
+
+            return $payload['id'];
+        } catch (Exception $e) {
+            // Ghi log lỗi bảo mật
+            Log::warning('Giải mã ID thất bại', [
+                'error' => $e->getMessage(),
+                'encoded_id' => $encodedId
+            ]);
+            throw new InvalidArgumentException('Giải mã ID thất bại');
+        }
+    }
+
+
+    public static function isValid(string $encodedId): bool
     {
         try {
-            self::decode($hash);
+            self::decode($encodedId);
             return true;
-        } catch (\Exception $e) {
+        } catch (InvalidArgumentException) {
             return false;
         }
     }
 }
+
+// Cấu hình mặc định
+IdEncoder_2::configure(
+    env('ID_SECRET_KEY', 'default-secret-key'),
+    env('ID_ENCRYPTION_KEY', 'default-encryption-key')
+);

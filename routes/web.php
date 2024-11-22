@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FacebookController;
 use App\Http\Controllers\LogoController;
 use Illuminate\Support\Facades\Route;
@@ -9,11 +10,9 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthorController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileManagerController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\SlugController;
-use App\Services\VisitorTrackingService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
@@ -60,12 +59,16 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/authors', [AuthorController::class, 'index']);
 Route::get('/category/{id}', [CategoryController::class, 'show'])->name('category.show');
 Route::get('/homepage/nav', [CategoryController::class, 'showCategory'])->name('posts.showCategory');
+Route::get('/posts/{post}', [PostController::class, 'showPostsSimilar'])->name('posts.show');
+
+Route::get('/tags/{id}', [PostController::class, 'postsByTag'])->name('posts.by_tag');
 
 // Middleware cho Admin và Author
 Route::middleware([AdministrationMiddleware::class])->group(function () {
     Route::prefix('admin')->group(function () {
         // Dashboard
         Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('/dashboard/chart-data', [DashboardController::class, 'getChartData']);
 
         // CRUD Posts với encoded IDs
         Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
@@ -82,6 +85,14 @@ Route::middleware([AdministrationMiddleware::class])->group(function () {
 
         // Quản lý categories
         Route::resource('categories', CategoryController::class);
+
+        // Quảng cáo
+        Route::get('/ads', [AdController::class, 'index'])->name('ads.index');
+        Route::get('/ads/create', [AdController::class, 'create'])->name('ads.create');
+        Route::post('/ads', [AdController::class, 'store'])->name('ads.store');
+        Route::get('/ads/{encodedId}/edit', [AdController::class, 'edit'])->name('ads.edit');
+        Route::put('/ads/{encodedId}', [AdController::class, 'update'])->name('ads.update');
+        Route::delete('/ads/{encodedId}', [AdController::class, 'destroy'])->name('ads.destroy');
     });
 });
 
@@ -112,13 +123,6 @@ Route::get('/admin/logo/upload', [LogoController::class, 'showUploadForm'])->nam
 Route::post('/admin/logo/upload', [LogoController::class, 'upload'])->name('logo.upload');
 Route::delete('/admin/logo/{id}', [LogoController::class, 'delete'])->name('logo.delete');
 
-// Routes cho analytics
-Route::get('/admin/analytics/chart-data', [DashboardController::class, 'getChartData']);
-Route::get('/online-users', [VisitorTrackingService::class, 'getOnlineUsers']);
-Route::get('/weekly-visits', [VisitorTrackingService::class, 'getWeeklyVisits']);
-Route::get('/monthly-visits', [VisitorTrackingService::class, 'getMonthlyVisits']);
-Route::get('/total-visits', [VisitorTrackingService::class, 'getTotalVisits']);
-
 // Route kiểm tra slug trùng lặp
 Route::post('/check-slug', function (Request $request) {
     $validator = Validator::make($request->all(), [
@@ -133,17 +137,6 @@ Route::post('/check-slug', function (Request $request) {
     ]);
 });
 
-// Quảng cáo cho trang web
-Route::middleware([AdminMiddleware::class])->group(function () {
-    Route::prefix('admin')->group(function () {
-        Route::get('/ads', [AdController::class, 'index'])->name('ads.index');
-        Route::get('/ads/create', [AdController::class, 'create'])->name('ads.create');
-        Route::post('/ads', [AdController::class, 'store'])->name('ads.store');
-        Route::get('/ads/{id}/edit', [AdController::class, 'edit'])->name('ads.edit');
-        Route::put('/ads/{id}', [AdController::class, 'update'])->name('ads.update');
-        Route::delete('/ads/{id}', [AdController::class, 'destroy'])->name('ads.destroy');
-    });
-});
 
 // Đăng nhập bằng facebook
 Route::get('login/facebook', [FacebookController::class, 'redirectToFacebook'])->name('login.facebook');
@@ -179,3 +172,8 @@ Route::get('posts/{id}', [PostController::class, 'show'])->name('posts.show');
 Route::post('/authors/{author}/follow', [AuthorController::class, 'follow'])->name('authors.follow');
 Route::delete('/authors/{author}/unfollow', [AuthorController::class, 'unfollow'])->name('authors.unfollow');
 Route::get('/authors/show/{authorId}', [AuthorController::class, 'show'])->name('authors.show');
+
+
+Route::get('/privacy-policy', function () {
+    return view('privacy-policy');
+});

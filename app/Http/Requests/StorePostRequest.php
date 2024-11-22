@@ -25,6 +25,8 @@ class StorePostRequest extends FormRequest
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_featured' => 'nullable|boolean', // Có thể là null, thêm nullable để cho phép
             'is_published' => 'nullable|boolean', // Có thể là null, thêm nullable để cho phép
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id'
         ];
     }
 

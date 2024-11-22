@@ -9,6 +9,7 @@
         "elasticsearch/elasticsearch": "^8.15",
         "http-interop/http-factory-guzzle": "^1.2",
         "intervention/image": "*",
+        "jenssegers/agent": "^2.6",
         "laravel/framework": "^11.9",
         "laravel/scout": "^10.11",
         "laravel/socialite": "^5.16",
