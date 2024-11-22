@@ -1,4 +1,5 @@
-<footer class="bg-gradient-to-r from-white-200 to-gray-900 text-black-200 pt-12 pb-8 border-t border-gray-300 shadow-lg">
+<footer
+    class="bg-gradient-to-r from-white-200 to-gray-900 text-black-200 pt-12 pb-8 border-t border-gray-300 shadow-lg">
     <div class="container mx-auto px-4">
         {{-- Footer Ad --}}
         <x-ad-banner position="footer" />
@@ -99,7 +100,8 @@
                         <form action="{{ route('subscribe') }}" method="POST" class="flex">
                             @csrf
                             <input type="email" name="email" placeholder="Email của bạn"
-                                class="bg-gray-700 text-gray-300 px-4 py-2 rounded-l focus:outline-none focus:ring-2 focus:ring-blue-500 flex-grow" required>
+                            class="bg-gray-700 text-gray-300 px-4 py-2 rounded-l focus:outline-none focus:ring-2 focus:ring-blue-500 flex-grow"
+                            required>
                             <button type="submit"
                                 class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-r transition-colors duration-200">
                                 <i class="fas fa-paper-plane"></i>
@@ -136,7 +138,8 @@
                     <a href="#" class="text-gray-400 hover:text-black text-sm transition-colors duration-200">
                         Điều khoản sử dụng
                     </a>
-                    <a href="{{ url('/privacy-policy') }}" class="text-gray-400 hover:text-black text-sm transition-colors duration-200">
+                    <a href="{{ url('/privacy-policy') }}"
+                        class="text-gray-400 hover:text-black text-sm transition-colors duration-200">
                         Chính sách bảo mật
                     </a>
                     <a href="#" class="text-gray-400 hover:text-black text-sm transition-colors duration-200">
