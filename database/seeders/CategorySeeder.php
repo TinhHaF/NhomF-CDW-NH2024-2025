@@ -33,6 +33,72 @@ class CategorySeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            [
+                'name' => 'Thể Thao',
+                'description' => 'Các góc nhìn từ chuyên gia',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Siêu ẢO',
+                'description' => 'Các góc nhìn từ chuyên gia',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Ca Cao',
+                'description' => 'Các góc nhìn từ chuyên gia',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Đôf HỌa',
+                'description' => 'Các góc nhìn từ chuyên gia',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Siêu Nhân',
+                'description' => 'Các góc nhìn từ chuyên gia',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Góc Cây',
+                'description' => 'Các góc nhìn từ chuyên gia',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Góc Hài',
+                'description' => 'Các góc nhìn từ chuyên gia',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Hi nhìn',
+                'description' => 'Các góc nhìn từ chuyên gia',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Ho nhìn',
+                'description' => 'Các góc nhìn từ chuyên gia',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Ho HO',
+                'description' => 'Các góc nhìn từ chuyên gia',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Ho LuGia',
+                'description' => 'Các góc nhìn từ chuyên gia',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ]);
         
     }

@@ -1,6 +1,7 @@
 @php
 use App\Helpers\IdEncoder;
 @endphp
+
 <div class="container mx-auto px-4">
     <nav class="flex space-x-6 py-3">
         <!-- Link Trang chủ -->
@@ -11,14 +12,57 @@ use App\Helpers\IdEncoder;
         </a>
 
         <!-- Danh sách danh mục -->
-        @foreach ($categories as $category)
-        <a href="{{ route('posts.showCate', IdEncoder::encode($category->id)) }}"
-            class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">
-            {{ $category->name }}
-        </a>
-        @endforeach
+        <div class="flex flex-wrap space-x-6">
+            @foreach ($categories->take(12) as $category)
+                <a href="{{ route('posts.showCate', IdEncoder::encode($category->id)) }}"
+                    class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">
+                    {{ $category->name }}
+                </a>
+            @endforeach
+
+            <!-- Nếu có nhiều hơn 8 danh mục, hiển thị nút "3 gạch" -->
+            @if ($categories->count() > 12)
+                <button id="moreCategoriesButton" class="text-gray-600 hover:text-blue-600 transition-colors duration-200">
+                ☰
+                </button>
+            @endif
+        </div>
     </nav>
+
+    <!-- Dropdown chứa các danh mục còn lại -->
+    <div id="moreCategoriesDropdown" class="hidden absolute mt-2 bg-white shadow-lg rounded-lg w-auto z-10">
+        <ul class="flex flex-wrap  space-x-6 px-4 py-2">
+            @foreach ($categories->skip(12) as $category)
+                <li>
+                    <a href="{{ route('posts.showCate', IdEncoder::encode($category->id)) }}"
+                        class="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200">
+                        {{ $category->name }}
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+    </div>
 </div>
+
+<script>
+    const moreCategoriesButton = document.getElementById('moreCategoriesButton');
+    const moreCategoriesDropdown = document.getElementById('moreCategoriesDropdown');
+
+    if (moreCategoriesButton) {
+        moreCategoriesButton.addEventListener('click', () => {
+            // Toggle hiển thị dropdown
+            moreCategoriesDropdown.classList.toggle('hidden');
+        });
+
+        // Đảm bảo khi click ra ngoài sẽ đóng dropdown
+        document.addEventListener('click', (e) => {
+            if (!moreCategoriesButton.contains(e.target) && !moreCategoriesDropdown.contains(e.target)) {
+                moreCategoriesDropdown.classList.add('hidden');
+            }
+        });
+    }
+</script>
+
 
 
 <!-- Hiển thị menu trên thiết bị di động -->
