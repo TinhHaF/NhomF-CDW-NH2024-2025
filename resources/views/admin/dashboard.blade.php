@@ -106,6 +106,44 @@
                 {{-- Lịch sử truy cập --}}
                 <div id="visitChart" style="height: 300px; width: 100%;"></div>
             </div>
+
+            {{-- Browser & Device Stats --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Thống kê trình duyệt</h3>
+                    <div id="browserChart" style="height: 300px;"></div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Thống kê thiết bị</h3>
+                    <div id="deviceChart" style="height: 300px;"></div>
+                </div>
+            </div>
+
+            {{-- Top Viewed Posts Today --}}
+            <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-red-500 mt-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Top 10 Bài Viết Xem Nhiều Nhất Hôm Nay</h3>
+                <div class="divide-y divide-gray-200">
+                    @forelse($topViewedPostsToday as $post)
+                        <div class="py-3 flex justify-between items-center">
+                            <div class="flex-1 min-w-0">
+                                <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}"
+                                    class="text-sm font-medium text-gray-900 truncate hover:text-blue-600">
+                                    {{ $post->title }}
+                                </a>
+                                <div class="text-sm text-gray-500">
+                                    {{ $post->view }} lượt xem
+                                </div>
+                            </div>
+                            <div class="ml-2 flex-shrink-0">
+                                <span class="text-sm text-gray-500">{{ $post->created_at->format('d/m/Y') }}</span>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-gray-500">Chưa có bài viết được xem trong ngày</p>
+                    @endforelse
+                </div>
+            </div>
+
             {{-- Most Viewed Post --}}
 
             <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500 mt-8">
@@ -134,17 +172,7 @@
                 </div>
             </div>
 
-            {{-- Browser & Device Stats --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Thống kê trình duyệt</h3>
-                    <div id="browserChart" style="height: 300px;"></div>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Thống kê thiết bị</h3>
-                    <div id="deviceChart" style="height: 300px;"></div>
-                </div>
-            </div>
+
         </div>
     </div>
 

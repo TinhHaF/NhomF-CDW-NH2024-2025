@@ -78,31 +78,7 @@
             background: white;
         }
 
-        /* Back to top */
-        #backToTop {
-            background: linear-gradient(45deg, #82da85, #81c784);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 50;
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-        }
-
-        #backToTop.show {
-            display: block;
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        #backToTop.hidden {
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-        }
-
-        #backToTop:hover {
-            background: linear-gradient(45deg, #388e3c, #66bb6a);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
+        
     </style>
 </head>
 
@@ -240,31 +216,6 @@
                 window.location.hash = '';
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const backToTopButton = document.getElementById('backToTop');
-
-            // Hiển thị nút khi cuộn trang xuống dưới 300px
-            window.addEventListener('scroll', function () {
-                if (window.scrollY > 300) {
-                    backToTopButton.classList.remove('hidden');
-                    backToTopButton.classList.add('show');
-                } else {
-                    backToTopButton.classList.remove('show');
-                    backToTopButton.classList.add('hidden');
-                }
-            });
-
-            // Cuộn lên đầu trang khi nhấn nút
-            backToTopButton.addEventListener('click', function () {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-        });
     </script>
-    <button id="backToTop"
-        class="hidden fixed bottom-6 right-6 p-2 rounded shadow-lg transition-transform transform hover:scale-110 focus:outline-none">
-        <i class="fas fa-arrow-up text-white text-lg"></i>
-    </button>
+    
 </body>

@@ -203,7 +203,7 @@ class PostController extends Controller
             return view('posts.posts_search', compact('posts', 'query', 'logoPath', 'categories', 'featuredPosts', 'notifications', 'tags'));
         } catch (\Exception $e) {
             // Log lỗi để tiện debug
-            \Log::error("Error during search: " . $e->getMessage());
+            Log::error("Error during search: " . $e->getMessage());
 
             // Trả về trang lỗi với thông báo
             return redirect()->back()->with('error', 'Đã xảy ra lỗi trong quá trình tìm kiếm. Vui lòng thử lại sau.');
@@ -615,7 +615,7 @@ class PostController extends Controller
         $logo = Logo::latest()->first();
         $logoPath = $logo ? $logo->path : 'images/logo.jpg';
 
-        return view('posts.by_tag', compact('tag', 'posts', 'featuredPosts', 'categories', 'logoPath','notifications'));
+        return view('posts.by_tag', compact('tag', 'posts', 'featuredPosts', 'categories', 'logoPath', 'notifications'));
     }
 
 
@@ -625,7 +625,4 @@ class PostController extends Controller
         $post = Post::findOrFail($id); // Tìm bài viết theo ID
         return view('posts.show', compact('post')); // Trả về view với dữ liệu bài viết
     }
-
-
 }
-

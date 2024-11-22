@@ -15,7 +15,7 @@ class CreateVisitsTable extends Migration
             $table->string('browser')->nullable();
             $table->string('device_type')->nullable();
             $table->timestamp('visited_at')->nullable();
-            $table->string('page_url')->nullable();
+            $table->string('page_url', 500)->nullable();
             $table->string('referrer')->nullable();
             $table->string('session_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();

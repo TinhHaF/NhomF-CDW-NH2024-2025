@@ -161,9 +161,9 @@
                                     <div class="flex items-center space-x-2">
                                         <!-- Sao chép bài viết -->
                                         <i class="fas fa-copy text-green-500 cursor-pointer" title="Sao chép bài viết"
-                                            onclick="document.getElementById('copyPost{{ $encodeId($post->id) }}').submit();"></i>
+                                            onclick="document.getElementById('copyPost{{ $post->id }}').submit();"></i>
                                         <form action="{{ route('posts.copy', $encodeId($post->id)) }}" method="POST"
-                                            id="copyPost{{ $encodeId($post->id) }}" style="display: inline;">
+                                            id="copyPost{{ $post->id }}" style="display: inline;">
                                             @csrf
                                         </form>
 
@@ -259,8 +259,6 @@
                     });
                 });
             });
-
-            
         </script>
     </body>
 @endsection
