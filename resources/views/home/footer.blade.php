@@ -48,7 +48,7 @@
             <div class="col-span-1">
                 <h5 class="font-bold text-xl text-black mb-4">Danh Mục</h5>
                 <ul class="space-y-3">
-                    @foreach ($categories as $category)
+                    @foreach ($categories->take(5) as $category)
                     <li>
                         <a href="{{ route('category.show', $category->id) }}"
                             class="text-gray-400 hover:text-black hover:pl-2 transition-all duration-200 flex items-center">
