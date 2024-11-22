@@ -22,9 +22,9 @@ class PasswordResetLinkController extends Controller
 
         // Kiểm tra và hiển thị thông báo
         if ($status === Password::RESET_LINK_SENT) {
-            return back()->with('status', 'We have emailed your password reset link!');
+            return back()->with('status', 'Chúng tôi đã gửi liên kết đặt lại mật khẩu đến email của bạn!');
         } else {
-            return back()->withErrors(['email' => 'Failed to send the password reset link.']);
+            return back()->withErrors(['email' => 'Không thể gửi liên kết đặt lại mật khẩu.']);
         }
     }
 }

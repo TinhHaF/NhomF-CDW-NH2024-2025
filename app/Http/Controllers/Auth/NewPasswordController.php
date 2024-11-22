@@ -31,7 +31,7 @@ class NewPasswordController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', 'Your password has been reset!')
-            : back()->withErrors(['email' => ['Failed to reset password.']]);
+            ? redirect()->route('login')->with('status', 'Mật khẩu của bạn đã được đặt lại!')
+            : back()->withErrors(['email' => ['Không thể đặt lại mật khẩu.']]);
     }
 }
