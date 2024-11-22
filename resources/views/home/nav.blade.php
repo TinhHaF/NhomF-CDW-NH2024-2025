@@ -73,11 +73,7 @@
 </div>
 
 <script>
-    // Xử lý menu di động
-    document.getElementById('mobile-menu-toggle').addEventListener('click', function () {
-        const menu = document.getElementById('mobile-menu');
-        menu.classList.toggle('hidden');
-    });
+
     document.addEventListener('DOMContentLoaded', function () {
         // Hiển thị ngày hiện tại
         function formatDate() {

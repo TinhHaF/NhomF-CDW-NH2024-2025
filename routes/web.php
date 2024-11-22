@@ -114,10 +114,10 @@ Route::middleware([AdminMiddleware::class])->group(function () {
         Route::get('/comments/{id}', [CommentController::class, 'Comments'])->name('comments_index');
         Route::get('/comments/detail/{id}', [CommentController::class, 'detail'])->name('comments_detail');
         Route::delete('/comments/admin/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.admin_delete');
-        Route::delete('/comments/user/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.user_delete');
+      
     });
 });
-
+Route::delete('/comments/user/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.user_delete');
 // Routes cho logo
 Route::get('/admin/logo/upload', [LogoController::class, 'showUploadForm'])->name('logo.upload.form');
 Route::post('/admin/logo/upload', [LogoController::class, 'upload'])->name('logo.upload');
