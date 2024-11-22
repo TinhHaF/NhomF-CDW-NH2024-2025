@@ -1,3 +1,6 @@
+@php
+use App\Helpers\IdEncoder;
+@endphp
 @include('components.notifications')
 <footer
 
@@ -50,7 +53,7 @@
                 <ul class="space-y-3">
                     @foreach ($categories->take(5) as $category)
                     <li>
-                        <a href="{{ route('category.show', $category->id) }}"
+                        <a href="{{ route('posts.showCate', IdEncoder::encode($category->id)) }}"
                             class="text-gray-400 hover:text-black hover:pl-2 transition-all duration-200 flex items-center">
                             <i class="fas fa-chevron-right mr-2 text-sm"></i>
                             {{ $category->name }}
