@@ -171,5 +171,11 @@ Route::post('reset-password', [NewPasswordController::class, 'store'])->name('pa
 Route::post('/subscribe', [SubscriptionController::class, 'subscribe'])->name('subscribe');
 
 
-
 Route::get('/notifications', [NotificationController::class, 'index']);
+
+
+Route::get('/authors/{id}', [AuthorController::class, 'show'])->name('authors.show');
+Route::get('posts/{id}', [PostController::class, 'show'])->name('posts.show');
+Route::post('/authors/{author}/follow', [AuthorController::class, 'follow'])->name('authors.follow');
+Route::delete('/authors/{author}/unfollow', [AuthorController::class, 'unfollow'])->name('authors.unfollow');
+Route::get('/authors/show/{authorId}', [AuthorController::class, 'show'])->name('authors.show');

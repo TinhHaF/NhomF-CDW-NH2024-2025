@@ -54,4 +54,12 @@ class NewPostNotification extends Notification implements ShouldQueue
             ->action('Xem bài viết', $url) // Nút liên kết đến bài viết
             ->line('Cảm ơn bạn đã đăng ký nhận tin từ chúng tôi!'); // Lời cảm ơn
     }
+
+    public function toArray($notifiable)
+    {
+        return [
+            'message' => "Tác giả {$this->post->author->pen_name} vừa đăng bài viết mới: {$this->post->title}",
+            'url' => route('posts.show', $this->post->id),
+        ];
+    }
 }

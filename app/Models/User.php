@@ -6,6 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class User extends Authenticatable
 {
@@ -75,4 +77,40 @@ class User extends Authenticatable
     {
         return $this->role === '1';
     }
+
+    
+    protected $appends = ['avatar_url'];
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'author_id');
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        if ($this->avatar) {
+            return Storage::url($this->avatar);
+        }
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name);
+    }
+    public function follow(Author $author)
+{
+    return $this->authorFollowers()->attach($author);
+}
+
+public function unfollow(Author $author)
+{
+    return $this->authorFollowers()->detach($author);
+}
+
+public function authorFollowers()
+{
+    return $this->belongsToMany(Author::class, 'author_followers');
+}
+
+public function isFollowing(Author $author)
+{
+    return $this->authorFollowers()->where('author_id', $author->id)->exists();
+}
+
 }

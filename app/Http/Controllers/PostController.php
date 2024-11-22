@@ -80,6 +80,8 @@ class PostController extends Controller
                 return abort(404, 'Bài viết không tồn tại.');
             }
 
+
+
             // Lấy bình luận và phân trang
             $comments = $post->comments()->orderBy('created_at', 'desc')->paginate(5);
 
@@ -110,7 +112,6 @@ class PostController extends Controller
                 ->get(); // Không phân trang, chỉ lấy các bài viết cần thiết
 
                 Notification::where('post_id', $id)->where('user_id', Auth::id())->update(['read' => true]);
-
             return view('posts.post_detail', compact('post', 'comments', 'categories',  'relatedPosts','logoPath', 'featuredPosts','notifications'));
         } catch (ModelNotFoundException $e) {
             Log::info('Post not found', ['id' => $id]);
@@ -569,5 +570,14 @@ class PostController extends Controller
                 ? response()->json(['error' => 'Không thể sao chép bài viết.'], 500)
                 : back()->with('error', 'Có lỗi xảy ra khi sao chép bài viết.');
         }
+
     }
+    public function show($id)
+    {
+        $post = Post::findOrFail($id); // Tìm bài viết theo ID
+        return view('posts.show', compact('post')); // Trả về view với dữ liệu bài viết
+    }
+
+
 }
+
