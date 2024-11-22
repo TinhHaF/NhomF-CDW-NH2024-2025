@@ -199,6 +199,28 @@
                                     class="h-10 border border-gray-300 rounded w-full px-3 focus:outline-none focus:border-blue-500 placeholder-gray-500"
                                     placeholder="Nhập SEO Từ khóa" value="{{ old('seo_keywords') }}">
                             </div>
+                            {{-- Tag --}}
+                            {{-- <div class="mb-4 bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
+                                <label class="block font-semibold mb-2">Tags</label>
+                                <select name="tags[]" id="tags" multiple
+                                    class="w-full h-32 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    @foreach ($tags as $tag)
+                                        <option value="{{ $tag->id }}"
+                                            {{ isset($post) && $post->tags->contains($tag->id) ? 'selected' : '' }}>
+                                            {{ $tag->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <p class="text-sm text-gray-500 mt-1">Giữ Ctrl (Windows) hoặc Command (Mac) để chọn nhiều
+                                    tags</p>
+                            </div> --}}
+                            <div class="mb-4 bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
+                                <label class="block font-semibold mb-2">Tags mới (nếu có)</label>
+                                <input type="text" name="new_tags" placeholder="Nhập tag mới, cách nhau bằng dấu phẩy"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                <p class="text-sm text-gray-500 font-mono mt-1">Mỗi 1 tag cách nhau bằng dấu phấy (,)</p>
+                            </div>
+
                         </div>
                     </div>
                 </form>
@@ -242,6 +264,19 @@
             };
             reader.readAsDataURL(file);
         }
+
+
+        $(document).ready(function() {
+            $('#tags').select2({
+                placeholder: 'Chọn tags',
+                allowClear: true
+            });
+        });
+
+        // Gọi hàm setupSlugAutoUpdate
+        document.addEventListener("DOMContentLoaded", function() {
+            setupSlugAutoUpdate("#slug", "#slugurlpreviewvi");
+        });
     </script>
 @endpush
 {{-- @php

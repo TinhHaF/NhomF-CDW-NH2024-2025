@@ -37,6 +37,9 @@ class PostService
                 'is_featured' => $data['is_featured'] ?? false,
                 'is_published' => $data['is_published'] ?? false,
             ]);
+            if (isset($data['tags'])) {
+                $post->tags()->sync($data['tags']);
+            }
         } catch (\Exception $e) {
             Log::error('Error creating post: ' . $e->getMessage());
             throw $e;
@@ -59,11 +62,20 @@ class PostService
 
             if ($image) {
                 // Delete old image
+                // if ($post->image) {
+                //     Storage::delete('public/' . $post->image);
+                // }
+                // $path = $image->store('posts', 'public');
+                // $post->update(['image' => $path]);
                 if ($post->image) {
-                    Storage::delete('public/' . $post->image);
+                    Storage::disk('public')->delete($post->image);
                 }
-                $path = $image->store('posts', 'public');
-                $post->update(['image' => $path]);
+                $data['image'] = $image->store('posts', 'public');  
+            }
+            $post->update($data);
+
+            if (isset($data['tags'])) {
+                $post->tags()->sync($data['tags']);
             }
 
             return $post;

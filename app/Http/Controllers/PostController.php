@@ -12,6 +12,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Logo;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -58,9 +59,14 @@ class PostController extends Controller
             // Lấy tất cả các danh mục
             $categories = Category::all();
 
+            // Lấy logo
             $logo = Logo::latest()->first();
-            $logoPath = $logo ? $logo->path : 'images/no-image-available';
-            return view('home', compact('posts', 'featuredPosts', 'categories', 'logoPath'));
+            $logoPath = $logo ? $logo->path : 'images/logo.jpg';
+
+            // Lấy tag
+            $tags = Tag::all();
+
+            return view('home', compact('posts', 'featuredPosts', 'categories', 'logoPath', 'tags'));
         } catch (\Exception $e) {
             Log::error('Homepage loading failed', [
                 'error' => $e->getMessage(),
@@ -78,7 +84,9 @@ class PostController extends Controller
                 return abort(404, 'Bài viết không tồn tại.');
             }
 
-
+            // Tăng lượt xem
+            $post->increment('view');
+                
             // Lấy bình luận gốc và phân trang
             $comments = $post->comments()
                 ->whereNull('parent_id')  // Chỉ lấy bình luận gốc
@@ -97,14 +105,19 @@ class PostController extends Controller
             // Lấy bình luận và phân trang
             $comments = $post->comments()->orderBy('created_at', 'desc')->paginate(5);
 
+            $featuredPosts = Post::where('is_featured', true)
+                ->whereNotNull('image') // Chỉ lấy bài viết nổi bật có ảnh
+                ->where('image', '!=', '') // Kiểm tra thêm nếu image là chuỗi rỗng
+                ->latest()
+                ->take(6) // Lấy đúng 6 bài nổi bật
+                ->get(); // Không phân trang, chỉ lấy các bài viết cần thiết
 
             // Lấy tất cả các danh mục
             $categories = Category::all();
 
             $logo = Logo::latest()->first();
-            $logoPath = $logo ? $logo->path : 'images/no-image-available';
+            $logoPath = $logo ? $logo->path : 'images/logo.jpg';
 
-            $featuredPosts = Post::where('is_featured', true)->latest();
 
             return view('posts.post_detail', compact('post', 'comments', 'categories', 'logoPath', 'featuredPosts', 'relatedPosts'));
         } catch (ModelNotFoundException $e) {
@@ -204,10 +217,11 @@ class PostController extends Controller
             // Lấy danh mục và tác giả từ database thay vì cache
             $categories = Category::orderBy('created_at', 'desc')->get(); // Truy vấn tất cả danh mục từ cơ sở dữ liệu
             $authors = Author::orderBy('created_at', 'desc')->get(); // Truy vấn tất cả tác giả từ cơ sở dữ liệu
+            $tags = Tag::orderBy('name')->get();
 
             Log::info('Categories being passed to view:', ['categories' => $categories->toArray()]);
 
-            return view('admin.posts.create', compact('categories', 'authors'));
+            return view('admin.posts.create', compact('categories', 'authors', 'tags'));
         } catch (\Exception $e) {
             Log::error('Error loading create post form', ['error' => $e->getMessage()]);
 
@@ -236,6 +250,26 @@ class PostController extends Controller
                 $request->validated(),
                 $imageUrl
             );
+
+            // Sync tags
+            // if ($request->has('tags')) {
+            //     $post->tags()->sync($request->tags);
+            // }
+            // Xử lý tags
+            if ($request->has('tags')) {
+                $post->tags()->attach($request->tags); // Gắn tags cũ
+            }
+
+            if ($request->has('new_tags')) {
+                $newTags = explode(',', $request->new_tags);
+                foreach ($newTags as $tagName) {
+                    $tagName = trim($tagName);
+                    if ($tagName) {
+                        $tag = Tag::firstOrCreate(['name' => $tagName]); // Tạo tag nếu chưa tồn tại
+                        $post->tags()->attach($tag->id);
+                    }
+                }
+            }
 
             // Log thông tin tạo bài viết thành công
             Log::info('Post created successfully', [
@@ -273,11 +307,12 @@ class PostController extends Controller
             // Lấy danh mục và tác giả từ database
             $categories = Category::all();
             $authors = Author::all();
+            $tags = Tag::orderBy('name')->get();
 
             // Thêm encoded_id vào post để sử dụng trong form
-            $post->encoded_id = $encodedId;
+            $post->encoded_id = IdEncoder_2::encode($post->id);
 
-            return view('admin.posts.edit', compact('post', 'categories', 'authors'));
+            return view('admin.posts.edit', compact('post', 'categories', 'authors', 'tags'));
         } catch (\Exception $e) {
             Log::error('Error loading edit post form', [
                 'encoded_id' => $encodedId,
@@ -305,8 +340,13 @@ class PostController extends Controller
                 $request->hasFile('image') ? $request->file('image') : null
             );
 
+            // // Sync tags
+            if ($request->has('tags')) {
+                $updatedPost->tags()->sync($request->tags);
+            }
+
             // Thêm encoded_id cho response
-            $updatedPost->encoded_id = $encodedId;
+            $updatedPost->encoded_id = IdEncoder_2::encode($updatedPost->id);
 
             Log::info('Post updated', [
                 'encoded_id' => $encodedId,
@@ -475,5 +515,30 @@ class PostController extends Controller
                 ? response()->json(['error' => 'Không thể sao chép bài viết.'], 500)
                 : back()->with('error', 'Có lỗi xảy ra khi sao chép bài viết.');
         }
+    }
+
+    public function postsByTag($id)
+    {
+        // Lấy tag theo ID
+        $tag = Tag::findOrFail($id);
+
+        // Lấy tất cả bài viết liên quan đến tag
+        $posts = $tag->posts()->latest()->paginate(10); // Hiển thị 10 bài mỗi trang
+
+
+        $featuredPosts = Post::where('is_featured', true)
+            ->whereNotNull('image') // Chỉ lấy bài viết nổi bật có ảnh
+            ->where('image', '!=', '') // Kiểm tra thêm nếu image là chuỗi rỗng
+            ->latest()
+            ->take(6) // Lấy đúng 6 bài nổi bật
+            ->get(); // Không phân trang, chỉ lấy các bài viết cần thiết
+
+        // Lấy tất cả các danh mục
+        $categories = Category::all();
+
+        $logo = Logo::latest()->first();
+        $logoPath = $logo ? $logo->path : 'images/logo.jpg';
+
+        return view('posts.by_tag', compact('tag', 'posts', 'featuredPosts', 'categories', 'logoPath'));
     }
 }

@@ -547,3 +547,56 @@ document.addEventListener("DOMContentLoaded", function () {
     startDateInput.addEventListener("change", validateDates);
     endDateInput.addEventListener("change", validateDates);
 });
+
+function openModal(encodedId, title, content, imageUrl) {
+    // Gắn dữ liệu vào modal
+    document.getElementById("modalPostTitle").innerText = title;
+    document.getElementById("modalPostContent").innerHTML = content;
+
+    const modalImage = document.getElementById("modalPostImage");
+    modalImage.src = imageUrl || "/images/no-image-available.jpg";
+
+    // Hiển thị modal bằng cách xóa lớp `hidden`
+    const modal = document.getElementById("postModal");
+    modal.classList.remove("hidden");
+}
+
+function closeModal() {
+    const modal = document.getElementById("postModal");
+    modal.classList.add("hidden");
+}
+
+// Hàm chuyển text thành slug
+function generateSlugFromInput(input) {
+    return input
+        .normalize("NFD") // Chuyển thành dạng Normalization Form D để tách dấu khỏi ký tự Unicode
+        .replace(/[\u0300-\u036f]/g, "") // Loại bỏ dấu (như dấu sắc, huyền, hỏi, ngã, nặng)
+        .replace(/đ/g, "d") // Đổi chữ "đ" thành "d"
+        .replace(/Đ/g, "d") // Đổi chữ "Đ" thành "d"
+        .trim() // Loại bỏ khoảng trắng ở đầu và cuối chuỗi
+        .toLowerCase() // Chuyển chữ hoa thành chữ thường
+        .replace(/[^a-z0-9\s-]/g, "") // Loại bỏ các ký tự không phải chữ cái, số, dấu cách hoặc gạch ngang
+        .replace(/[\s-]+/g, "-") // Thay thế các dấu cách và dấu "-" liền nhau thành một dấu "-"
+        .replace(/^-+|-+$/g, ""); // Loại bỏ dấu "-" thừa ở đầu hoặc cuối chuỗi
+}
+
+// Áp dụng tự động tạo slug cho các trường slug
+function setupSlugAutoUpdate(inputSelector, previewSelector) {
+    document.querySelectorAll(inputSelector).forEach((input) => {
+        input.addEventListener("input", function () {
+            const slugInput = this.value;
+            const formattedSlug = generateSlugFromInput(slugInput);
+
+            // Gán slug vào trường input
+            this.value = formattedSlug;
+
+            // Cập nhật preview URL
+            const slugPreview = document
+                .querySelector(previewSelector)
+                ?.querySelector("strong");
+            if (slugPreview) {
+                slugPreview.textContent = formattedSlug;
+            }
+        });
+    });
+}

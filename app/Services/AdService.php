@@ -3,17 +3,27 @@
 namespace App\Services;
 
 use App\Models\Ad;
-use Illuminate\Support\Facades\Storage;
 
 class AdService
 {
-    protected $storagePath = 'uploads/ads';
+    protected $storagePath;
+
+    public function __construct()
+    {
+        // Sử dụng public_path để đảm bảo linh hoạt
+        $this->storagePath = public_path('upload/ad');
+    }
 
     public function createAd($data)
     {
         if (isset($data['image'])) {
-            // Lưu ảnh vào thư mục `public/uploads/ads`
-            $data['image'] = $data['image']->move(public_path($this->storagePath), $data['image']->getClientOriginalName());
+            // Đảm bảo thư mục tồn tại
+            if (!is_dir($this->storagePath)) {
+                mkdir($this->storagePath, 0755, true);
+            }
+
+            // Lưu ảnh vào thư mục chỉ định
+            $data['image']->move($this->storagePath, $data['image']->getClientOriginalName());
             $data['image'] = $data['image']->getClientOriginalName();
         }
 
@@ -24,12 +34,12 @@ class AdService
     {
         if (isset($data['image'])) {
             // Xóa ảnh cũ nếu có
-            if ($ad->image) {
-                unlink(public_path($this->storagePath . '/' . $ad->image));
+            if ($ad->image && file_exists($this->storagePath . '/' . $ad->image)) {
+                unlink($this->storagePath . '/' . $ad->image);
             }
 
-            // Lưu ảnh mới vào thư mục `public/uploads/ads`
-            $data['image'] = $data['image']->move(public_path($this->storagePath), $data['image']->getClientOriginalName());
+            // Lưu ảnh mới
+            $data['image']->move($this->storagePath, $data['image']->getClientOriginalName());
             $data['image'] = $data['image']->getClientOriginalName();
         }
 
@@ -39,9 +49,9 @@ class AdService
 
     public function deleteAd(Ad $ad)
     {
-        // Xóa ảnh từ thư mục `public/uploads/ads`
-        if ($ad->image) {
-            unlink(public_path($this->storagePath . '/' . $ad->image));
+        // Xóa ảnh từ thư mục
+        if ($ad->image && file_exists($this->storagePath . '/' . $ad->image)) {
+            unlink($this->storagePath . '/' . $ad->image);
         }
 
         return $ad->delete();

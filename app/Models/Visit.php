@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Auth;
+use Jenssegers\Agent\Agent;
 
 class Visit extends Model
 {
-    /**
-     * Các trường có thể được gán hàng loạt
-     */
     protected $fillable = [
         'ip_address',
         'user_agent',
@@ -20,18 +19,15 @@ class Visit extends Model
         'page_url',
         'referrer',
         'session_id',
+        'user_id',
+        'is_anonymous'
     ];
 
-    /**
-     * Các trường được cast sang kiểu khác
-     */
     protected $casts = [
         'visited_at' => 'datetime',
+        'is_anonymous' => 'boolean'
     ];
 
-    /**
-     * Scopes cho các truy vấn phổ biến
-     */
     public function scopeToday(Builder $query): Builder
     {
         return $query->whereDate('visited_at', today());
@@ -52,9 +48,16 @@ class Visit extends Model
         return $query->where('visited_at', '>=', now()->subMinutes(15));
     }
 
-    /**
-     * Accessors & Mutators
-     */
+    public function scopeAnonymous(Builder $query): Builder
+    {
+        return $query->whereNull('user_id');
+    }
+
+    public function scopeAuthenticated(Builder $query): Builder
+    {
+        return $query->whereNotNull('user_id');
+    }
+
     protected function browser(): Attribute
     {
         return Attribute::make(
@@ -71,29 +74,58 @@ class Visit extends Model
         );
     }
 
-    /**
-     * Ghi nhận một lượt truy cập mới
-     */
-    public static function track($request): self
+    // Trong phương thức track()
+    public static function track($request, $userId = null): self
     {
-        $agent = new \Jenssegers\Agent\Agent();
+        $agent = new Agent();
+        $sessionId = session()->getId();
+        $pageUrl = url()->current();
+        $ipAddress = $request->ip();
 
-        return static::create([
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-            'browser' => $agent->browser(),
-            'device_type' => static::detectDeviceType($agent),
-            'visited_at' => now(),
-            'page_url' => url()->current(),
-            'referrer' => $request->headers->get('referer'),
-            'session_id' => session()->getId(),
-        ]);
+        // Kiểm tra trùng lặp dựa trên session, IP và khoảng thời gian
+        $existingVisit = self::where('session_id', $sessionId)
+            ->where('ip_address', $ipAddress)
+            ->where('visited_at', '>=', now()->subMinutes(30))
+            ->first();
+
+        // Nếu không có lượt truy cập tương tự thì mới ghi nhận
+        if (!$existingVisit) {
+            return static::create([
+                'ip_address' => $ipAddress,
+                'user_agent' => $request->userAgent(),
+                'browser' => $agent->browser(),
+                'device_type' => static::detectDeviceType($agent),
+                'visited_at' => now(),
+                'page_url' => $pageUrl,
+                'referrer' => $request->headers->get('referer'),
+                'session_id' => $sessionId,
+                'user_id' => $userId,
+                'is_anonymous' => $userId === null,
+            ]);
+        }
+
+        return $existingVisit;
     }
 
-    /**
-     * Xác định loại thiết bị
-     */
-    protected static function detectDeviceType(\Jenssegers\Agent\Agent $agent): string
+    // Sử dụng session timeout để theo dõi khi người dùng rời đi
+    public static function trackOnlineStatus($request)
+    {
+        $sessionId = session()->getId();
+        $lastVisit = session('last_visit', now());
+
+        if ($lastVisit->diffInMinutes(now()) > 15) {
+            // Người dùng không truy cập trong vòng 15 phút, nên đánh dấu offline
+            self::where('session_id', $sessionId)
+                ->update(['visited_at' => now()]);
+        }
+
+        // Cập nhật thời gian cuối cùng truy cập
+        session(['last_visit' => now()]);
+    }
+
+
+
+    protected static function detectDeviceType(Agent $agent): string
     {
         if ($agent->isDesktop()) return 'desktop';
         if ($agent->isTablet()) return 'tablet';
@@ -101,9 +133,6 @@ class Visit extends Model
         return 'other';
     }
 
-    /**
-     * Thống kê
-     */
     public static function getStats(): array
     {
         return [
@@ -112,6 +141,8 @@ class Visit extends Model
             'this_month' => static::thisMonth()->count(),
             'online' => static::online()->count(),
             'total' => static::count(),
+            'anonymous' => static::anonymous()->count(),
+            'authenticated' => static::authenticated()->count(),
         ];
     }
 

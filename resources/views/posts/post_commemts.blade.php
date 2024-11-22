@@ -14,7 +14,7 @@
         </h2>
         <form action="{{ route('comments_store', ['post' => $post->id]) }}" method="POST">
             @csrf
-            <textarea class="w-full p-3 border rounded-lg mb-4" name="content" placeholder="Chia sẻ ý kiến của bạn" rows="4" required></textarea>
+            <textarea class="w-full p-3 border-l-4 border-red-400 rounded-lg mb-4 bg-gray-100" name="content" placeholder="Chia sẻ ý kiến của bạn" rows="4" required></textarea>
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg mb-6">Gửi bình luận</button>
         </form>
 

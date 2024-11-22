@@ -37,7 +37,7 @@
                     </a>
                 </div>
 
-                <form id="postForm" action="{{ route('posts.update', $post->id) }}" method="POST"
+                <form id="postForm" action="{{ route('posts.update', $post->encoded_id) }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
@@ -182,6 +182,20 @@
                                     class="h-10 border border-gray-300 rounded w-full px-3 focus:outline-none focus:border-blue-500 placeholder-gray-500"
                                     placeholder="Nhập SEO Từ khóa">
                             </div>
+                            <div class="form-group mb-4 bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
+                                <label for="tags" class="block font-semibold mb-2">Tags</label>
+                                <select name="tags[]" id="tags"
+                                    class="form-control w-full h-32 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    multiple>
+                                    @foreach ($tags as $tag)
+                                        <option value="{{ $tag->id }}"
+                                            @if (in_array($tag->id, old('tags', $post->tags->pluck('id')->toArray()))) selected @endif>
+                                            {{ $tag->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                         </div>
                     </div>
                 </form>
@@ -206,6 +220,13 @@
 
 @push('scripts')
     <script>
+        $(document).ready(function() {
+            $('#tags').select2({
+                placeholder: 'Chọn tags',
+                allowClear: true
+            });
+        });
+
         // Xử lý sự kiện khi người dùng nhập tiêu đề
         document.getElementById('title').addEventListener('input', function() {
             const title = this.value;
@@ -370,5 +391,9 @@
                 reader.readAsDataURL(file);
             }
         }
+        // Gọi hàm setupSlugAutoUpdate
+        document.addEventListener("DOMContentLoaded", function() {
+            setupSlugAutoUpdate("#slug", "#slugurlpreviewvi");
+        });
     </script>
 @endpush

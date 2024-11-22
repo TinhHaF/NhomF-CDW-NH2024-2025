@@ -54,6 +54,7 @@ Route::get('/category/{id}', [CategoryController::class, 'show'])->name('categor
 Route::get('/homepage/nav', [CategoryController::class, 'showCategory'])->name('posts.showCategory');
 Route::get('/posts/{post}', [PostController::class, 'showPostsSimilar'])->name('posts.show');
 
+Route::get('/tags/{id}', [PostController::class, 'postsByTag'])->name('posts.by_tag');
 
 // Middleware cho Admin và Author
 Route::middleware([AdministrationMiddleware::class])->group(function () {
@@ -77,6 +78,14 @@ Route::middleware([AdministrationMiddleware::class])->group(function () {
 
         // Quản lý categories
         Route::resource('categories', CategoryController::class);
+
+        // Quảng cáo
+        Route::get('/ads', [AdController::class, 'index'])->name('ads.index');
+        Route::get('/ads/create', [AdController::class, 'create'])->name('ads.create');
+        Route::post('/ads', [AdController::class, 'store'])->name('ads.store');
+        Route::get('/ads/{encodedId}/edit', [AdController::class, 'edit'])->name('ads.edit');
+        Route::put('/ads/{encodedId}', [AdController::class, 'update'])->name('ads.update');
+        Route::delete('/ads/{encodedId}', [AdController::class, 'destroy'])->name('ads.destroy');
     });
 });
 
@@ -99,9 +108,6 @@ Route::middleware([AdminMiddleware::class])->group(function () {
         Route::get('/comments/detail/{id}', [CommentController::class, 'detail'])->name('comments_detail');
         Route::delete('/comments/admin/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.admin_delete');
         Route::delete('/comments/user/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.user_delete');
-
-
-        
     });
 });
 
@@ -140,17 +146,6 @@ Route::get('/filemanager', [FileManagerController::class, 'index'])->name('filem
 Route::post('/filemanager/upload', [FileManagerController::class, 'upload'])->name('filemanager.upload');
 
 
-
-Route::get('/ads', [AdController::class, 'index'])->name('ads.index');
-        Route::get('/ads/create', [AdController::class, 'create'])->name('ads.create');
-        Route::post('/ads', [AdController::class, 'store'])->name('ads.store');
-        Route::get('/ads/{id}/edit', [AdController::class, 'edit'])->name('ads.edit');
-        Route::put('/ads/{id}', [AdController::class, 'update'])->name('ads.update');
-        Route::delete('/ads/{id}', [AdController::class, 'destroy'])->name('ads.destroy');
-
-
-
 Route::get('/privacy-policy', function () {
     return view('privacy-policy');
 });
-

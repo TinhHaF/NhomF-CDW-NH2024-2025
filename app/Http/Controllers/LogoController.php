@@ -11,7 +11,7 @@ class LogoController extends Controller
     public function showUploadForm()
     {
         $logo = Logo::latest()->first();
-        $logoPath = $logo ? $logo->path : 'images/no-image-available';
+        $logoPath = $logo ? $logo->path : 'images/logo.jpg';
         return view('admin.logo.upload', compact('logoPath'));
     }
 

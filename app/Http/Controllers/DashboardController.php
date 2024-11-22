@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Lấy ngày hiện tại
         $currentDate = now();
@@ -49,6 +49,9 @@ class DashboardController extends Controller
         ];
         // Lấy bài viết có lượt xem cao nhất
         $mostViewedPost = Post::orderBy('view', 'desc')->first();
+
+        // Gọi trackOnlineStatus để cập nhật trạng thái online của người dùng
+        Visit::trackOnlineStatus($request);
         return view('admin.dashboard', compact('statistics', 'mostViewedPost'));
     }
 

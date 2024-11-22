@@ -1,8 +1,27 @@
 @extends('admin.layout')
 
 @section('content')
-    <div class="min-h-screen bg-gradient-to-b from-gray-50 to-white py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    @php
+        use App\Helpers\IdEncoder_2;
+    @endphp
+    <div class="flex flex-col md:flex-row m-4">
+        <div class="w-full md:w-5/5">
+            <nav class="flex mb-4" aria-label="Breadcrumb">
+                <ol class="flex items-center space-x-2">
+                    <li>
+                        <div class="flex items-center">
+                            <a href="{{ route('admin.dashboard') }}"
+                                class="text-sm font-medium text-blue-600 hover:text-blue-700">Bảng điều khiển</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium">/</span>
+                            <span class="ml-2 text-sm font-medium text-gray-700">Quảng cáo</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
             <!-- Header Section -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
                 <div>
@@ -24,7 +43,7 @@
             </div>
 
             <!-- Search and Filter Section -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-4">
                 <div class="p-6">
                     <form method="GET" action="{{ route('ads.index') }}"
                         class="space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
@@ -64,6 +83,8 @@
                                 <option value="sidebar" {{ request()->position == 'sidebar' ? 'selected' : '' }}>Sidebar
                                 </option>
                                 <option value="footer" {{ request()->position == 'footer' ? 'selected' : '' }}>Footer
+                                </option>
+                                <option value="content" {{ request()->position == 'content' ? 'selected' : '' }}>Content
                                 </option>
                             </select>
                         </div>
@@ -116,8 +137,8 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-10 w-10">
-                                                <img class="h-10 w-10 rounded-lg object-cover" src="{{ $ad->image_url }}"
-                                                    alt="">
+                                                <img class="h-10 w-10 rounded-lg object-cover"
+                                                    src="{{ asset($ad->image) }}" alt="{{ $ad->title }}">
                                             </div>
                                             <div class="ml-4">
                                                 <div class="text-sm font-medium text-gray-900">
@@ -142,12 +163,12 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{-- <div>Bắt đầu: {{ $ad->start_date->format('Y-m-d') }}</div>
-                                        <div>Kết thúc: {{ $ad->end_date->format('Y-m-d') }}</div> --}}
+                                        <div>Bắt đầu: {{ $ad->start_date->format('Y-m-d') }}</div>
+                                        <div>Kết thúc: {{ $ad->end_date->format('Y-m-d') }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="flex justify-end space-x-2">
-                                            <a href="{{ route('ads.edit', $ad->id) }}"
+                                            <a href="{{ route('ads.edit', $encodedId = IdEncoder_2::encode($ad->id)) }}"
                                                 class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                                 <svg class="h-4 w-4 text-gray-500 mr-1.5" fill="none"
                                                     stroke="currentColor" viewBox="0 0 24 24">
@@ -156,8 +177,9 @@
                                                 </svg>
                                                 Sửa
                                             </a>
-                                            <form action="{{ route('ads.destroy', $ad->id) }}" method="POST"
-                                                class="inline-block">
+                                            <form
+                                                action="{{ route('ads.destroy', $encodedId = IdEncoder_2::encode($ad->id)) }}"
+                                                method="POST" class="inline-block">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"

@@ -1,10 +1,6 @@
 <div class="navbar bg-white border-b relative z-50">
     {{-- Header Ad --}}
-    @if ($headerAd = App\Models\Ad::where('position', 'header')->where('status', 1)->whereDate('start_date', '<=', now())->whereDate('end_date', '>=', now())->first())
-        <a href="{{ $headerAd->url }}">
-            <img src="{{ asset('uploads/ads/' . $headerAd->image) }}" alt="{{ $headerAd->title }}">
-        </a>
-    @endif
+    <x-ad-banner position="header" class="ad-banner-effect" />
 
     <!-- Top Bar - Optional -->
     <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-1 px-4 text-sm hidden md:block">
@@ -26,12 +22,12 @@
     </div>
 
     <!-- Main Navbar -->
-    <div class="container mx-auto px-4">
-        <div class="flex items-center justify-between py-4">
+    <div class="container mx-auto px-14">
+        <div class="flex items-center justify-between py-1">
             <!-- Logo Section -->
             <div class="flex items-center space-x-2">
                 <div
-                    class="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-800 rounded-full flex items-center justify-center text-white font-bold shadow-lg transform hover:scale-105 transition-transform duration-200">
+                    class="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-800 rounded-full flex items-center justify-center text-white font-bold shadow-lg transform hover:scale-105 transition-transform duration-200">
                     <a href="{{ route('home') }}">
                         <img src="{{ asset($logoPath) }}" alt="logo" id="logoPreview"
                             class="w-full h-full object-cover rounded-full">
@@ -170,7 +166,7 @@
                 @endforeach
             </nav>
         </div>
-    </div>      
+    </div>
 </div>
 
 <script>

@@ -55,10 +55,10 @@ class PostPolicy
      * @param  \App\Models\Post  $post
      * @return mixed
      */
-    // public function update(User $user, Post $post)
-    // {
-    //     return $user->role === '2' || $user->id == $post->user_id; // Admin hoặc chủ sở hữu bài viết có thể cập nhật
-    // }
+    public function update(User $user, Post $post)
+    {
+        return $user->role === '2' || $user->id === $post->user_id; // Admin hoặc chủ sở hữu bài viết có thể cập nhật
+    }
 
     /**
      * Determine whether the user can delete the post.
@@ -67,8 +67,8 @@ class PostPolicy
      * @param  \App\Models\Post  $post
      * @return mixed
      */
-    public function delete(User $user, Post $post)
+    public function delete(User $user)
     {
-        return $user->role === '2'; // Chỉ admin mới có thể xóa bài viết
+        return $user->role === '2' ; // Chỉ admin mới có thể xóa bài viết
     }
 }
