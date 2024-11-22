@@ -23,6 +23,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
 
+use App\Http\Controllers\NotificationController;
 // Route trang chủ
 Route::get('/', [PostController::class, 'homepage'])->name('home');
 
@@ -169,3 +170,6 @@ Route::post('reset-password', [NewPasswordController::class, 'store'])->name('pa
 //đăng kí nhận tin 
 Route::post('/subscribe', [SubscriptionController::class, 'subscribe'])->name('subscribe');
 
+
+
+Route::get('/notifications', [NotificationController::class, 'index']);
