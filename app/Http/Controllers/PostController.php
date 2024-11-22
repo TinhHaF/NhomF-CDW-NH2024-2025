@@ -59,10 +59,10 @@ class PostController extends Controller
 
             // Lấy tất cả các danh mục
             $categories = Category::all();
-
+            $notifications = Notification::all();
             $logo = Logo::latest()->first();
             $logoPath = $logo ? $logo->path : 'images/no-image-available';
-            return view('home', compact('posts', 'featuredPosts', 'categories', 'logoPath'));
+            return view('home', compact('posts', 'featuredPosts', 'categories', 'logoPath','notifications'));
         } catch (\Exception $e) {
             Log::error('Homepage loading failed', [
                 'error' => $e->getMessage(),
@@ -91,6 +91,7 @@ class PostController extends Controller
                 ->paginate(5);
             // Lấy tất cả các danh mục
             $categories = Category::all();
+            $notifications = Notification::all();
             // Lấy bài viết liên quan cùng danh mục
             $relatedPosts = Post::where('category_id', $post->category_id)
                 ->where('id', '!=', $post->id) // Loại bỏ bài viết hiện tại
@@ -108,8 +109,9 @@ class PostController extends Controller
                 ->take(6) // Lấy đúng 6 bài nổi bật
                 ->get(); // Không phân trang, chỉ lấy các bài viết cần thiết
 
+                Notification::where('post_id', $id)->where('user_id', Auth::id())->update(['read' => true]);
 
-            return view('posts.post_detail', compact('post', 'comments', 'categories',  'relatedPosts', 'logoPath', 'featuredPosts'));
+            return view('posts.post_detail', compact('post', 'comments', 'categories',  'relatedPosts','logoPath', 'featuredPosts','notifications'));
         } catch (ModelNotFoundException $e) {
             Log::info('Post not found', ['id' => $id]);
             return request()->expectsJson()
@@ -166,6 +168,7 @@ class PostController extends Controller
             // Lấy từ khóa tìm kiếm
             $query = $request->input('query');
 
+            
             // Tìm kiếm bài viết theo tiêu đề hoặc nội dung, phân trang 5 bài mỗi trang
             $posts = Post::where('title', 'LIKE', "%{$query}%")
                 ->orWhere('content', 'LIKE', "%{$query}%")
@@ -300,13 +303,13 @@ class PostController extends Controller
                 'request_data' => $request->all(),
                 'user_id' => Auth::id()
             ]);
-
+    
             // Xử lý ảnh (nếu có)
             $imageUrl = null;
             if ($request->hasFile('image')) {
                 $imageUrl = $request->file('image')->store('posts', 'public');
             }
-
+    
             // Tạo bài viết
             $post = $this->postService->create(
                 $request->validated(),
@@ -317,12 +320,21 @@ class PostController extends Controller
             // Gửi thông báo qua email cho tất cả các subscriber
             $this->sendNewPostNotification($post);
 
-
             // Log thông tin tạo bài viết thành công
             Log::info('Post created successfully', [
                 'post_id' => $post->id,
                 'user_id' => Auth::id()
             ]);
+    
+            // Tạo thông báo cho người dùng khi bài viết được thêm
+            Notification::create([
+                'type' => 'post_created', // Loại thông báo
+                'title' => 'Bài viết mới !!!"' . $post->title, // Tiêu đề thông báo
+                'read' => false, // Chưa đọc
+                'user_id' => Auth::id(), 
+                'post_id' => $post->id,
+            ]);
+    
             // Xử lý trả về kết quả tùy vào yêu cầu JSON hoặc redirect
             return $request->expectsJson()
                 ? new PostResource($post) // Trả về tài nguyên post dưới dạng JSON
@@ -333,12 +345,13 @@ class PostController extends Controller
                 'user_id' => Auth::id(),
                 'request_data' => $request->all()
             ]);
-
+    
             return $request->expectsJson()
                 ? response()->json(['error' => 'Không thể tạo bài viết.'], 500)
                 : back()->withInput()->with('error', 'Có lỗi xảy ra khi tạo bài viết.');
         }
     }
+    
 
     public function edit($encodedId)
     {
