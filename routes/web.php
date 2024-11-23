@@ -108,7 +108,7 @@ Route::middleware([AdminMiddleware::class])->group(function () {
 
         //Cap quyen author
         Route::get('/admin/author-requests', [UserController::class, 'viewRequests'])->name('author-requests');
-        Route::post('/admin/author-requests/{id}/approve', [UserController::class, 'approveRequest']);
+        Route::post('/author-requests/{id}/approve', [UserController::class, 'approveRequest']);
         Route::delete('/admin/author-requests/{id}/reject', [UserController::class, 'rejectRequest'])->name('author-rejectRequest');
 
 

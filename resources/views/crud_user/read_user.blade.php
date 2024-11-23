@@ -26,6 +26,24 @@
                 </button>
             </form>
         </div>
+        @if (session('success'))
+                        <div class="bg-green-100 text-green-600 p-4 rounded mb-4">
+                            <i class="fas fa-check-circle mr-2"></i> {{ session('success') }}
+                        </div>
+                    @endif
+                     <!-- Hiển thị thông báo lỗi -->
+                     @if ($errors->any())
+                        <div class="bg-red-100 text-red-600 p-4 rounded mb-4">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li class="flex items-center mb-2">
+                                        <i class="fas fa-exclamation-circle mr-2"></i>
+                                        {{ $error }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
         <!-- Avatar -->
         <div class="flex flex-col items-center mb-8">
@@ -105,26 +123,9 @@
                 <div id="change-password-form" class="hidden bg-white p-6 rounded-lg shadow-lg mt-4">
                     <h2 class="text-lg font-bold mb-4">Thay đổi mật khẩu</h2>
 
-                    <!-- Hiển thị thông báo lỗi -->
-                    @if ($errors->any())
-                        <div class="bg-red-100 text-red-600 p-4 rounded mb-4">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li class="flex items-center mb-2">
-                                        <i class="fas fa-exclamation-circle mr-2"></i>
-                                        {{ $error }}
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
+                   
                     <!-- Hiển thị thông báo thành công -->
-                    @if (session('success'))
-                        <div class="bg-green-100 text-green-600 p-4 rounded mb-4">
-                            <i class="fas fa-check-circle mr-2"></i> {{ session('success') }}
-                        </div>
-                    @endif
+                   
 
                     <form action="{{ route('user.change_pw') }}" method="POST">
                         @csrf

@@ -18,13 +18,13 @@
         </button>
 
         <!-- Dropdown content -->
-        <div id="dropdownContent" class="absolute right-0 mt-2 w-72 bg-white shadow-lg rounded-md z-20 hidden">
+        <div id="dropdownContent" class="absolute right-0 mt-2 w-72 bg-white shadow-lg rounded-md z-20 hidden max-h-80 overflow-y-auto">
             @php
                 $userNotifications = $notifications->where('user_id', Auth::id());
             @endphp
             @if($userNotifications->count() > 0)
                 @foreach($userNotifications as $notification)
-                    <a href="{{ route('posts.post_detail', ['id' => $notification->post_id, 'slug' => $notification->post->slug]) }}"
+                    <a href="{{ $notification->post ? route('posts.post_detail', ['id' => $notification->post_id, 'slug' => $notification->post?->slug]) : '#' }}"
                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         <div class="flex justify-between items-center">
                             <span class="font-medium">{{ $notification->title }}</span>

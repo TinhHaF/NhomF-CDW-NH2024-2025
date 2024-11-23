@@ -1,88 +1,5 @@
-<!DOCTYPE html>
-<html lang="vi">
-
-<head>
-    {{--
-    <meta property="og:url" content="{{ url()->current() }}" />
-    <meta property="og:title" content="{{ $post->title }}" />
-    <meta property="og:description" content="{{ Str::limit(strip_tags($post->content), 150) }}" />
-    <meta property="og:image" content="{{ asset('storage/' . $post->image) }}" />
-    <meta property="og:type" content="article" />
-    <meta property="og:site_name" content="My Blog" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="{{ $post->title }}" />
-    <meta name="twitter:description" content="{{ Str::limit(strip_tags($post->content), 150) }}" />
-    <meta name="twitter:image" content="{{ asset('storage/' . $post->image) }}" />
-    <meta name="twitter:site" content="@YourTwitterHandle" /> --}}
-
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Trang Chủ</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/min/tiny-slider.js"></script>
-    <style>
-        .hover-scale {
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .hover-scale:hover {
-            transform: scale(1.02);
-        }
-
-        .custom-shadow {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        .slider-container {
-            position: relative;
-            height: 500px;
-        }
-
-        .slider-item {
-            position: relative;
-            height: 500px;
-        }
-
-        .slider-content {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-            padding: 2rem;
-            color: white;
-        }
-
-        .tns-nav {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-        }
-
-        .tns-nav button {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            margin: 0 4px;
-            border: none;
-        }
-
-        .tns-nav button.tns-nav-active {
-            background: white;
-        }
-
-        
-    </style>
-</head>
-
+<style></style>
+<title>Trang Chủ</title>
 <body class="bg-gray-100">
     <div class="flex flex-col">
         @include('home.nav')
@@ -149,7 +66,7 @@
                                                     <span>{{ $post->created_at->format('d/m/Y') }}</span>
                                                     <span class="mx-2">•</span>
                                                     <i class="far fa-clock mr-2"></i>
-                                                    <span>5 phút đọc</span>
+                                                    <span>{{$post->created_at->diffForHumans()}}</span>
                                                 </div>
                                                 <h3
                                                     class="text-2xl font-semibold mb-3 text-gray-800 hover:text-blue-600 transition duration-300">
@@ -160,22 +77,9 @@
                                                 </p>
 
                                                 <div class="flex items-center">
-                                                    @if ($post->user)
-                                                        <img src="{{ $post->user->image ? asset('storage/' . $post->user->image) : 'https://via.placeholder.com/40' }}"
-                                                            class="w-10 h-10 rounded-full mr-3" alt="Author">
-                                                        <div>
-                                                            <p class="font-medium text-gray-800">
-                                                                {{ $post->user->name }}
-                                                            </p>
-                                                            <p class="text-sm text-gray-500">
-                                                                {{ $post->user->role == 2 ? 'Quản trị viên' : ($post->user->role == 3 ? 'Tác giả' : 'Người dùng') }}
-                                                            </p>
-                                                        </div>
-                                                    @else
-                                                        <div>
-                                                            <p class="text-gray-500 italic">Không có tác giả</p>
-                                                        </div>
-                                                    @endif
+                                                    <p class="text-sm text-gray-500">
+                                                        Tác Giả: {{ $post->author->pen_name ?? 'Chưa có tác giả' }}
+                                                    </p>
                                                 </div>
 
                                             </div>
@@ -218,5 +122,5 @@
         }
 
     </script>
-    
+
 </body>

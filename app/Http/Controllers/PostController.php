@@ -401,7 +401,7 @@ class PostController extends Controller
                 'error' => $e->getMessage()
             ]);
 
-            return back()->with('error', 'Có lỗi xảy ra khi tải form chỉnh sửa.');
+            return back()->with('error', 'Bài viết không tồn tại hoặc được chỉnh sửa bởi người khác !.');
         }
     }
 

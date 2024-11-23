@@ -71,26 +71,25 @@
         <div class="slider-container mb-8">
             <div class="my-slider">
                 @if (isset($featuredPosts) && $featuredPosts->count())
-                @foreach ($featuredPosts->take(5) as $slide)
-                <div class="slider-item">
-                    <img src="{{ asset('storage/' . $slide->image) }}" class="w-full h-full object-cover"
-                        alt="{{ $slide->title }}">
-                    <div class="slider-content">
-                        <div class="container mx-auto">
-                            <span
-                                class="bg-red-500 text-white px-4 py-1 rounded-full text-sm mb-4 inline-block">
-                                Nổi bật
-                            </span>
-                            <h2 class="text-3xl font-bold mb-2">{{ $slide->title }}</h2>
-                            <p class="text-gray-200 mb-4">{{ Str::limit(strip_tags($slide->content), 150) }}</p>
-                            <a href="{{ route('posts.post_detail', ['id' => $slide->id, 'slug' => $slide->slug]) }}"
-                                class="bg-white text-gray-900 px-6 py-2 rounded-full inline-block hover:bg-gray-100 transition duration-300">
-                                Đọc thêm
-                            </a>
+                    @foreach ($featuredPosts->take(5) as $slide)
+                        <div class="slider-item">
+                            <img src="{{ asset('storage/' . $slide->image) }}" class="w-full h-full object-cover"
+                                alt="{{ $slide->title }}">
+                            <div class="slider-content">
+                                <div class="container mx-auto">
+                                    <span class="bg-red-500 text-white px-4 py-1 rounded-full text-sm mb-4 inline-block">
+                                        Nổi bật
+                                    </span>
+                                    <h2 class="text-3xl font-bold mb-2">{{ $slide->title }}</h2>
+                                    <p class="text-gray-200 mb-4">{{ Str::limit(strip_tags($slide->content), 150) }}</p>
+                                    <a href="{{ route('posts.post_detail', ['id' => $slide->id, 'slug' => $slide->slug]) }}"
+                                        class="bg-white text-gray-900 px-6 py-2 rounded-full inline-block hover:bg-gray-100 transition duration-300">
+                                        Đọc thêm
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                @endforeach
+                    @endforeach
                 @endif
             </div>
         </div>
@@ -101,40 +100,47 @@
                 <div class="lg:w-2/3">
                     <div class="mb-12">
                         @if ($posts->isEmpty())
-                        <div class="text-center text-gray-500 py-10">
-                            <p>Không có bài viết nào.</p>
-                        </div>
+                            <div class="text-center text-gray-500 py-10">
+                                <p>Không có bài viết nào.</p>
+                            </div>
                         @else
-                        @foreach ($posts as $post)
-                        <div class="bg-white rounded-xl custom-shadow hover-scale mb-6">
-                            <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}" class="block">
-                                <div class="flex flex-col md:flex-row">
-                                    @if ($post->image)
-                                    <div class="md:w-2/5">
-                                        <img src="{{ asset('storage/' . $post->image) }}"
-                                            class="w-full h-64 md:h-full object-cover rounded-t-xl md:rounded-l-xl md:rounded-t-none"
-                                            alt="{{ $post->title }}">
-                                    </div>
-                                    @endif
-                                    <div class="md:w-3/5 p-6">
-                                        <div class="flex items-center mb-3 text-sm text-gray-500">
-                                            <i class="far fa-calendar-alt mr-2"></i>
-                                            <span>{{ $post->created_at->format('d/m/Y') }}</span>
-                                            <span class="mx-2">•</span>
-                                            <i class="far fa-clock mr-2"></i>
-                                            <span>5 phút đọc</span>
+                            @foreach ($posts as $post)
+                                <div class="bg-white rounded-xl custom-shadow hover-scale mb-6">
+                                    <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}"
+                                        class="block">
+                                        <div class="flex flex-col md:flex-row">
+                                            @if ($post->image)
+                                                <div class="md:w-2/5">
+                                                    <img src="{{ asset('storage/' . $post->image) }}"
+                                                        class="w-full h-64 md:h-full object-cover rounded-t-xl md:rounded-l-xl md:rounded-t-none"
+                                                        alt="{{ $post->title }}">
+                                                </div>
+                                            @endif
+                                            <div class="md:w-3/5 p-6">
+                                                <div class="flex items-center mb-3 text-sm text-gray-500">
+                                                    <i class="far fa-calendar-alt mr-2"></i>
+                                                    <span>{{ $post->created_at->format('d/m/Y') }}</span>
+                                                    <span class="mx-2">•</span>
+                                                    <i class="far fa-clock mr-2"></i>
+                                                    <span>{{$post->created_at->diffForHumans()}}</span>
+                                                </div>
+                                                <h3
+                                                    class="text-2xl font-semibold mb-3 text-gray-800 hover:text-blue-600 transition duration-300">
+                                                    {{ $post->title }}
+                                                </h3>
+                                                <p class="text-gray-600 leading-relaxed mb-4">
+                                                    {!! Str::limit(strip_tags($post->content), 200) !!}
+                                                </p>
+                                                <div class="flex items-center">
+                                                    <p class="text-sm text-gray-500">
+                                                        Tác Giả: {{ $post->author->pen_name ?? 'Chưa có tác giả' }}
+                                                    </p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <h3 class="text-2xl font-semibold mb-3 text-gray-800 hover:text-blue-600 transition duration-300">
-                                            {{ $post->title }}
-                                        </h3>
-                                        <p class="text-gray-600 leading-relaxed mb-4">
-                                            {!! Str::limit(strip_tags($post->content), 200) !!}
-                                        </p>
-                                    </div>
+                                    </a>
                                 </div>
-                            </a>
-                        </div>
-                        @endforeach
+                            @endforeach
                         @endif
 
 
@@ -154,7 +160,7 @@
 
 </html>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var slider = tns({
             container: '.my-slider',
             items: 1,

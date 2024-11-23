@@ -79,6 +79,23 @@
                     <button class="w-full p-3 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300 font-semibold" type="submit">Đăng Ký</button>
                 </div>
             </form>
+            <div class="flex items-center my-4">
+                <hr class="flex-grow border-t border-gray-300">
+                <span class="mx-4 text-gray-500">HOẶC</span>
+                <hr class="flex-grow border-t border-gray-300">
+            </div>
+            <div class="flex justify-between">
+                    <button class="flex items-center justify-center w-1/2 bg-blue-600 text-white py-2 rounded mr-2">
+                        <a href="{{ route('login.facebook') }}">
+                            <i class="fab fa-facebook text-lg mr-2"></i> Facebook
+                        </a>
+                    </button>
+                    <button class="flex items-center justify-center w-1/2 bg-red-500 text-white py-2 rounded ml-2">
+                        <a href="{{ route('login.google') }}">
+                            <i class="fab fa-google mr-2"></i> Google
+                        </a>
+                    </button>
+                </div>
         </div>
 
         <!-- Phần logo và thông điệp -->

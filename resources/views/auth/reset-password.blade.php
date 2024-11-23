@@ -13,12 +13,6 @@
         <!-- Phần tiêu đề -->
         <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Đặt Lại Mật Khẩu</h2>
 
-        <!-- Hiển thị thông báo thành công -->
-        @if (session('status'))
-        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-3 mb-4 rounded">
-            {{ session('status') }}
-        </div>
-        @endif
 
         <!-- Form Đặt Lại Mật Khẩu -->
         <form method="POST" action="{{ route('password.update') }}">
@@ -32,6 +26,7 @@
                 <input id="password" type="password" name="password"
                     class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('password') border-red-500 @enderror"
                     required autocomplete="new-password" placeholder="Nhập mật khẩu mới">
+                <!-- Hiển thị lỗi từ biến $error -->
                 @error('password')
                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
@@ -43,13 +38,26 @@
                 <input id="password_confirmation" type="password" name="password_confirmation"
                     class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     required autocomplete="new-password" placeholder="Xác nhận mật khẩu mới">
+                @error('password_confirmation')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
+            <!-- Hiển thị thông báo thành công -->
+            @if (session('status'))
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-3 mb-4 rounded">
+                {{ session('status') }}
+            </div>
+            @endif
 
+            @if (isset($error))
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 mb-4 rounded">
+                {{ $error }}
+            </div>
+            @endif
             <!-- Nút Đặt lại mật khẩu -->
             <div>
                 <button type="submit"
-                    class="w-full bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700 transition duration-300">
-                    Đặt Lại Mật Khẩu
+                    class="w-full bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700 transition duration-300">Đặt Lại Mật Khẩu
                 </button>
             </div>
 

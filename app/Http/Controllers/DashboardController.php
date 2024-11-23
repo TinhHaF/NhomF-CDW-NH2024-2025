@@ -51,11 +51,9 @@ class DashboardController extends Controller
         $mostViewedPost = Post::orderBy('view', 'desc')->first();
 
         // Bài viết có lượt xem cao nhất trong ngày
-        $topViewedPostsToday = Post::whereDate('created_at', today())
-            ->orderBy('view', 'desc')
-            ->limit(10) // Lấy top 10 bài viết
+        $topViewedPostsToday = Post::orderBy('view', 'desc')
+            ->limit(10)
             ->get();
-
         // Gọi trackOnlineStatus để cập nhật trạng thái online của người dùng
         Visit::trackOnlineStatus($request);
         return view('admin.dashboard', compact('statistics', 'mostViewedPost', 'topViewedPostsToday'));

@@ -58,7 +58,7 @@
                     <input class="w-full p-3 bg-gray-200 rounded shadow-sm input-focus transition duration-200"
                         placeholder="Tên tài khoản" type="text" name="username" required />
                     @if ($errors->has('username'))
-                    <span class="text-red-500 text-sm">{{ $errors->first('username') }}</span>
+                        <span class="text-red-500 text-sm">{{ $errors->first('username') }}</span>
                     @endif
                 </div>
                 <div class="mb-4 relative">
@@ -67,21 +67,20 @@
                         placeholder="Mật Khẩu" type="password" name="password" required />
                     <i class="fas fa-eye absolute right-3 top-3 text-gray-500 cursor-pointer" id="togglePassword"></i>
                     @if ($errors->has('password'))
-                    <span class="text-red-500 text-sm">{{ $errors->first('password') }}</span>
+                        <span class="text-red-500 text-sm">{{ $errors->first('password') }}</span>
                     @endif
                 </div>
-
                 @if ($errors->has('credentials'))
-                <div class="mb-4 text-red-500">
-                    <strong>{{ $errors->first('credentials') }}</strong>
-                </div>
+                    <div class="mb-4 text-red-500">
+                        <strong>{{ $errors->first('credentials') }}</strong>
+                    </div>
                 @endif
 
                 @if ($errors->has('throttle'))
-                <!-- Kiểm tra lỗi throttle -->
-                <div class="mb-4 text-red-500">
-                    <strong>{{ $errors->first('throttle') }}</strong>
-                </div>
+                    <!-- Kiểm tra lỗi throttle -->
+                    <div class="mb-4 text-red-500">
+                        <strong>{{ $errors->first('throttle') }}</strong>
+                    </div>
                 @endif
 
                 <div>
@@ -95,24 +94,26 @@
                         Quên mật khẩu?
                     </a>
                 </div>
-                <div class="flex items-center my-4">
-                    <hr class="flex-grow border-t border-gray-300">
-                    <span class="mx-4 text-gray-500">HOẶC</span>
-                    <hr class="flex-grow border-t border-gray-300">
-                </div>
-                <div class="flex justify-between">
-                    <button class="flex items-center justify-center w-1/2 bg-blue-600 text-white py-2 rounded mr-2">
-                        <a href="{{ route('login.facebook') }}">
-                            <i class="fab fa-facebook text-lg mr-2"></i> Facebook
-                        </a>
-                    </button>
-                    <button class="flex items-center justify-center w-1/2 bg-red-500 text-white py-2 rounded ml-2">
-                        <a href="{{ route('login.google') }}">
-                            <i class="fab fa-google mr-2"></i> Google
-                        </a>
-                    </button>
-                </div>
+
+
             </form>
+            <div class="flex items-center my-4">
+                <hr class="flex-grow border-t border-gray-300">
+                <span class="mx-4 text-gray-500">HOẶC</span>
+                <hr class="flex-grow border-t border-gray-300">
+            </div>
+            <div class="flex justify-between">
+                <button class="flex items-center justify-center w-1/2 bg-blue-600 text-white py-2 rounded mr-2">
+                    <a href="{{ route('login.facebook') }}">
+                        <i class="fab fa-facebook text-lg mr-2"></i> Facebook
+                    </a>
+                </button>
+                <button class="flex items-center justify-center w-1/2 bg-red-500 text-white py-2 rounded ml-2">
+                    <a href="{{ route('login.google') }}">
+                        <i class="fab fa-google mr-2"></i> Google
+                    </a>
+                </button>
+            </div>
         </div>
 
         <!-- Phần logo và thông điệp -->
@@ -132,12 +133,18 @@
         const passwordInput = document.getElementById('password');
         const togglePassword = document.getElementById('togglePassword');
 
-        togglePassword.addEventListener('click', function() {
+        togglePassword.addEventListener('click', function () {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
             this.classList.toggle('fa-eye');
             this.classList.toggle('fa-eye-slash');
         });
+
+        if (window.location.hash === '#_=_') {
+            history.replaceState ?
+                history.replaceState(null, null, window.location.href.split('#')[0]) :
+                window.location.hash = '';
+        }
     </script>
 </body>
 
