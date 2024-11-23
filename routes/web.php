@@ -76,23 +76,13 @@ Route::middleware([AdministrationMiddleware::class])->group(function () {
         Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
         Route::get('/posts/{encodedId}/edit', [PostController::class, 'edit'])->name('posts.edit');
         Route::put('/posts/{encodedId}', [PostController::class, 'update'])->name('posts.update');
-        Route::delete('/posts/{encodedId}', [PostController::class, 'destroy'])->name('posts.destroy');
-
+        
         // Các thao tác đặc biệt với Posts
         Route::patch('/posts/{encodedId}/update-status', [PostController::class, 'updateStatus'])->name('posts.updateStatus');
         Route::post('/posts/bulk-delete', [PostController::class, 'bulkDelete'])->name('posts.bulk-delete');
         Route::post('/posts/{encodedId}/copy', [PostController::class, 'copy'])->name('posts.copy');
 
-        // Quản lý categories
-        Route::resource('categories', CategoryController::class);
-
-        // Quảng cáo
-        Route::get('/ads', [AdController::class, 'index'])->name('ads.index');
-        Route::get('/ads/create', [AdController::class, 'create'])->name('ads.create');
-        Route::post('/ads', [AdController::class, 'store'])->name('ads.store');
-        Route::get('/ads/{encodedId}/edit', [AdController::class, 'edit'])->name('ads.edit');
-        Route::put('/ads/{encodedId}', [AdController::class, 'update'])->name('ads.update');
-        Route::delete('/ads/{encodedId}', [AdController::class, 'destroy'])->name('ads.destroy');
+       
     });
 });
 
@@ -114,6 +104,27 @@ Route::middleware([AdminMiddleware::class])->group(function () {
         Route::get('/comments/{id}', [CommentController::class, 'Comments'])->name('comments_index');
         Route::get('/comments/detail/{id}', [CommentController::class, 'detail'])->name('comments_detail');
         Route::delete('/comments/admin/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.admin_delete');
+
+
+        //Cap quyen author
+        Route::get('/admin/author-requests', [UserController::class, 'viewRequests'])->name('author-requests');
+        Route::post('/admin/author-requests/{id}/approve', [UserController::class, 'approveRequest']);
+        Route::post('/admin/author-requests/{id}/reject', [UserController::class, 'rejectRequest']);
+
+         // Quản lý categories
+         Route::resource('categories', CategoryController::class);
+
+         // Quảng cáo
+         Route::get('/ads', [AdController::class, 'index'])->name('ads.index');
+         Route::get('/ads/create', [AdController::class, 'create'])->name('ads.create');
+         Route::post('/ads', [AdController::class, 'store'])->name('ads.store');
+         Route::get('/ads/{encodedId}/edit', [AdController::class, 'edit'])->name('ads.edit');
+         Route::put('/ads/{encodedId}', [AdController::class, 'update'])->name('ads.update');
+         Route::delete('/ads/{encodedId}', [AdController::class, 'destroy'])->name('ads.destroy');
+
+         //xoa bai viet
+         Route::delete('/posts/{encodedId}', [PostController::class, 'destroy'])->name('posts.destroy');
+
     });
 });
 Route::delete('/comments/user/delete/{comment_id}', [CommentController::class, 'delete'])->name('comments.user_delete');
@@ -182,7 +193,5 @@ Route::get('/register-author-show', [UserController::class, 'showRegisterForm'])
 Route::post('/register-author', [UserController::class, 'submitRegisterForm'])->name('update_auth')->middleware('auth');
 
 
-Route::get('/admin/author-requests', [UserController::class, 'viewRequests'])->name('author-requests');
-Route::post('/admin/author-requests/{id}/approve', [UserController::class, 'approveRequest']);
-Route::post('/admin/author-requests/{id}/reject', [UserController::class, 'rejectRequest']);
+
 Route::post('/posts/{post}/save', [PostController::class, 'savePost'])->name('posts.save');

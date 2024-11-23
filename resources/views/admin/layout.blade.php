@@ -147,6 +147,7 @@
                             </li>
                         </ul>
                     </li>
+                    @if (Auth::user()->role == 2)
                     <li class="px-4 py-2 hover:bg-gray-200">
                         <a class="flex items-center hover:text-red-500" href="{{ route('categories.index') }}">
                             <i class="fa-solid fa-folder mr-2"></i>
@@ -158,7 +159,6 @@
                             </li>
                         </ul> --}}
                     </li>
-                    @if (Auth::user()->role == 2)
                         <li class="px-4 py-2 hover:bg-gray-200">
                             <a class="flex items-center hover:text-red-500" href="{{ route('users.index') }}">
                                 <i class="fa-solid fa-users mr-2"></i>
@@ -177,8 +177,7 @@
                                 Cấp Quyền Tác Gỉa
                             </a>
                         </li>
-                    @endif
-                    <li class="px-4 py-2 hover:bg-gray-200">
+                        <li class="px-4 py-2 hover:bg-gray-200">
                         <a class="flex items-center hover:text-red-500" href="{{ route('logo.upload') }}">
                             <i class="fa-solid fa-images mr-2"></i>
                             Quản lý ảnh
@@ -200,6 +199,7 @@
                             </li>
                         </ul> --}}
                     </li>
+                    @endif
                 </ul>
             </nav>
         </div>
