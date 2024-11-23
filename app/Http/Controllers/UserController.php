@@ -492,7 +492,7 @@ public function approveRequest($id)
     // Cập nhật trạng thái yêu cầu
     $request->update(['status' => 'approved']);
 
-    return redirect()->back()->with('message', 'Request approved successfully.');
+    return redirect()->back()->with('success', 'Yêu cầu của bạn đã được gửi thành công!');
 }
 
 public function rejectRequest($id)

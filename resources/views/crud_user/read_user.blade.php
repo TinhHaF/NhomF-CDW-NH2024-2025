@@ -89,13 +89,17 @@
                             Thay đổi mật khẩu
                         </button>
                     </div>
-                    <div class="mb-4">
-                        <button onclick="window.location.href='{{ asset('/register-author-show') }}'"
-                            class="bg-gradient-to-r from-indigo-500 to-indigo-700 text-white w-full py-3 rounded-lg hover:shadow-lg transition duration-300 text-center block font-semibold">
-                            Đăng Ký Tác giả
-                        </button>
-                    </div>
-
+                    @php
+                        $user = Auth::user(); // Lấy thông tin người dùng đã đăng nhập
+                    @endphp
+                    @if (Auth::user()->role == 1)
+                        <div class="mb-4">
+                            <button onclick="window.location.href='{{ asset('/register-author-show') }}'"
+                                class="bg-gradient-to-r from-indigo-500 to-indigo-700 text-white w-full py-3 rounded-lg hover:shadow-lg transition duration-300 text-center block font-semibold">
+                                Đăng Ký Tác giả
+                            </button>
+                        </div>
+                    @endif
                 </div>
 
                 <div id="change-password-form" class="hidden bg-white p-6 rounded-lg shadow-lg mt-4">

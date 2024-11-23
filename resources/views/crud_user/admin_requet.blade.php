@@ -20,18 +20,21 @@
                         <div class="flex justify-center gap-2">
                             <form method="POST" action="/admin/author-requests/{{ $request->id }}/approve">
                                 @csrf
-                                <button type="submit"
-                                    class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                                <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
                                     Chấp Nhận
                                 </button>
                             </form>
-                            <form method="POST" action="/admin/author-requests/{{ $request->id }}/reject">
+                            <form method="POST" action="{{ route('author-rejectRequest', $request->id) }}">
                                 @csrf
-                                <button type="submit"
-                                    class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                                @method('DELETE')
+                                <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
                                     Từ Chối
                                 </button>
                             </form>
+
+
+
+
                         </div>
                     </td>
                 </tr>

@@ -24,6 +24,7 @@
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary btn-lg">Gửi yêu cầu</button>
                 </div>
+                <a href="{{ route('user.profile') }}">Quay lai</a>
             </form>
         </div>
     </div>
