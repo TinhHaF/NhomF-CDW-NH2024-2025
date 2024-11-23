@@ -100,6 +100,11 @@
                 <!-- Left Content -->
                 <div class="lg:w-2/3">
                     <div class="mb-12">
+                        @if ($posts->isEmpty())
+                        <div class="text-center text-gray-500 py-10">
+                            <p>Không có bài viết nào.</p>
+                        </div>
+                        @else
                         @foreach ($posts as $post)
                         <div class="bg-white rounded-xl custom-shadow hover-scale mb-6">
                             <a href="{{ route('posts.post_detail', ['id' => $post->id, 'slug' => $post->slug]) }}" class="block">
@@ -130,6 +135,8 @@
                             </a>
                         </div>
                         @endforeach
+                        @endif
+
 
                         <!-- Phân trang phía dưới -->
                         <div class="pagination mt-6">
