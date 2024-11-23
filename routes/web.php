@@ -195,4 +195,10 @@ Route::post('/register-author', [UserController::class, 'submitRegisterForm'])->
 
 
 
-Route::post('/posts/{post}/save', [PostController::class, 'savePost'])->name('posts.save');
+Route::middleware('auth')->group(function () {
+    // Route để lưu bài viết
+    Route::post('/posts/{post}/save', [PostController::class, 'savePost'])->name('posts.save');
+
+    // Route để hiển thị bài viết đã lưu
+    Route::get('/saved-posts', [PostController::class, 'savedPosts'])->name('posts.saved');
+});

@@ -116,4 +116,8 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'saved_posts')->withTimestamps();
     }
+    public function savedPosts()
+    {
+        return $this->belongsToMany(Post::class, 'saved_posts', 'user_id', 'post_id');
+    }
 }

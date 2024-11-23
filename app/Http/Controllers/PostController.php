@@ -37,7 +37,7 @@ class PostController extends Controller
         $this->postService = $postService;
         $this->idEncoder = new IdEncoder_2();
         // Middleware auth yêu cầu xác thực cho tất cả các phương thức ngoại trừ homepage và show
-        $this->middleware('auth')->except(['homepage', 'detail', 'search', 'searchHomepage','showPostsCate']);
+        $this->middleware('auth')->except(['homepage', 'detail', 'search', 'searchHomepage', 'showPostsCate']);
         // $this->authorizeResource(Post::class, 'post'); // Phương thức này sẽ hoạt động nếu trait được sử dụng
     }
 
@@ -649,5 +649,32 @@ class PostController extends Controller
 
         return back()->with('success', 'Đã lưu bài viết thành công.');
     }
-    
+
+    public function savedPosts()
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Bạn cần đăng nhập để xem danh sách bài viết đã lưu.');
+        }
+
+        // Lấy danh sách bài viết đã lưu
+        $savedPosts = $user->savedPosts()->paginate(10);
+        $logo = Logo::latest()->first();
+        $logoPath = $logo ? $logo->path : 'images/logo.jpg';
+        // Lấy tất cả các danh mục
+        $categories = Category::all();
+        //tag
+        
+        // thông báo
+        $notifications = Notification::all();
+        $featuredPosts = Post::where('is_featured', true)
+            ->whereNotNull('image') // Chỉ lấy bài viết nổi bật có ảnh
+            ->where('image', '!=', '') // Kiểm tra thêm nếu image là chuỗi rỗng
+            ->latest()
+            ->take(6) // Lấy đúng 6 bài nổi bật
+            ->get(); // Không phân trang, chỉ lấy các bài viết cần thiết
+
+        return view('posts.saved', compact('savedPosts', 'logoPath', 'logoPath', 'categories', 'featuredPosts', 'notifications'));
+    }
 }
